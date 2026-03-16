@@ -1,37 +1,34 @@
-name: V3R Drive Mirror
+name: CONDUIT-M Drive Mirror
 on:
   schedule:
-    - cron: '*/30 * * * *'  # every 30 min
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 jobs:
-  sync:
+  mirror:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install rclone
+        run: sudo apt update && sudo apt install -y rclone
+      - name: Configure rclone (Drive readonly)
         run: |
-          sudo apt update && sudo apt install -y rclone
           mkdir -p \~/.config/rclone
-      - name: Write rclone config
-        run: |
           cat > \~/.config/rclone/rclone.conf << EOF
           [v3rdrive]
           type = drive
           scope = drive.readonly
-          token = ${DRIVE_TOKEN}
+          token = ${{ secrets.DRIVE_TOKEN }}
           EOF
-        env:
-          DRIVE_TOKEN: ${{ secrets.DRIVE_TOKEN }}
-      - name: Sync from Drive
+      - name: Mirror key folders
         run: |
-          rclone sync v3rdrive:v3rframeworks/current . --delete-excluded --fast-list --progress
+          rclone sync v3rdrive:v3rframeworks/current . --delete-excluded --fast-list
           rclone sync v3rdrive:core/reports . --delete-excluded --fast-list
           rclone sync v3rdrive:conduit/logs . --delete-excluded --fast-list
           rclone sync v3rdrive:frameworks/current . --delete-excluded --fast-list
-      - name: Git commit & push
+      - name: Commit & push (full history)
         run: |
-          git config user.name "V3R CONDUIT"
+          git config user.name "V3R CONDUIT-M"
           git config user.email "v3r@automated"
           git add .
-          git commit -m "CONDUIT mirror $(date -u +'%Y-%m-%d %H:%M:%S UTC')" || echo "No changes"
+          git commit -m "CONDUIT-M mirror $(date -u +'%Y-%m-%d %H:%M:%S UTC')" || echo "No changes"
           git push
