@@ -1,0 +1,51 @@
+name: Drive Mirror V3R
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install rclone
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rclone
+
+      - name: Setup rclone config
+        run: |
+          mkdir -p \~/.config/rclone
+          echo "${{ secrets.DRIVE_TOKEN }}" | base64 -d > /tmp/token.json
+          cat > \~/.config/rclone/rclone.conf << 'EOF'
+[gdrive]
+type = drive
+scope = drive
+token = $(cat /tmp/token.json)
+EOF
+          rm /tmp/token.json
+
+      - name: Show debug info
+        run: |
+          rclone config file
+          cat \~/.config/rclone/rclone.conf || echo "Config missing"
+          rclone listremotes || echo "No remotes parsed"
+          rclone config show || echo "Config show failed"
+
+      - name: Sync V3R from Drive
+        run: rclone sync gdrive:V3R . --config \~/.config/rclone/rclone.conf --delete-excluded --fast-list --progress --verbose
+
+      - name: Commit changes
+        run: |
+          git config user.name "Automated Mirror"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Mirror update $(date -u +'%Y-%m-%d %H:%M UTC')" || echo "No changes to commit"
+          git push
