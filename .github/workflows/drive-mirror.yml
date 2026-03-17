@@ -26,8 +26,8 @@ jobs:
           rclone config show
 
       - name: Mirror V3R
-        run: rclone sync gdrive:V3R . --fast-list --progress --verbose --exclude ".git/**" --exclude ".github/**" --exclude "conduit/v3r-conduit-m/gdrive.json" --exclude "code/current/groq_test.py" --exclude "core/reports/handoffs/V3R Handoff Report 8 -Claude.txt" --exclude "data/AWS Services Data.txt" --exclude "data/General Data (Passwords, Login, Directories, etc.).txt" --exclude "data/System Blueprint.txt"
-        
+      
+        run: rclone sync gdrive:V3R . --fast-list --progress --verbose --exclude ".git/**" --exclude ".github/**"
       - name: Commit & push
         run: |
           git config user.name "Auto Mirror"
