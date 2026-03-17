@@ -26,9 +26,15 @@ jobs:
           token = ${{ secrets.DRIVE_TOKEN }}
           EOF
 
+      - name: Debug rclone config
+       run: |
+         ls -la \~/.config/rclone/
+         cat \~/.config/rclone/rclone.conf   # should show real token JSON
+         rclone config show                 # shows parsed remotes
+
       - name: Mirror full V3R tree
         run: |
-          rclone sync gdrive:V3R . --delete-excluded --fast-list --progress
+          rclone sync gdrive:V3R . --config \~/.config/rclone/rclone.conf --delete-excluded --fast-list --progress
 
       - name: Commit & push
         run: |
