@@ -26,7 +26,8 @@ jobs:
           rclone config show
 
       - name: Mirror V3R
-        run: rclone sync gdrive:V3R . --delete-excluded --fast-list --progress --verbose --exclude ".git/**"
+        run: rclone sync gdrive:V3R . --delete-excluded --fast-list --progress --verbose --exclude ".git/**" --exclude ".github/**"
+        
       - name: Commit & push
         run: |
           git config user.name "Auto Mirror"
