@@ -1,0 +1,39 @@
+name: CONDUIT-M Drive Mirror
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install rclone
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rclone
+
+      - name: Configure rclone gdrive
+        run: |
+          mkdir -p \~/.config/rclone
+          echo '${{ secrets.DRIVE_TOKEN }}' > /tmp/drive_token.json
+          rclone config create gdrive drive token "$(cat /tmp/drive_token.json)" scope drive
+          rm -f /tmp/drive_token.json
+
+      - name: Mirror full V3R tree
+        run: rclone sync gdrive:V3R . --delete-excluded --fast-list --progress
+
+      - name: Commit and push
+        run: |
+          git config user.name "V3R CONDUIT-M"
+          git config user.email "v3r@automated"
+          git add .
+          git commit -m "CONDUIT-M mirror $(date -u +'%Y-%m-%d %H:%M:%S UTC')" || echo "No changes"
+          git push
