@@ -21,34 +21,24 @@ jobs:
       - name: Configure rclone gdrive
         run: |
           mkdir -p \~/.config/rclone
-          # Write token to temp (echo -n prevents extra newline corruption)
-          echo -n '${{ secrets.DRIVE_TOKEN }}' > token.json
-          # Build config file manually
+          echo "${{ secrets.DRIVE_TOKEN }}" | base64 -d > token.json
           cat > \~/.config/rclone/rclone.conf << EOF
 [gdrive]
 type = drive
 scope = drive
-token = \$(cat token.json)
+token = $(cat token.json)
 EOF
-          # Clean up temp
           rm token.json
 
-      - name: Debug config (verify parsing)
+      - name: Debug config
         run: |
-          echo "Config location:"
           rclone config file
-          echo "Raw config contents (token redacted):"
-          sed 's/"access_token":"[^"]*"/"access_token":"REDACTED"/; s/"refresh_token":"[^"]*"/"refresh_token":"REDACTED"/' \~/.config/rclone/rclone.conf
-          echo "Parsed remotes:"
+          cat \~/.config/rclone/rclone.conf | sed 's/"access_token":"[^"]*"/"access_token":"REDACTED"/; s/"refresh_token":"[^"]*"/"refresh_token":"REDACTED"/'
           rclone listremotes
-          echo "Config show output:"
           rclone config show
 
       - name: Mirror full V3R tree
-        run: |
-          rclone sync gdrive:V3R . \
-            --config \~/.config/rclone/rclone.conf \
-            --delete-excluded --fast-list --progress --verbose
+        run: rclone sync gdrive:V3R . --config \~/.config/rclone/rclone.conf --delete-excluded --fast-list --progress --verbose
 
       - name: Commit and push
         run: |
