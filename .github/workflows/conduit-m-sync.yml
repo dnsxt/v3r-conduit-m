@@ -23,9 +23,18 @@ jobs:
       - name: Configure rclone gdrive
         run: |
           mkdir -p \~/.config/rclone
-          echo '${{ secrets.DRIVE_TOKEN }}' > /tmp/drive_token.json
-          rclone config create gdrive drive token "$(cat /tmp/drive_token.json)" scope drive
-          rm -f /tmp/drive_token.json
+          cat > \~/.config/rclone/rclone.conf << EOF
+          [gdrive]
+          type = drive
+          scope = drive
+          token = ${{ secrets.DRIVE_TOKEN }}
+          EOF
+
+      - name: Debug config (optional but helpful)
+        run: |
+          ls -la \~/.config/rclone/
+          cat \~/.config/rclone/rclone.conf
+          rclone config show
 
       - name: Mirror full V3R tree
         run: rclone sync gdrive:V3R . --delete-excluded --fast-list --progress
