@@ -1,0 +1,482 @@
+# V3R FORBIDDEN PATTERNS REPORT
+**Document:** V3R-FPR-001
+**Version:** 1.0
+**Date:** March 12, 2026
+**Classification:** Living Document — Updated on Every New Violation
+**Author:** V3R Documentation Agent
+
+---
+
+## DOCUMENT PURPOSE
+
+This report is the permanent record of every pattern that is banned from V3R development. Each entry includes the pattern itself, the exact failure it causes, the incident that discovered it, the confirmed working replacement, and the cost of a violation. This document is the first thing the System Debug Agent checks before clearing any output. It is also the first document V3R reads in Phase 7 when evaluating its own code for improvement.
+
+---
+
+## CRITICAL RULE
+
+A pattern enters this registry when it has caused a real failure in V3R development — not a theoretical risk. Every entry here has a real incident behind it. The registry grows forward — it never shrinks. Once a pattern is forbidden, it is forbidden permanently across all phases.
+
+**Violation cost on this hardware:** Every code error that reaches deployment requires a Docker rebuild. Full rebuild: 90-120 minutes. Cached rebuild (handler file only): 20-30 minutes. Every pattern in this registry has cost at least one of those cycles.
+
+---
+
+## REGISTRY
+
+---
+
+### FP-001 — SentenceTransformer() Direct Instantiation
+
+**Status:** FORBIDDEN
+**Added:** Phase 1
+**Severity:** Critical — causes Lambda initialization failure
+
+**The Pattern:**
+```python
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer("all-MiniLM-L6-v2")
+```
+```python
+# Also forbidden with local path:
+model = SentenceTransformer("/var/task/models/all-MiniLM-L6-v2")
+```
+```python
+# Also forbidden with local_files_only:
+model = SentenceTransformer("all-MiniLM-L6-v2", local_files_only=True)
+```
+
+**What It Does Wrong:**
+SentenceTransformer() performs network initialization checks at startup regardless of local_files_only setting. In the offline Lambda container with no outbound HuggingFace access at runtime, these network checks cause initialization failures. The container cannot complete cold start. Every invocation fails.
+
+**Incident:**
+Phase 1 initial embedding attempt. Lambda cold start timeout. CloudWatch logs showed network connection errors to huggingface.co during model initialization. Identified by Knowledge Retrieval Agent.
+
+**Cost:** One full rebuild cycle (~90 minutes) plus diagnosis time.
+
+**The Confirmed Replacement:**
+```python
+from transformers import AutoTokenizer, AutoModel
+import torch
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, local_files_only=True)
+model = AutoModel.from_pretrained(MODEL_PATH, local_files_only=True)
+```
+Where MODEL_PATH = "/var/task/models/all-MiniLM-L6-v2"
+
+AutoTokenizer and AutoModel load purely from the local filesystem with local_files_only=True. Zero network calls. Works in the offline container.
+
+**Note:** local_files_only=True is REQUIRED on AutoTokenizer and AutoModel. It is only forbidden when passed to SentenceTransformer() because SentenceTransformer() ignores it for its network checks.
+
+---
+
+### FP-002 — urllib.request for External API Calls
+
+**Status:** FORBIDDEN
+**Added:** Phase 1
+**Severity:** High — unreliable in Lambda environment
+
+**The Pattern:**
+```python
+import urllib.request
+req = urllib.request.Request(url, data=payload, headers=headers)
+response = urllib.request.urlopen(req)
+```
+
+**What It Does Wrong:**
+urllib.request exhibits unreliable behavior in the Lambda execution environment for external HTTPS calls to services like Groq. Connection handling, timeout behavior, and SSL verification produce inconsistent results across Lambda invocations. Not reproducible locally — only manifests in the container.
+
+**Incident:**
+Phase 1 Groq integration attempt. Intermittent failures with no consistent error pattern. urllib.request was replaced as a precaution after repeated inconsistency. The requests library was also unavailable (not in the offline wheel set).
+
+**Cost:** Diagnosis time plus one rebuild cycle.
+
+**The Confirmed Replacement:**
+```python
+import http.client
+import json
+
+conn = http.client.HTTPSConnection("api.groq.com")
+conn.request(
+    "POST",
+    "/openai/v1/chat/completions",
+    body=payload,
+    headers={
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+)
+resp = conn.getresponse()
+resp_data = json.loads(resp.read().decode())
+```
+
+http.client is Python standard library. Always available. Consistent behavior in Lambda. No wheel required.
+
+---
+
+### FP-003 — Windows File Paths in Lambda Code
+
+**Status:** FORBIDDEN
+**Added:** Phase 1
+**Severity:** Critical — causes immediate runtime failure
+
+**The Pattern:**
+```python
+MODEL_PATH = "C:\\Users\\Source-1\\Desktop\\models\\all-MiniLM-L6-v2"
+MODEL_PATH = r"C:\Users\Source-1\Desktop\models\all-MiniLM-L6-v2"
+MODEL_PATH = "models\\all-MiniLM-L6-v2"
+```
+
+**What It Does Wrong:**
+Lambda runs on Linux. Windows paths with drive letters, backslashes, or relative Windows-style references do not exist in the Linux container filesystem. The model is at /var/task/models/all-MiniLM-L6-v2 in the container. Any Windows path causes FileNotFoundError or similar at model load time.
+
+**Incident:**
+Phase 1 early development. Model failed to load. Path was set from the local development environment instead of the container path.
+
+**Cost:** One rebuild cycle.
+
+**The Confirmed Replacement:**
+```python
+MODEL_PATH = "/var/task/models/all-MiniLM-L6-v2"
+```
+
+All Lambda file paths must use Linux absolute paths starting with /var/task/ for files copied into the container by the Dockerfile.
+
+---
+
+### FP-004 — Hardcoded Groq Model Names Without KR Confirmation
+
+**Status:** FORBIDDEN
+**Added:** Phase 1
+**Severity:** High — causes silent degradation or runtime failure on model deprecation
+
+**The Pattern:**
+```python
+# Forbidden — hardcoded without Knowledge Retrieval confirmation
+GROQ_MODEL = "llama2-70b-4096"
+GROQ_MODEL = "mixtral-8x7b-32768"
+GROQ_MODEL = "llama-3.1-8b-instant"  # Only permitted after KR confirms it is current
+```
+
+**What It Does Wrong:**
+Groq deprecates and renames models without long notice periods. A model name that was valid last month may return a 404 or a model-not-found error today. The system will appear to work (no Python errors) but Groq will return an error body with no choices array, causing "No response" from the generation layer. This is the exact silent failure mode.
+
+**Incident:**
+Preventive — identified by Knowledge Retrieval Agent in Phase 1 after observing Groq's model deprecation history. Added to registry before a failure occurred.
+
+**Cost:** Preventive entry — no rebuild yet. Potential cost if violated: silent generation failures with no obvious error, diagnosis time.
+
+**The Confirmed Replacement:**
+Before any model name is written into code, Knowledge Retrieval Agent must confirm:
+1. The model name is currently active on Groq
+2. The model is available on the free tier
+3. The model name has not been renamed or versioned since last confirmation
+
+Currently confirmed model (as of Phase 2, March 2026): `llama-3.1-8b-instant`
+```python
+GROQ_MODEL = "llama-3.1-8b-instant"
+```
+
+This confirmation must be renewed if more than 30 days have passed since last use, or if Groq announces any model changes.
+
+---
+
+### FP-005 — win_amd64 Wheels in Docker Build
+
+**Status:** FORBIDDEN
+**Added:** Phase 1
+**Severity:** Critical — causes Docker build failure or silent runtime failure
+
+**The Pattern:**
+```
+# Forbidden wheel filename patterns:
+torch-2.6.0-cp312-cp312-win_amd64.whl
+numpy-2.2.6-cp312-cp312-win_amd64.whl
+any_package-version-cpXXX-cpXXX-win_amd64.whl
+```
+
+**What It Does Wrong:**
+The Docker build target is linux/amd64. Windows wheels (win_amd64) are compiled for the Windows ABI and are incompatible with the Linux container. pip will either reject them with an incompatibility error during build, or in some cases install them silently and produce runtime import errors when the package is loaded in the Linux Lambda container.
+
+**Incident:**
+Phase 1 and Phase 2. Windows wheel files from local Python installation contaminated the wheels/ directory. Identified during wheels/ audit. All win_amd64 files removed.
+
+**Cost:** Build failures and diagnosis time across multiple attempts.
+
+**The Confirmed Replacement:**
+All wheels must match this filename pattern exactly:
+```
+package_name-version-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+```
+Or the simpler manylinux form:
+```
+package_name-version-cp312-cp312-manylinux2014_x86_64.whl
+```
+
+Requirements:
+- cp312 (CPython 3.12 — matches Lambda base image)
+- manylinux (Linux ABI compatibility)
+- x86_64 (matches linux/amd64 Docker target)
+- NEVER win_amd64
+- NEVER cp314 (Python 3.14 — the local machine runs 3.14 but Lambda runs 3.12)
+
+**The cp314 Special Case:**
+The development machine runs Python 3.14.3. pip on the local machine will generate cp314 wheels by default if asked to download. cp314 wheels are also forbidden — they are compiled for Python 3.14 and are incompatible with the Lambda Python 3.12 runtime. This was discovered when a cp314 numpy wheel was found in the wheels/ directory during Phase 2 cleanup.
+
+---
+
+### FP-006 — Inline JSON Strings in PowerShell AWS CLI Commands
+
+**Status:** FORBIDDEN
+**Added:** Phase 3 (March 12, 2026)
+**Severity:** High — causes silent data loss or AWS CLI parse error
+
+**The Pattern:**
+```powershell
+# ALL of these are forbidden:
+aws dynamodb delete-item --table-name rag-chunks --key '{"chunk_id": {"S": "value"}}'
+aws dynamodb delete-item --table-name rag-chunks --key "{\"chunk_id\": {\"S\": \"value\"}}"
+aws lambda update-function-configuration --environment '{"Variables":{"KEY":"value"}}'
+```
+
+**What It Does Wrong:**
+PowerShell 5.1 has fundamentally broken handling of JSON strings in command arguments. Single quotes do not reliably protect inner double quotes. Escape sequences behave differently than in bash. The AWS CLI receives a malformed or empty string instead of valid JSON, producing either:
+- `[ERROR] An error occurred (ParamValidationError): Error parsing parameter: Expecting value: line 1 column 1 (char 0)`
+- The command appearing to succeed but actually receiving empty data
+- File path errors when the CLI interprets the JSON as a parameter rather than a value
+
+**Incident:**
+Phase 2 DynamoDB cleanup — multiple failed attempts to delete items using inline JSON. Phase 3 Lambda environment variable update — first attempt using Out-File also failed with empty file. Confirmed across multiple attempts in multiple sessions. Added to registry after third failure.
+
+**Cost:** Multiple failed commands, diagnosis time, confirmation that the method actually worked.
+
+**The Confirmed Replacement — ONLY method confirmed working in PowerShell 5.1:**
+```powershell
+# Step 1: Write JSON to file using WriteAllText
+[System.IO.File]::WriteAllText("C:\absolute\path\to\file.json", '{"key":"value"}')
+
+# Step 2: Reference the file in the AWS CLI command
+aws dynamodb delete-item --table-name rag-chunks --region us-east-1 --key file://C:\absolute\path\to\file.json
+```
+
+**Critical requirements for the replacement:**
+- Path must be ABSOLUTE — relative paths cause "No such file or directory" errors
+- JSON string passed to WriteAllText must use single outer quotes with double inner quotes
+- The file:// prefix must be followed immediately by the absolute path with no space
+- Always use ASCII encoding (WriteAllText default) — not UTF-16 which some PowerShell cmdlets produce
+
+**Why Out-File also failed:**
+```powershell
+# This also fails — FORBIDDEN:
+'{"key":"value"}' | Out-File -FilePath file.json -Encoding ascii
+```
+Out-File in PowerShell 5.1 adds a BOM (Byte Order Mark) or trailing characters in some encoding modes that the AWS CLI cannot parse. WriteAllText is a .NET method that writes exactly what is given with no additional characters.
+
+---
+
+### FP-007 — Relative Paths in AWS CLI file:// References
+
+**Status:** FORBIDDEN
+**Added:** Phase 3 (March 12, 2026)
+**Severity:** Medium — causes AWS CLI file not found error
+
+**The Pattern:**
+```powershell
+# Forbidden — relative path:
+aws lambda update-function-configuration --environment file://env_vars.json
+
+# Forbidden — no path at all:
+aws lambda update-function-configuration --environment file://./env_vars.json
+```
+
+**What It Does Wrong:**
+The AWS CLI resolves file:// paths relative to the process working directory, which may differ from the PowerShell working directory, especially in Administrator sessions. When the path does not resolve, the error is:
+```
+Unable to load paramfile file://env_vars.json: [Errno 2] No such file or directory: 'env_vars.json'
+```
+
+**Incident:**
+Phase 3 Lambda environment variable update. First WriteAllText attempt correctly wrote the file to the ecr-build directory but the AWS CLI command used a relative path. File was written to one location, CLI looked in another.
+
+**Cost:** One failed command, diagnosis time.
+
+**The Confirmed Replacement:**
+Always use full absolute paths in file:// references:
+```powershell
+aws lambda update-function-configuration --environment file://C:\Users\Source-1\Desktop\rag-deploy\ecr-build\env_vars.json
+```
+
+---
+
+### FP-008 — Missing import os When Using os.environ
+
+**Status:** FORBIDDEN
+**Added:** Phase 3 (March 12, 2026)
+**Severity:** High — causes NameError at Lambda cold start, function completely non-functional
+
+**The Pattern:**
+```python
+# Forbidden — os used without import:
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+# ... no import os at top of file
+```
+
+**What It Does Wrong:**
+Python requires explicit import of all standard library modules including os. If os is used without importing it, Python raises:
+```
+NameError: name 'os' is not defined
+```
+This error occurs at module load time (Lambda cold start), not at function invocation. The Lambda function never successfully initializes. Every invocation returns a 500 error with the NameError in the stack trace.
+
+**Incident:**
+Phase 3 — GROQ_API_KEY was changed from hardcoded string to os.environ.get() but import os was not added. Deployed and tested — NameError on cold start. Required an additional rebuild cycle.
+
+**This was also a System Debug Agent gate failure.** The gate cleared the output without checking import-usage consistency. The gate checklist was updated as a result.
+
+**Cost:** One cached rebuild cycle (~20 minutes) plus test time.
+
+**The Confirmed Replacement:**
+Every file that uses os.environ, os.path, or any other os function must have this at the top:
+```python
+import os
+```
+
+**System Debug Agent mandatory check added:**
+For every name used in the file that is not defined within the file, confirm a corresponding import statement exists at the top of the file.
+
+---
+
+### FP-009 — Deploying Lambda Without ECR Re-login After Long Build
+
+**Status:** FORBIDDEN
+**Added:** Phase 3 (March 12, 2026)
+**Severity:** High — causes 403 Forbidden on push after build completes
+
+**The Pattern:**
+```powershell
+# Forbidden — starting a build and push without re-login after a long gap:
+docker buildx build --platform linux/amd64 ... --push .
+# (after more than 12 hours since last ecr get-login-password)
+```
+
+**What It Does Wrong:**
+ECR authentication tokens expire after 12 hours. A full Docker build on this hardware takes 90-120 minutes. If the ECR login was performed at the start of a session and the build takes longer than expected, the token may expire before the push phase begins. Docker will complete all build steps successfully, then fail on the push with:
+```
+ERROR: failed to push: unexpected status from HEAD request: 403 Forbidden
+```
+All build time is preserved (layers are cached) but the push must be retried after re-login.
+
+**Incident:**
+Phase 3 — Build started at approximately 3:00 PM. Push attempted at approximately 5:22 PM (2+ hours later). ECR token had expired. Push failed. Re-login and direct docker push resolved it.
+
+**Cost:** ~30 minutes of diagnosis and push retry time (build was cached so no rebuild needed).
+
+**The Confirmed Replacement:**
+Always run ECR login immediately before any build+push command, regardless of when the previous login was:
+```powershell
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 236510207245.dkr.ecr.us-east-1.amazonaws.com
+```
+Then immediately run the build:
+```powershell
+docker buildx build --platform linux/amd64 --provenance false --sbom false -f Dockerfile-ml-offline -t 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26 --push .
+```
+
+If a build was interrupted and needs to be resumed with just a push:
+```powershell
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 236510207245.dkr.ecr.us-east-1.amazonaws.com
+docker push 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26
+```
+
+---
+
+### FP-010 — Building Without --provenance false --sbom false
+
+**Status:** FORBIDDEN
+**Added:** Phase 1
+**Severity:** Medium — produces multi-architecture manifest that breaks Lambda image deployment
+
+**The Pattern:**
+```powershell
+# Forbidden — missing provenance and sbom flags:
+docker buildx build --platform linux/amd64 -t repo:tag --push .
+```
+
+**What It Does Wrong:**
+docker buildx with newer Docker Desktop versions generates OCI attestation manifests (provenance and SBOM) by default when pushing to a registry. Lambda does not support OCI image manifests with attestations. The Lambda console will not be able to select the image, or it will select an incorrect manifest layer.
+
+**Incident:**
+Phase 1 early build attempts. Lambda console showed the image in ECR but could not deploy it correctly.
+
+**Cost:** Rebuild plus diagnosis time.
+
+**The Confirmed Replacement:**
+Always include both flags:
+```powershell
+docker buildx build --platform linux/amd64 --provenance false --sbom false -f Dockerfile-ml-offline -t 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26 --push .
+```
+
+---
+
+## REGISTRY SUMMARY TABLE
+
+| ID | Pattern | Severity | Phase Added | Rebuild Cost |
+|---|---|---|---|---|
+| FP-001 | SentenceTransformer() instantiation | Critical | P1 | Full rebuild |
+| FP-002 | urllib.request for external APIs | High | P1 | Cached rebuild |
+| FP-003 | Windows paths in Lambda code | Critical | P1 | Full rebuild |
+| FP-004 | Hardcoded Groq model without KR confirm | High | P1 | Diagnosis only |
+| FP-005 | win_amd64 or cp314 wheels in Docker | Critical | P1 | Full rebuild |
+| FP-006 | Inline JSON in PowerShell AWS CLI | High | P3 | Command retry |
+| FP-007 | Relative paths in AWS CLI file:// | Medium | P3 | Command retry |
+| FP-008 | Missing import os with os.environ | High | P3 | Cached rebuild |
+| FP-009 | No ECR re-login before long build+push | High | P3 | Push retry |
+| FP-010 | Missing --provenance/--sbom flags | Medium | P1 | Full rebuild |
+
+---
+
+## SYSTEM DEBUG AGENT GATE CHECKLIST
+
+This checklist is executed on every output before delivery. No output is cleared that fails any item.
+
+### Code Review Checklist
+- [ ] No SentenceTransformer() instantiation anywhere in the file
+- [ ] No urllib.request import or usage
+- [ ] No Windows-style paths (C:\\, backslashes) in any Lambda-destined file
+- [ ] No hardcoded Groq model name without KR confirmation this session
+- [ ] Every stdlib module used is explicitly imported at the top of the file
+- [ ] Every os.environ reference has import os present
+- [ ] All file paths in Lambda code use /var/task/... format
+
+### Docker/ECR Checklist
+- [ ] Build command includes --platform linux/amd64
+- [ ] Build command includes --provenance false --sbom false
+- [ ] ECR login command runs immediately before build command
+- [ ] Image tag is ml-offline-torch26 (never changed without explicit instruction)
+- [ ] No win_amd64 or cp314 wheels referenced in Dockerfile
+
+### PowerShell/AWS CLI Checklist
+- [ ] No inline JSON strings in AWS CLI commands
+- [ ] JSON written via [System.IO.File]::WriteAllText() with absolute path
+- [ ] AWS CLI file:// reference uses absolute path
+- [ ] Region specified as us-east-1 in every AWS CLI command
+- [ ] Account-specific resources reference 236510207245
+
+### Architecture Checklist
+- [ ] DynamoDB get_item on rag-memory uses BOTH vector_id AND timestamp keys
+- [ ] DynamoDB put_item to rag-memory includes BOTH vector_id AND timestamp
+- [ ] rag-memory queries use memory_table.query not memory_table.get_item
+- [ ] Groq response parsed from choices[0].message.content with "No response" default
+
+---
+
+## ENFORCEMENT POLICY
+
+A Forbidden Pattern violation that reaches deployment costs a minimum of one 20-30 minute cached rebuild cycle. It may cost a 90-120 minute full rebuild cycle if the violation requires a new wheel or a model change. It may cost hours of diagnosis time if the failure is silent rather than explicit.
+
+The System Debug Agent gate exists specifically to prevent violations from reaching deployment. A gate failure — where a violation is cleared and delivered — is recorded in the Agents Report as a gate failure with the specific pattern that was missed. Gate failures inform the gate checklist updates.
+
+The registry grows. It never shrinks. Every session that produces a new failure adds a new entry. By Phase 7, the registry will be ingested into V3R's own knowledge base and V3R will check its own code against its own Forbidden Patterns Registry as part of the self-improvement pipeline.
+
+---
+
+*End of V3R Forbidden Patterns Report — V3R-FPR-001 v1.0*
+*Next update: Any new pattern violation in any session*

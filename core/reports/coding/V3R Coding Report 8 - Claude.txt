@@ -1,0 +1,242 @@
+﻿# V3R CODING REPORT 8
+**Date:** March 12, 2026
+**Session:** Phase 2 Completion → Phase 3 Active
+**Prepared by:** V3R Documentation Agent
+
+---
+
+## SECTION 1 — DynamoDB CLEANUP
+
+### SUCCEEDED
+- Deleted test chunk item `test-chunk-001` from rag-chunks
+- Deleted test chunk item `ddb51eec-8fb7-4627-96d8-687be32840be` from rag-chunks
+- Deleted `rag_memory` (underscore) table — confirmed gone
+- `rag-conversations` table was already absent — delete attempt returned ResourceNotFoundException (not a failure — table simply did not exist)
+- Confirmed final table list: `rag-chunks` and `rag-memory` only — clean
+
+### FAILED
+- First DynamoDB delete-item attempts used inline JSON in PowerShell — AWS CLI silently stripped quotes, produced parse errors
+- Out-File method for writing JSON also failed — produced empty or malformed files
+
+### ROOT CAUSE OF JSON FAILURES
+PowerShell 5.1 mangles both inline JSON strings and Out-File encoded JSON. The only working method confirmed this session:
+```powershell
+[System.IO.File]::WriteAllText("C:\absolute\path\file.json", '{"key":"value"}')
+aws ... --parameter file://C:\absolute\path\file.json
+```
+**Added to Forbidden Patterns Registry.**
+
+---
+
+## SECTION 2 — lambda_chat.py REWRITES
+
+### CONTEXT
+lambda_chat.py was audited via photos taken at 2:51 PM. The file was 79 lines and already contained get_history and save_history functions. However the functions used `memory_table.get_item` which fails silently when the table has a composite key (vector_id + timestamp). History never loaded. Chat had no memory across turns.
+
+### CHANGE 1 — get_history() REWRITE
+**Status: SUCCEEDED (implemented, deployed)**
+
+Old code (broken):
+```python
+def get_history(session_id):
+    try:
+        resp = memory_table.get_item(Key={"vector_id": session_id})
+        return resp.get("Item", {}).get("turns", [])
+    except Exception:
+        return []
+```
+
+New code (correct):
+```python
+def get_history(session_id):
+    try:
+        resp = memory_table.query(
+            KeyConditionExpression="vector_id = :sid",
+            ExpressionAttributeValues={":sid": session_id},
+            ScanIndexForward=True
+        )
+        items = resp.get("Items", [])
+        if items:
+            return items[-1].get("turns", [])
+        return []
+    except Exception:
+        return []
+```
+
+**Why:** rag-memory table has composite key (vector_id PK + timestamp SK). get_item requires both keys. query only needs the partition key and returns all matching records. Fixed the silent failure.
+
+### CHANGE 2 — save_history() REWRITE
+**Status: SUCCEEDED (implemented, deployed)**
+
+Old code (broken):
+```python
+def save_history(session_id, turns):
+    try:
+        memory_table.put_item(Item={"vector_id": session_id, "turns": turns, "updated": datetime.now(timezone.utc).isoformat()})
+    except Exception:
+        pass
+```
+
+New code (correct):
+```python
+def save_history(session_id, turns):
+    try:
+        memory_table.put_item(Item={
+            "vector_id": session_id,
+            "timestamp": int(datetime.now(timezone.utc).timestamp()),
+            "turns": turns,
+            "updated": datetime.now(timezone.utc).isoformat()
+        })
+    except Exception:
+        pass
+```
+
+**Why:** put_item to a composite key table requires both PK and SK. Adding `timestamp` as integer unix epoch satisfies the sort key requirement.
+
+### CHANGE 3 — GROQ_API_KEY MOVED TO ENVIRONMENT VARIABLE
+**Status: SUCCEEDED**
+
+Old code (insecure):
+```python
+GROQ_API_KEY = "(See sensitive_data.txt)"
+```
+
+New code (secure):
+```python
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+```
+
+Key set in Lambda console via:
+```powershell
+[System.IO.File]::WriteAllText("C:\Users\Source-1\Desktop\rag-deploy\ecr-build\env_vars.json", '{"Variables":{"GROQ_API_KEY":"(See sensitive_data.txt)"}}')
+aws lambda update-function-configuration --function-name rag-chat --region us-east-1 --environment file://C:\Users\Source-1\Desktop\rag-deploy\ecr-build\env_vars.json
+```
+Confirmed set via get-function-configuration query returning the key value.
+
+### CHANGE 4 — import os ADDED
+**Status: SUCCEEDED (after one failure)**
+
+First attempt: import os was not added when GROQ_API_KEY line was changed. This caused:
+```
+NameError: name 'os' is not defined
+File "/var/task/lambda_chat.py", line 8
+```
+Fix: `import os` added to line 2 of lambda_chat.py. Confirmed present.
+
+---
+
+## SECTION 3 — DOCKER BUILD AND PUSH CYCLES
+
+### BUILD 1 — Full rebuild (started ~3:00 PM, completed ~5:22 PM)
+**Status: FAILED on push — succeeded on build**
+- All 12 Docker build steps completed successfully
+- Push to ECR failed with `403 Forbidden`
+- Root cause: ECR authentication token expired during the 2+ hour build
+- Fix: re-login with `aws ecr get-login-password | docker login` then `docker push` directly
+- Push completed successfully after re-login
+- Duration: ~2.5 hours total
+
+### BUILD 2 — Cached rebuild after import os fix (~6:30 PM)
+**Status: SUCCEEDED**
+- Only COPY lambda_chat.py layer invalidated — all other layers cached
+- Build and push completed significantly faster than Build 1
+- rag-chat redeployed to new image
+
+### BUILD 3 — Cached rebuild after get_history fix
+**Status: SUCCEEDED**
+- Again only final COPY layers invalidated
+- Pushed successfully
+- rag-chat redeployed
+
+---
+
+## SECTION 4 — LAMBDA TEST RESULTS
+
+### Test 1 — After Build 2 (import os present, get_history fix uncertain)
+**Result: FAILED**
+```
+NameError: name 'get_history' is not defined
+File "/var/task/lambda_chat.py", line 46
+```
+Code SHA: 114065d1db85db9c6cd2c9e0d17b484c0482fa132db9b81cefae6d07ccfbc64
+**Analysis:** SHA identical to previous failed build — Docker cached the COPY lambda_chat.py layer, meaning the file on disk had not changed between builds. The get_history edit in Notepad++ was likely not saved before the build ran.
+
+### Test 2 — After Build 3 (all fixes confirmed in file)
+**Result: PARTIAL — statusCode 200 but "No response" from Groq**
+- Lambda executed without Python errors
+- get_history and save_history resolved correctly
+- Groq API call reached the API but returned empty choices array
+- answer defaulted to "No response"
+- **Root cause diagnosis:** GROQ_API_KEY environment variable is likely empty string in deployed container — key may have been lost during one of the redeploy cycles
+
+### Test 3 — HF Space memory test (session v3r_session_1)
+**Result: FAILED**
+- Sent "My name is David and I am building the V3R platform"
+- Sent "What is my name and what am I building?"
+- Response: "I don't have any information about your name or what you're building"
+- Memory: 1 turns shown in UI — turn was saved but not retrieved
+- **Root cause:** get_history was using get_item (the old unfixed version) at this point in the session — this test was run before the fix was deployed
+
+---
+
+## SECTION 5 — CONFIRMED CLEAN — NO CHANGES NEEDED
+
+### lambda_ingest_v4.py
+No changes made this session. Confirmed operational via Phase 2 end-to-end test. Ingests correctly, embeds correctly, stores to rag-chunks correctly.
+
+### lambda_retrieve.py
+No changes made this session. Confirmed operational via Phase 2 end-to-end test. Cosine similarity search works. Returns top-k results correctly.
+
+### app.py (HuggingFace Space)
+No changes made this session. Gradio 6.x fixes from Phase 2 are intact. Ingest and chat both reach Lambda correctly.
+
+### Dockerfile-ml-offline
+No changes made this session. All wheel installs are Linux manylinux cp312. pillow pinned to 12.1.1. Model copy and handler copies all correct.
+
+### wheels/ directory
+Cleaned earlier this session — win_amd64 files removed, duplicates pruned, cp314 numpy deleted. No changes needed.
+
+### DynamoDB rag-chunks
+6 clean production records. No changes made this session beyond the two test item deletions.
+
+---
+
+## SECTION 6 — END OF SESSION STATE
+
+### What is working
+- rag-ingest-ultra-test: fully operational
+- rag-retrieve: fully operational
+- HuggingFace Space: fully operational
+- DynamoDB: clean, correct schema
+- lambda_chat.py: all code fixes applied and confirmed in file
+- GROQ_API_KEY: set as Lambda env var, confirmed once
+
+### What is not yet verified
+- rag-chat Groq response — returning "No response" in last test
+- Suspected cause: GROQ_API_KEY empty in currently deployed container
+- One verification command needed to confirm:
+
+```
+aws lambda get-function-configuration --function-name rag-chat --region us-east-1 --query "Environment.Variables"
+```
+
+If key is missing, re-set with WriteAllText method and update-function-configuration.
+No rebuild required. No redeploy required. No other changes required.
+
+---
+
+## SECTION 7 — ERRORS LOG (ALL ERRORS THIS SESSION)
+
+| Error | Cause | Resolution |
+|---|---|---|
+| PowerShell inline JSON parse error | PS 5.1 strips quotes from inline JSON | Switched to WriteAllText method |
+| Out-File JSON empty/malformed | Out-File encoding unreliable | Switched to WriteAllText method |
+| ECR 403 Forbidden on push | ECR auth token expired during 2.5hr build | Re-login then docker push directly |
+| NameError: os not defined | import os missing when env var line added | Added import os to line 2 |
+| NameError: get_history not defined | File not saved before build — Docker used cached layer | Saved file, confirmed edit, rebuilt |
+| Groq "No response" | GROQ_API_KEY likely empty string in deployed Lambda | Pending verification |
+| Memory not recalled in HF Space | get_history using get_item instead of query — composite key silent failure | Replaced with memory_table.query |
+
+---
+
+*End of Coding Report 8 — March 12, 2026*

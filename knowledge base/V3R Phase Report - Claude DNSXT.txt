@@ -1,0 +1,435 @@
+# V3R PHASE REPORT
+**Document:** V3R-PHASE-001
+**Version:** 1.0
+**Date:** March 12, 2026
+**Classification:** Living Document — Updated at Each Phase Completion
+**Author:** V3R Documentation Agent
+
+---
+
+## DOCUMENT PURPOSE
+
+This report is the permanent record of every phase of V3R development — what was planned, what was built, what succeeded, what failed, what was learned, and the exact verified state at completion. It is the authoritative source for "what does V3R currently do" at any point in time. Every future session begins by reading the most recent completed phase entry to orient to the current system state.
+
+---
+
+## PHASE ROADMAP SUMMARY
+
+| Phase | Title | Status | Completion Date |
+|---|---|---|---|
+| P1 | RAG Pipeline Foundation | COMPLETE | March 2026 |
+| P2 | End-to-End Integration | COMPLETE | March 12, 2026 |
+| P3 | Conversation Memory Persistence | ACTIVE | Target: March 2026 |
+| P4 | GNN Relational Knowledge Graphs | PENDING | — |
+| P5 | Multi-Agent Orchestration | PENDING | — |
+| P6 | Multi-Modal Inputs | PENDING | — |
+| P7 | V3R Self-Improvement Engine | PENDING | — |
+| P8 | Automated Product Generation | PENDING | — |
+
+---
+
+## PHASE 1 — RAG PIPELINE FOUNDATION
+
+### Status: COMPLETE
+
+### Objective
+Build the foundational three-layer RAG pipeline: ingest text into a vector knowledge base, retrieve semantically relevant chunks by query, generate augmented responses using an LLM. Establish the offline-first Lambda container strategy and confirm all components function in isolation.
+
+### Scope
+- Docker image with offline embedding model
+- DynamoDB table for vector storage
+- Lambda function for ingestion
+- Lambda function for retrieval
+- Lambda function for LLM generation
+- Groq API integration
+
+### What Was Built
+
+**Docker Image**
+Base image: public.ecr.aws/lambda/python:3.12
+Offline wheels: torch, torchvision, sentence-transformers, transformers, numpy, pillow
+Embedding model: all-MiniLM-L6-v2 baked at /var/task/models/all-MiniLM-L6-v2
+Embedding method confirmed: AutoTokenizer + AutoModel (not SentenceTransformer())
+ECR repository: rag-ingest-container
+Production tag established: ml-offline-torch26
+
+**DynamoDB**
+Table created: rag-chunks
+Schema: chunk_id (S) PK only
+Billing: PAY_PER_REQUEST
+Region: us-east-1
+
+**Lambda Functions**
+rag-ingest-ultra-test: text → chunk → embed → store
+rag-retrieve: query → embed → scan → cosine rank → return top-k
+rag-chat: query + context → Groq → response
+
+**Groq Integration**
+Model confirmed: llama-3.1-8b-instant
+HTTP method: http.client.HTTPSConnection (no requests library)
+API key: initially hardcoded (moved to env var in Phase 3)
+
+### Key Technical Decisions Made in Phase 1
+
+**AutoTokenizer/AutoModel over SentenceTransformer()**
+SentenceTransformer() was attempted first. It performs network initialization checks even with local_files_only=True, causing failures in the offline Lambda container. AutoTokenizer.from_pretrained() and AutoModel.from_pretrained() with local_files_only=True load purely from disk. This was the first entry in the Forbidden Patterns Registry.
+
+**Word-level chunking at 500/50**
+Chunk size of 500 words with 50-word overlap established. Rationale: semantic coherence at 500 words, boundary context preservation at 50-word overlap. This became the permanent chunking strategy.
+
+**Full DynamoDB scan for retrieval**
+Vector similarity search via full table scan. No vector database. OpenSearch and Pinecone evaluated and rejected — both require paid tiers. Full scan is correct for sub-10,000 record scale through Phase 4.
+
+**Cosine similarity as the scoring metric**
+Dot product and Euclidean distance evaluated. Cosine chosen for magnitude-independence — semantic similarity is direction in embedding space, not magnitude.
+
+### Failures and Resolutions in Phase 1
+
+| Failure | Resolution |
+|---|---|
+| SentenceTransformer() network init failure in Lambda | Replaced with AutoTokenizer/AutoModel, added to Forbidden Patterns Registry |
+| win_amd64 wheels in Docker build | Identified and purged from wheels/ directory, added to Forbidden Patterns Registry |
+| urllib.request failures in Lambda HTTP calls | Replaced with http.client.HTTPSConnection, added to Forbidden Patterns Registry |
+
+### Phase 1 Exit Criteria — All Met
+- rag-ingest-ultra-test: 200 OK, chunks stored to DynamoDB
+- rag-retrieve: 200 OK, results returned with cosine scores
+- rag-chat: 200 OK, Groq response returned
+
+---
+
+## PHASE 2 — END-TO-END INTEGRATION
+
+### Status: COMPLETE
+### Completion Date: March 12, 2026
+
+### Objective
+Connect all three Lambda functions into a live end-to-end pipeline accessible through a public UI. Deploy a HuggingFace Space as the frontend. Clean up all test infrastructure. Confirm the complete data flow from user input through the Space to Lambda to DynamoDB and back.
+
+### Scope
+- HuggingFace Space with Gradio UI
+- app.py Gradio 6.x compatibility fixes
+- Function URLs on rag-ingest-ultra-test and rag-chat
+- DynamoDB rag-memory table creation for Phase 3
+- ECR cleanup (all obsolete images removed)
+- Lambda cleanup (all obsolete functions removed)
+- DynamoDB cleanup (all test records removed)
+- End-to-end test confirmation
+
+### What Was Built
+
+**HuggingFace Space**
+Space: dnsxt/rag-memory
+URL: https://huggingface.co/spaces/dnsxt/rag-memory
+Framework: Gradio 6.x
+Local clone: C:\Users\Source-1\Desktop\rag-deploy\hf-space\
+Git remote: https://huggingface.co/spaces/dnsxt/rag-memory
+Status: Running, public
+
+**app.py Gradio 6.x Fixes**
+Breaking change 1: theme parameter moved from gr.Blocks() to demo.launch()
+Breaking change 2: type argument removed from gr.Chatbot()
+Both fixes confirmed and deployed to Space.
+
+**Function URLs**
+INGEST: https://rgmkamtm7s6tlughi3ynp4c2540uassr.lambda-url.us-east-1.on.aws/
+CHAT: https://2wnm4voyjtvb27hzkgmtdxycby0uyixf.lambda-url.us-east-1.on.aws/
+
+**HuggingFace Space Secrets**
+CHAT_LAMBDA_URL: set
+INGEST_LAMBDA_URL: set
+
+**DynamoDB rag-memory Table**
+Created for Phase 3 readiness
+Schema: vector_id (S) PK + timestamp (N) SK
+Billing: PAY_PER_REQUEST
+
+**ECR Cleanup**
+Before: multiple tagged and untagged images accumulated across Phase 1 development
+After: single image ml-offline-torch26 (~3184 MB) — all others deleted
+
+**Lambda Cleanup**
+Deleted: rag-ingest (original zip-based function)
+Deleted: rag-ingest-ultra-with-tools
+Remaining: rag-ingest-ultra-test, rag-retrieve, rag-chat — all three on image ml-offline-torch26
+
+**DynamoDB Cleanup**
+Deleted: test-chunk-001 from rag-chunks
+Deleted: ddb51eec-8fb7-4627-96d8-687be32840be from rag-chunks
+Deleted: rag-conversations table (confirmed absent — already did not exist)
+Deleted: rag_memory table (underscore variant)
+Remaining tables: rag-chunks, rag-memory only
+
+**rag-chunks final state — 6 production records:**
+- source: v3r_test
+- source: v3r_rebuild
+- source: space_connection_test
+- source: v3r_framework
+- source: v3r_infrastructure
+- source: v3r_agents
+
+### End-to-End Test Results (March 12, 2026 — confirmed)
+
+| Test | Result | Duration | Memory |
+|---|---|---|---|
+| rag-ingest-ultra-test direct | 200 OK, chunks_stored: 1 | 105,515 ms | 721 MB |
+| rag-retrieve direct | 200 OK, 3 results with cosine scores | 89,426 ms | 720 MB |
+| rag-chat direct | 200 OK, rag_used: true, memory_turns: 1 | 17,593 ms | 89 MB |
+| HF Space ingest | "Ingested 1 chunks from space_connection_test" | — | — |
+| HF Space chat | Valid Groq response returned | — | — |
+
+All five tests confirmed passing. Phase 2 declared complete.
+
+### Key Technical Decisions Made in Phase 2
+
+**Single shared ECR image for all functions**
+All three Lambda functions share the same Docker image. Individual function behavior is set by the Lambda console handler configuration. Rationale: shared model eliminates redundant storage and build time.
+
+**HuggingFace Spaces over AWS frontend**
+Free Gradio hosting with environment variable support. AWS S3+CloudFront and EC2 both require paid services beyond free tier. Spaces provides equivalent functionality at zero cost.
+
+**Function URL over API Gateway**
+API Gateway requires paid service for production use beyond free tier limits. Lambda Function URLs provide direct HTTPS invocation at no additional cost.
+
+**PAY_PER_REQUEST billing on DynamoDB**
+No provisioned capacity. PAY_PER_REQUEST means zero cost when idle, which is the dominant state for a development-stage system. Phase 3+ usage will remain within free tier WCU/RCU allocations.
+
+### Failures and Resolutions in Phase 2
+
+| Failure | Resolution |
+|---|---|
+| Gradio 6.x breaking changes in app.py | Knowledge Retrieval confirmed breaking changes, both fixed |
+| PowerShell inline JSON for DynamoDB delete-item | WriteAllText method confirmed and used |
+| Multiple ECR images accumulating | Full cleanup executed, single image strategy formalized |
+| win_amd64 wheel contamination in wheels/ | All win_amd64 files identified and deleted, cp314 numpy deleted |
+
+### Phase 2 Exit Criteria — All Met
+- All five end-to-end tests pass
+- HF Space accessible and functional
+- ECR: single image only
+- Lambda: three functions only
+- DynamoDB: two tables only, clean records
+
+---
+
+## PHASE 3 — CONVERSATION MEMORY PERSISTENCE
+
+### Status: ACTIVE
+### Started: March 12, 2026
+### Target Completion: March 2026
+
+### Objective
+Make rag-chat remember conversation history across turns within a session. When a user tells the system their name in turn 1, the system recalls it in turn 2. Conversation turns are persisted to rag-memory and retrieved on each subsequent turn. This is the first realization of V3R's core thesis — a system that accumulates context across interactions.
+
+### Scope
+- Fix get_history() in lambda_chat.py to use DynamoDB query instead of get_item
+- Fix save_history() to include timestamp sort key
+- Move GROQ_API_KEY from hardcoded string to Lambda environment variable
+- Add import os to lambda_chat.py
+- Rebuild and push Docker image
+- Redeploy rag-chat
+- Verify memory recall in HF Space
+
+### Work Completed (March 12, 2026)
+
+**Root Cause Identified**
+rag-memory table has composite key: vector_id (S) PK + timestamp (N) SK.
+Original get_history() used get_item with only vector_id — DynamoDB get_item requires all keys for composite key tables. Silent failure. History always returned empty.
+
+**get_history() Fixed**
+Replaced get_item with memory_table.query using KeyConditionExpression. Returns most recent record's turns list. Handles empty results gracefully.
+
+**save_history() Fixed**
+Added timestamp as integer unix epoch to satisfy sort key requirement on put_item.
+
+**GROQ_API_KEY Secured**
+Moved from hardcoded string to os.environ.get("GROQ_API_KEY", "").
+Environment variable set in Lambda console via WriteAllText + update-function-configuration.
+Confirmed set via get-function-configuration query.
+
+**import os Added**
+Added to line 2 of lambda_chat.py after NameError: os not defined was caught in Lambda test.
+
+**Docker Builds Completed**
+Build 1: Full rebuild ~2.5 hours — completed, push failed on ECR 403 (expired token), resolved by re-login and direct push.
+Build 2: Cached rebuild — import os fix deployed.
+Build 3: Cached rebuild — get_history/save_history fix deployed.
+
+### Work Remaining
+
+**Single remaining issue: Groq returning "No response"**
+
+The Lambda test returns statusCode 200 but the body answer field contains "No response" instead of a Groq-generated answer. The error path that produces this is:
+```python
+answer = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "No response")
+```
+choices array is empty or absent — consistent with a Groq authentication failure (401 response body has no choices field).
+
+**Most likely cause:** GROQ_API_KEY environment variable is empty string in the currently deployed container. The variable was confirmed set once during the session but subsequent Lambda redeployments may have affected the configuration.
+
+**Resolution steps remaining:**
+1. Run: `aws lambda get-function-configuration --function-name rag-chat --region us-east-1 --query "Environment.Variables"`
+2. If empty: re-set using WriteAllText method
+3. Test Lambda directly with `{"query": "What is V3R?", "session_id": "test_001", "use_rag": false}`
+4. Confirm real Groq text in response body
+5. Test memory recall in HF Space with two-turn session
+6. Confirm DynamoDB rag-memory has the session record
+
+### Phase 3 Exit Criteria (not yet met)
+
+- rag-chat Lambda test returns real Groq text (not "No response")
+- HF Space chat turn 1: introduce name → system acknowledges
+- HF Space chat turn 2: ask "what is my name" → system recalls correctly
+- DynamoDB rag-memory scan shows session record with turns list
+- Memory: N turns counter in UI increments correctly across turns
+
+---
+
+## PHASE 4 — GNN RELATIONAL KNOWLEDGE GRAPHS
+
+### Status: PENDING
+
+### Planned Objective
+Layer a graph neural network on top of the existing vector knowledge base. Instead of returning flat ranked chunks, rag-retrieve returns a subgraph of related knowledge nodes. Relationships between concepts are encoded as graph edges. Multi-hop reasoning becomes possible — "what is related to X that is also related to Y?"
+
+### Planned Scope
+- Graph adjacency table in DynamoDB or evaluation of AWS Neptune free tier
+- GNN model selection (PyTorch Geometric or DGL — Knowledge Retrieval Agent must confirm)
+- New lambda function rag-graph or expanded rag-retrieve
+- Node feature vectors: existing 384-dimensional embeddings become node features
+- Edge construction: semantic similarity above threshold creates edges
+- Graph traversal layer between retrieval and generation
+
+### Architectural Prerequisites
+- Phase 3 must be complete (conversation memory must be stable)
+- Knowledge Retrieval Agent must confirm GNN library compatibility with Python 3.12 Lambda
+- Infrastructure Agent must evaluate Neptune free tier availability
+- Full rebuild will be required (new GNN library in Docker image)
+
+### Known Risks
+- GNN libraries (PyTorch Geometric) have complex wheel dependencies — Linux manylinux cp312 availability must be confirmed before planning the build
+- Graph construction at scale may exceed Lambda memory limits — requires profiling
+- Neptune is not on free tier — DynamoDB adjacency table approach is the free-tier-compliant fallback
+
+---
+
+## PHASE 5 — MULTI-AGENT ORCHESTRATION
+
+### Status: PENDING
+
+### Planned Objective
+Route incoming queries to specialized agents based on intent classification. A coding question goes to a code-specialist agent. A retrieval question goes to a knowledge-specialist agent. A debugging request goes to a debug-specialist agent. Each agent has its own system prompt, its own context window strategy, and its own response format. The orchestrator coordinates their outputs into a unified response.
+
+### Planned Scope
+- Intent classification layer in rag-chat or new rag-orchestrate Lambda
+- Agent registry in DynamoDB (agent_id, system_prompt, capabilities)
+- Multi-agent conversation memory (track which agent produced each turn)
+- Agent coordination protocol for multi-agent tasks
+- V3R framework agents (MODERATOR, CODER, DEBUG, etc.) implemented as callable Lambda agents
+
+### Architectural Prerequisites
+- Phase 4 GNN must be complete (graph-based knowledge routing is needed for agent specialization)
+- Conversation memory (Phase 3) must be stable — multi-agent history is more complex than single-agent
+
+---
+
+## PHASE 6 — MULTI-MODAL INPUTS
+
+### Status: PENDING
+
+### Planned Objective
+Expand rag-ingest-ultra-test to accept not only raw text but structured data, code files, and images. Each modality has its own processing pipeline feeding into the same vector knowledge base. The system can ingest a circuit diagram, a Python codebase, a PDF specification, and a natural language description — all into the same queryable knowledge space.
+
+### Planned Scope
+- PDF text extraction pipeline
+- Code file parsing and semantic chunking
+- Image description via vision model (Groq multimodal or separate vision Lambda)
+- Structured data (JSON/CSV) ingestion with schema-aware chunking
+- HF Space UI expanded with file upload capability
+
+### Architectural Prerequisites
+- Phase 5 multi-agent orchestration must be complete (different modalities need different specialist agents)
+
+---
+
+## PHASE 7 — V3R SELF-IMPROVEMENT ENGINE
+
+### Status: PENDING
+### Redefined: March 12, 2026
+
+### Original Definition
+Science and Engineering Domain Intelligence — ingesting technical domain knowledge.
+
+### Redefined Objective
+V3R evaluates its own architecture, identifies performance weaknesses, proposes improvements, implements them, verifies the improvements worked, and repeats. The system engineers itself. This is the cognitive prerequisite for Phase 8 — a system that cannot improve itself cannot reliably build products for others.
+
+### Planned Scope
+
+**Self-Evaluation Pipeline**
+- V3R reads its own Architecture Report, Agents Report, Phase Report, and Session Reports from the knowledge base
+- V3R computes performance metrics from CloudWatch logs (error rates, latency, memory usage)
+- V3R compares actual performance against defined targets
+- V3R generates a ranked list of improvement proposals
+
+**Self-Implementation Pipeline**
+- For code improvements: V3R writes updated handler code, triggers a rebuild, deploys, runs verification tests
+- For prompt improvements: V3R updates agent system prompts in the agent registry
+- For architectural improvements: V3R generates a proposal requiring developer approval before execution
+
+**Self-Verification Pipeline**
+- After each improvement: V3R runs the standard test suite
+- V3R compares pre-improvement and post-improvement metrics
+- V3R updates the Phase Report and Agents Report with the results
+- Failed improvements are rolled back automatically
+
+### Why Phase 7 Was Redefined
+The original Phase 7 (domain intelligence) would have added knowledge — more information for V3R to know. The redefined Phase 7 (self-improvement) adds capability — the ability for V3R to make itself better at knowing and doing. Capability compounds. Knowledge accumulates. For Phase 8 to be reliable, V3R needs capability growth, not just knowledge growth. The self-improvement engine is the mechanism of that capability growth.
+
+### Architectural Prerequisites
+- All prior phases must be complete
+- V3R reports (Architecture, Agents, Phase, Session) must be ingested into rag-chunks as queryable knowledge
+- rag-memory must be stable (Phase 3)
+- Agent registry must exist (Phase 5)
+- CI/CD-like pipeline must be built: code change → Docker build → ECR push → Lambda deploy → test → verify
+
+---
+
+## PHASE 8 — AUTOMATED PRODUCT GENERATION
+
+### Status: PENDING
+
+### Objective
+The convergence of all prior phases. V3R accepts a raw idea as input and outputs a fully engineered product. Not a draft. Not a suggestion. A product — specified, architected, coded, tested, and deployable.
+
+### What This Requires (in order)
+- P1: Vector memory (done)
+- P2: Connected pipeline (done)
+- P3: Conversational context (active)
+- P4: Relational knowledge traversal
+- P5: Specialized agent coordination
+- P6: Multi-modal input understanding
+- P7: Self-improvement for reliability
+- P8: Convergence into product generation
+
+### Why Every Prior Phase Is Non-Negotiable
+P8 cannot be faked. A system that cannot remember context (P3) cannot maintain product requirements across a multi-turn design session. A system without relational knowledge (P4) cannot identify component dependencies. A system without multi-agent coordination (P5) cannot parallelize engineering tasks. A system without multi-modal understanding (P6) cannot interpret sketches or specifications. A system that cannot improve itself (P7) will degrade in reliability as product complexity grows.
+
+Every phase is a prerequisite. None can be skipped. The decision to build V3R from scratch on free-tier infrastructure is precisely what ensures each phase is built correctly — there is no abstraction layer hiding the engineering from the engineer.
+
+---
+
+## APPENDIX — PHASE DECISION LOG
+
+| Decision | Phase | Rationale |
+|---|---|---|
+| Start with text-only ingestion | P1 | Simplest valid modality — validate the pipeline before adding complexity |
+| Use Groq for LLM instead of local model | P1 | No GPU available — local LLM inference on CPU is too slow for production |
+| Create rag-memory in P2 even though P3 uses it | P2 | Schema creation is cheap — having it ready prevents a table creation step from blocking P3 |
+| Separate knowledge and conversation into two tables | P2 | Different access patterns require different optimization strategies |
+| Redefine P7 as self-improvement | P3 | Self-improvement is the architectural prerequisite for P8 reliability — domain knowledge alone does not get there |
+| All phases sequential, no parallelization | P1 | Each phase is load-bearing for the next — parallel development creates integration debt |
+
+---
+
+*End of V3R Phase Report — V3R-PHASE-001 v1.0*
+*Next update: Phase 3 completion*

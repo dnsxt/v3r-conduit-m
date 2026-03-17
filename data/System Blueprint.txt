@@ -1,0 +1,657 @@
+﻿$consolidatedContent = @"
+Consolidated Data Report (Duplicity Removed)
+Generated: 2026-03-01 20:11:00 -06:00
+
+=== Laptop Model & Serial ===
+Model: HP Pavilion x360 Convertible 14-ba0xx
+Serial: (See sensitive_data.txt)
+
+=== Laptop / Windows System Data ===
+Host Name:                 (See sensitive_data.txt)
+OS Name:                   Microsoft Windows 10 Home
+OS Version:                10.0.19045 N/A Build 19045
+OS Manufacturer:           Microsoft Corporation
+OS Configuration:          Standalone Workstation
+OS Build Type:             Multiprocessor Free
+Registered Owner:          Source-1
+Registered Organization:   HP
+Product ID:                (See sensitive_data.txt)
+Original Install Date:     2/2/2025, 8:51:46 PM
+System Boot Time:          3/1/2026, 12:32:34 PM
+System Manufacturer:       HP
+System Model:              HP Pavilion x360 Convertible 14-ba0xx
+System Type:               x64-based PC
+Processor(s):              1 Processor(s) Installed.
+                           [01]: Intel64 Family 6 Model 142 Stepping 9 GenuineIntel \~2400 Mhz
+BIOS Version:              Insyde F.53, 5/3/2019
+Windows Directory:         C:\WINDOWS
+System Directory:          C:\WINDOWS\system32
+Boot Device:               \Device\HarddiskVolume1
+System Locale:             en-us;English (United States)
+Input Locale:              en-us;English (United States)
+Time Zone:                 (UTC-06:00) Central Time (US & Canada)
+Total Physical Memory:     8,065 MB
+Available Physical Memory: 4,871 MB
+Virtual Memory: Max Size:  9,345 MB
+Virtual Memory: Available: 5,981 MB
+Virtual Memory: In Use:    3,364 MB
+Page File Location(s):     C:\pagefile.sys
+Domain:                    WORKGROUP
+Logon Server:              \\(See sensitive_data.txt)
+Hotfix(s):                 23 Hotfix(s) Installed.
+                           [01]: KB5066130
+                           [02]: KB5034468
+                           [03]: KB4562830
+                           [04]: KB4580325
+                           [05]: KB5003791
+                           [06]: KB5011048
+                           [07]: KB5015684
+                           [08]: KB5072653
+                           [09]: KB5008575
+                           [10]: KB5071959
+                           [11]: KB5006753
+                           [12]: KB5007273
+                           [13]: KB5011352
+                           [14]: KB5011651
+                           [15]: KB5026879
+                           [16]: KB5032392
+                           [17]: KB5032907
+                           [18]: KB5034224
+                           [19]: KB5036447
+                           [20]: KB5050388
+                           [21]: KB5066790
+                           [22]: KB5071982
+                           [23]: KB5005699
+Network Card(s):           2 NIC(s) Installed.
+                           [01]: Intel(R) Dual Band Wireless-AC 7265
+                                 Connection Name: Wi-Fi
+                                 DHCP Enabled:    Yes
+                                 DHCP Server:     (See sensitive_data.txt)
+                                 IP address(es)
+                                 [01]: (See sensitive_data.txt)
+                                 [02]: (See sensitive_data.txt)
+                           [02]: Bluetooth Device (Personal Area Network)
+                                 Connection Name: Bluetooth Network Connection
+                                 Status:          Media disconnected
+Hyper-V Requirements:      A hypervisor has been detected. Features required for Hyper-V will not be displayed.
+
+=== Laptop CPU Details ===
+DeviceID Name                                     Caption                               MaxClockSpeed SocketDesignation Manufacturer
+-------- ----                                     -------                               ------------- ----------------- ------------
+CPU0     Intel(R) Core(TM) i3-7100U CPU @ 2.40GHz Intel64 Family 6 Model 142 Stepping 9 2400          U3E1              GenuineIntel
+
+=== Laptop RAM Details ===
+Caption              : Physical Memory
+Description          : Physical Memory
+InstallDate          : 
+Name                 : Physical Memory
+Status               : 
+CreationClassName    : Win32_PhysicalMemory
+Manufacturer         : Samsung
+Model                : 
+OtherIdentifyingInfo : 
+PartNumber           : M471A1K43DB1-CTD    
+PoweredOn            : 
+SerialNumber         : (See sensitive_data.txt)
+SKU                  : 
+Tag                  : Physical Memory 0
+Version              : 
+HotSwappable         : 
+Removable            : 
+Replaceable          : 
+FormFactor           : 12
+BankLabel            : BANK 0
+Capacity             : 8589934592
+DataWidth            : 64
+InterleavePosition   : 1
+MemoryType           : 0
+PositionInRow        : 1
+Speed                : 2133
+TotalWidth           : 64
+Attributes           : 1
+ConfiguredClockSpeed : 2133
+ConfiguredVoltage    : 1200
+DeviceLocator        : Bottom - Slot 1 (left)
+InterleaveDataDepth  : 1
+MaxVoltage           : 1500
+MinVoltage           : 1250
+SMBIOSMemoryType     : 26
+TypeDetail           : 16512
+PSComputerName       : 
+
+=== Laptop Storage / Disks ===
+DeviceID           Caption                        Partitions Size         Model                         
+--------           -------                        ---------- ----         -----                         
+\\.\PHYSICALDRIVE0 WDC PC SN520 SDAPNUW-256G-1006 3          256052966400 WDC PC SN520 SDAPNUW-256G-1006
+
+=== Laptop Partitions ===
+Name             NumberOfBlocks                     BootPartition                      PrimaryPartition                  Size                              Index                            
+----             --------------                     -------------                      ----------------                  ----                              -----                            
+Disk #0, Part... 532480                             True                               True                              272629760                         0                                
+Disk #0, Part... 498260941                          False                              True                              255109601792                      1                                
+Disk #0, Part... 1275904                            False                              False                             653262848                         2                                
+
+=== Laptop Volumes ===
+DeviceID DriveType ProviderName VolumeName Size         FreeSpace   
+-------- --------- ------------ ---------- ----         ---------   
+C:       3                      Windows    255109599232 152269737984
+
+=== Laptop Battery ===
+Caption                     : Internal Battery
+Description                 : Internal Battery
+InstallDate                 : 
+Name                        : BK03041XL
+Status                      : OK
+Availability                : 2
+ConfigManagerErrorCode      : 
+ConfigManagerUserConfig     : 
+CreationClassName           : Win32_Battery
+DeviceID                    : 24441333-54-5D-ABK03041XL
+ErrorCleared                : 
+ErrorDescription            : 
+LastErrorCode               : 
+PNPDeviceID                 : 
+PowerManagementCapabilities : {1}
+PowerManagementSupported    : False
+StatusInfo                  : 
+SystemCreationClassName     : Win32_ComputerSystem
+SystemName                  : (See sensitive_data.txt)
+BatteryStatus               : 2
+Chemistry                   : 6
+DesignCapacity              : 
+DesignVoltage               : 12758
+EstimatedChargeRemaining    : 93
+EstimatedRunTime            : 71582788
+ExpectedLife                : 
+FullChargeCapacity          : 
+MaxRechargeTime             : 
+SmartBatteryVersion         : 
+TimeOnBattery               : 
+TimeToFullCharge            : 
+BatteryRechargeTime         : 
+ExpectedBatteryLife         : 
+PSComputerName              : 
+
+=== Laptop Network Adapters ===
+ServiceName      DHCPEnabled                                               Index                                                    Description                                             
+-----------      -----------                                               -----                                                    -----------                                             
+netwbw02         True                                                      3                                                        Intel(R) Dual Band Wireless-AC 7265                     
+BTHPAN           False                                                     11                                                       Bluetooth Device (Personal Area Network)                
+
+=== Laptop GPU Details ===
+AcceleratorCapabilities=
+AdapterCompatibility=Intel Corporation
+AdapterDACType=Internal
+AdapterRAM=1073741824
+Availability=3
+CapabilityDescriptions=
+Caption=Intel(R) HD Graphics 620
+ColorTableEntries=
+ConfigManagerErrorCode=0
+ConfigManagerUserConfig=FALSE
+CreationClassName=Win32_VideoController
+CurrentBitsPerPixel=32
+CurrentHorizontalResolution=1920
+CurrentNumberOfColors=4294967296
+CurrentNumberOfColumns=0
+CurrentNumberOfRows=0
+CurrentRefreshRate=60
+CurrentScanMode=4
+CurrentVerticalResolution=1080
+Description=Intel(R) HD Graphics 620
+DeviceID=VideoController1
+DeviceSpecificPens=
+DitherType=0
+DriverDate=20190308000000.000000-000
+DriverVersion=25.20.100.6617
+ErrorCleared=
+ErrorDescription=
+ICMIntent=
+ICMMethod=
+InfFilename=oem54.inf
+InfSection=iKBLD_w10_DS
+InstallDate=
+InstalledDisplayDrivers=C:\WINDOWS\System32\DriverStore\FileRepository\iigd_dch.inf_amd64_7002521e34feee93\igdumdim64.dll,C:\WINDOWS\System32\DriverStore\FileRepository\iigd_dch.inf_amd64_7002521e34feee93\igd10iumd64.dll,C:\WINDOWS\System32\DriverStore\FileRepository\iigd_dch.inf_amd64_7002521e34feee93\igd10iumd64.dll,C:\WINDOWS\System32\DriverStore\FileRepository\iigd_dch.inf_amd64_7002521e34feee93\igd12umd64.dll
+LastErrorCode=
+MaxMemorySupported=
+MaxNumberControlled=
+MaxRefreshRate=60
+MinRefreshRate=40
+Monochrome=FALSE
+Name=Intel(R) HD Graphics 620
+NumberOfColorPlanes=
+NumberOfVideoPages=
+PNPDeviceID=PCI\VEN_8086&DEV_5916&SUBSYS_830F103C&REV_02\3&11583659&2&10
+PowerManagementCapabilities=
+PowerManagementSupported=
+ProtocolSupported=
+ReservedSystemPaletteEntries=
+SpecificationVersion=
+Status=OK
+StatusInfo=
+SystemCreationClassName=Win32_ComputerSystem
+SystemName=(See sensitive_data.txt)
+SystemPaletteEntries=
+TimeOfLastReset=
+VideoArchitecture=5
+VideoMemoryType=2
+VideoMode=
+VideoModeDescription=1920 x 1080 x 4294967296 colors
+VideoProcessor=Intel(R) HD Graphics Family
+
+=== Laptop Antivirus/Firewall Full Status ===
+Domain Profile Settings:
+----------------------------------------------------------------------
+State                                 ON
+Firewall Policy                       BlockInbound,AllowOutbound
+LocalFirewallRules                    N/A (GPO-store only)
+LocalConSecRules                      N/A (GPO-store only)
+InboundUserNotification               Enable
+RemoteManagement                      Disable
+UnicastResponseToMulticast            Enable
+
+Logging:
+LogAllowedConnections                 Disable
+LogDroppedConnections                 Disable
+FileName                              %systemroot%\system32\LogFiles\Firewall\pfirewall.log
+MaxFileSize                           4096
+
+Private Profile Settings:
+----------------------------------------------------------------------
+State                                 ON
+Firewall Policy                       BlockInbound,AllowOutbound
+LocalFirewallRules                    N/A (GPO-store only)
+LocalConSecRules                      N/A (GPO-store only)
+InboundUserNotification               Enable
+RemoteManagement                      Disable
+UnicastResponseToMulticast            Enable
+
+Logging:
+LogAllowedConnections                 Disable
+LogDroppedConnections                 Disable
+FileName                              %systemroot%\system32\LogFiles\Firewall\pfirewall.log
+MaxFileSize                           4096
+
+Public Profile Settings:
+----------------------------------------------------------------------
+State                                 ON
+Firewall Policy                       BlockInbound,AllowOutbound
+LocalFirewallRules                    N/A (GPO-store only)
+LocalConSecRules                      N/A (GPO-store only)
+InboundUserNotification               Enable
+RemoteManagement                      Disable
+UnicastResponseToMulticast            Enable
+
+Logging:
+LogAllowedConnections                 Disable
+LogDroppedConnections                 Disable
+FileName                              %systemroot%\system32\LogFiles\Firewall\pfirewall.log
+MaxFileSize                           4096
+
+Ok.
+
+=== Laptop Network Firewall Rules Summary ===
+Rule Name:                            Google Chrome
+----------------------------------------------------------------------
+Enabled:                              Yes
+Direction:                            In
+Profiles:                             Public
+Grouping:                             
+LocalIP:                              Any
+RemoteIP:                             Any
+Protocol:                             UDP
+LocalPort:                            Any
+RemotePort:                           Any
+Edge traversal:                       No
+Action:                               Block
+
+Rule Name:                            Google Chrome
+----------------------------------------------------------------------
+Enabled:                              Yes
+Direction:                            In
+Profiles:                             Public
+
+=== Phone 1 Info ===
+Serial: (See sensitive_data.txt)
+Model: samsung SM-A326U
+Hardware: qcom
+Manufacturer: samsung
+OS/Android Version: 13
+Build Number: TP1A.220624.014.A326USQUADWG4
+Full Build Fingerprint: samsung/a32xsq/a32x:13/TP1A.220624.014/A326USQUADWG4:user/release-keys
+CPU: 
+processor	: 0
+processor	: 1
+processor	: 2
+processor	: 3
+processor	: 4
+processor	: 5
+processor	: 6
+processor	: 7
+RAM: 
+MemTotal:        3316120 kB
+MemFree:         104000 kB
+MemAvailable:    1290000 kB
+Storage: Filesystem        Size Used Avail Use% Mounted on
+/dev/block/dm-0   3.6G 3.6G     0 100% /
+tmpfs             1.6G 1.2M  1.6G   1% /dev
+tmpfs             1.6G    0  1.6G   0% /mnt
+/dev/block/dm-1   1.3G 1.3G     0 100% /system_ext
+/dev/block/dm-2   2.4G 2.4G     0 100% /vendor
+/dev/block/dm-3   1.1G 1.1G     0 100% /product
+/dev/block/dm-4   1.3G 1.3G     0 100% /odm
+/dev/block/dm-5   1.3G 1.3G     0 100% /prism
+/dev/block/dm-6   1.3G 1.3G     0 100% /optics
+tmpfs             1.6G  12K  1.6G   1% /apex
+tmpfs             1.6G    0  1.6G   0% /tmp
+/dev/block/loop0  7.6M 7.5M     0 100% /apex/com.android.runtime@1
+/dev/block/loop1  788K 756K   16K  98% /apex/com.android.tzdata@331612000
+/dev/block/loop2  748K 720K   16K  98% /apex/com.android.virt@3
+/dev/block/loop4   36M  36M     0 100% /apex/com.android.i18n@1
+/dev/block/loop3   26M  26M     0 100% /apex/com.android.vndk.v33@1
+/dev/block/sda15  2.9M  84K  2.6M   3% /mnt/product/persist
+/dev/block/dm-59  50G  15G   35G  31% /data
+/dev/block/dm-55  6.2M 6.2M     0 100% /apex/com.android.extservices@331612000
+/dev/block/dm-57   16M  16M     0 100% /apex/com.android.healthfitness@331612000
+/dev/block/loop8  312K 280K   28K  91% /apex/com.android.crashrecovery@331612000
+/dev/block/loop10  26M  26M     0 100% /apex/com.android.vndk.v33@1
+/dev/block/loop17  23M  23M     0 100% /apex/com.android.vndk.v34@1
+/dev/block/loop11  36M  36M     0 100% /apex/com.android.i18n@1
+/dev/block/loop16  28M  28M     0 100% /apex/com.android.bt@331612000
+/dev/block/loop20 1.7M 1.7M     0 100% /apex/com.android.profiling@331612000
+/dev/block/dm-51  5.8M 5.8M     0 100% /apex/com.android.media@331612000
+/dev/block/loop21 7.6M 7.5M     0 100% /apex/com.android.runtime@1
+/dev/block/loop25  23M  23M     0 100% /apex/com.android.vndk.v31@1
+/dev/block/loop23 9.1M 9.0M     0 100% /apex/com.android.nfcservices@331612000
+/dev/block/loop19 232K  24K  204K  11% /apex/com.samsung.modules.factorycustomization@1
+/dev/block/dm-50  3.1M 3.0M     0 100% /apex/com.android.os.statsd@331612000
+/dev/block/dm-54  6.8M 6.8M     0 100% /apex/com.android.uwb@339990000
+/dev/block/loop24 1.5M 1.5M     0 100% /apex/com.android.uprobestats@331612000
+/dev/block/loop18 232K 112K  116K  50% /apex/com.android.apex.cts.shim@1
+/dev/block/loop26 5.9M 5.9M     0 100% /apex/com.android.devicelock@1
+/dev/block/dm-46  4.0M 4.0M     0 100% /apex/com.android.appsearch@331311010
+/dev/block/dm-49  1.3M 1.3M     0 100% /apex/com.android.rkpd@331612000
+/dev/block/dm-56   29M  29M     0 100% /apex/com.android.art@331612000
+/dev/block/dm-39  7.4M 7.4M     0 100% /apex/com.android.adbd@331610002
+/dev/block/dm-38   29M  29M     0 100% /apex/com.android.media.swcodec@331612000
+/dev/block/dm-32  6.3M 6.3M     0 100% /apex/com.android.adbd@331610002
+/dev/block/dm-30  7.6M 7.6M     0 100% /apex/com.android.tethering@331511160
+/dev/block/dm-27   14M  14M     0 100% /apex/com.android.cellbroadcast@331610010
+/dev/block/dm-25   21M  21M     0 100% /apex/com.android.adservices@331611190
+/dev/block/dm-22  5.6M 5.6M     0 100% /apex/com.android.media@331612000
+/dev/block/dm-20  7.2M 7.1M     0 100% /apex/com.android.wifi@339990000
+/dev/block/dm-13  232K  88K  140K  39% /apex/com.android.ondevicepersonalization@330442000
+/dev/block/dm-21  1.8M 1.8M     0 100% /apex/com.android.os.statsd@331610000
+/dev/block/dm-18  3.3M 3.2M     0 100% /apex/com.android.appsearch@331311010
+/dev/fuse          50G  15G   35G  31% /storage/emulated
+Battery: Current Battery Service state:
+  AC powered: false
+  USB powered: true
+  Wireless powered: false
+  Max charging current: 0
+  Max charging voltage: 0
+  Charge counter: 2946000
+  status: 5
+  health: 2
+  present: true
+  level: 100
+  scale: 100
+  voltage: 4339
+  temperature: 283
+  technology: Li-ion
+  batteryMiscEvent: 65536
+  batteryCurrentEvent: 0
+  mSecPlugTypeSummary: 2
+  LED Charging: true
+  LED Low Battery: true
+  current now: 0
+  charge counter: 2946000
+  Adaptive Fast Charging Settings: true
+  Super Fast Charging Settings: false
+FEATURE_WIRELESS_FAST_CHARGER_CONTROL: true
+  mWasUsedWirelessFastChargerPreviously: false
+  mWirelessFastChargingSettingsEnable: true
+LLB CAL: 20210915
+LLB MAN: 20210915
+LLB CURRENT: YEAR2026M2D28
+LLB DIFF: 231
+  mSavedBatteryBeginningDate: 0
+SEC_FEATURE_BATTERY_FULL_CAPACITY: true
+  mFullCapacityEnable: false
+FEATURE_HICCUP_CONTROL: false
+FEATURE_SUPPORTED_DAILY_BOARD: false
+SEC_FEATURE_BATTERY_LIFE_EXTENDER: false
+SEC_FEATURE_USE_WIRELESS_POWER_SHARING: false
+BatteryInfoBackUp
+  mSavedBatteryAsoc: 91
+  mSavedBatteryMaxTemp: 420
+  mSavedBatteryMaxCurrent: 2367
+  mSavedBatteryUsage: 7016
+  FEATURE_SAVE_BATTERY_CYCLE: true
+  SEC_FEATURE_PREVENT_SWELLING: false
+Screen Resolution: 720x1600
+Security Patch: 2023-06-01
+CPU Architecture: device unauthorized.
+This adb server's $ADB_VENDOR_KEYS is not set
+Try 'adb kill-server' if that seems wrong.
+Otherwise check for a confirmation dialog on your device.
+Storage Type: adb.exe: device unauthorized.
+This adb server's $ADB_VENDOR_KEYS is not set
+Try 'adb kill-server' if that seems wrong.
+Otherwise check for a confirmation dialog on your device.
+
+=== Phone 2 Info ===
+Serial: (See sensitive_data.txt)
+Model: moto g power - 2025
+Hardware: mt6835
+Manufacturer: motorola
+OS/Android Version: 16
+Build Number: W1VES36H.10-12-3-1
+Full Build Fingerprint: motorola/vegas_g_sys/vegas:16/W1VES36H.10-12-3-1/df1380-c2190:user/release-keys
+CPU: 
+processor	: 0
+processor	: 1
+processor	: 2
+processor	: 3
+processor	: 4
+processor	: 5
+processor	: 6
+processor	: 7
+RAM: 
+MemTotal:        7845148 kB
+MemFree:          244700 kB
+MemAvailable:    2752400 kB
+Storage: Filesystem        Size Used Avail Use% Mounted on
+/dev/block/dm-12  641M 641M     0 100% /
+tmpfs             3.7G 3.4M  3.7G   1% /dev
+tmpfs             3.7G    0  3.7G   0% /mnt
+/dev/block/dm-13  758M 758M     0 100% /system_ext
+/dev/block/dm-14  555M 555M     0 100% /vendor
+/dev/block/dm-15  3.9G 3.9G     0 100% /product
+/dev/block/dm-16   13M  13M     0 100% /vendor_dlkm
+tmpfs             3.7G  24K  3.7G   1% /apex
+tmpfs             3.7G 4.0K  3.7G   1% /bootstrap-apex
+/dev/block/loop0  7.6M 7.5M     0 100% /bootstrap-apex/com.android.runtime@1
+/dev/block/loop1  788K 756K   16K  98% /bootstrap-apex/com.android.tzdata@360527580
+/dev/block/loop2  748K 720K   16K  98% /bootstrap-apex/com.android.virt@3
+/dev/block/loop4   36M  36M     0 100% /bootstrap-apex/com.android.i18n@1
+/dev/block/loop3   26M  26M     0 100% /bootstrap-apex/com.android.vndk.v33@1
+/dev/block/sdc25  2.9M  84K  2.6M   3% /mnt/product/persist
+/dev/block/dm-59  108G  24G   84G  23% /data
+/dev/block/dm-55  6.2M 6.2M     0 100% /apex/com.android.extservices@361153323
+/dev/block/dm-57   16M  16M     0 100% /apex/com.android.healthfitness@361343400
+/dev/block/loop8  312K 280K   28K  91% /apex/com.android.crashrecovery@360499999
+/dev/block/loop10  26M  26M     0 100% /apex/com.android.vndk.v33@1
+/dev/block/loop17  23M  23M     0 100% /apex/com.android.vndk.v34@1
+/dev/block/loop11  36M  36M     0 100% /apex/com.android.i18n@1
+/dev/block/loop16  28M  28M     0 100% /apex/com.android.bt@360499999
+/dev/block/loop20 1.7M 1.7M     0 100% /apex/com.android.profiling@360499999
+/dev/block/dm-51  5.8M 5.8M     0 100% /apex/com.android.media@361153320
+/dev/block/loop21 7.6M 7.5M     0 100% /apex/com.android.runtime@1
+/dev/block/loop25  23M  23M     0 100% /apex/com.android.vndk.v31@1
+/dev/block/loop23 9.1M 9.0M     0 100% /apex/com.android.nfcservices@360499999
+/dev/block/loop19 232K  24K  204K  11% /apex/com.motorola.modules.factorycustomization@1
+/dev/block/dm-50  3.1M 3.0M     0 100% /apex/com.android.os.statsd@361343300
+/dev/block/dm-54  6.8M 6.8M     0 100% /apex/com.android.uwb@361335300
+/dev/block/loop24 1.5M 1.5M     0 100% /apex/com.android.uprobestats@360499999
+/dev/block/loop18 232K 112K  116K  50% /apex/com.android.apex.cts.shim@1
+/dev/block/loop26 5.9M 5.9M     0 100% /apex/com.android.devicelock@1
+/dev/block/dm-46  4.0M 4.0M     0 100% /apex/com.android.appsearch@361343460
+/dev/block/dm-49  1.3M 1.3M     0 100% /apex/com.android.rkpd@361335300
+/dev/block/dm-56   29M  29M     0 100% /apex/com.android.art@361302280
+/dev/block/dm-39  7.4M 7.4M     0 100% /apex/com.android.adbd@361153600
+/dev/block/dm-38   29M  29M     0 100% /apex/com.android.media.swcodec@361153320
+/dev/block/dm-29  5.3M 5.3M     0 100% /apex/com.android.configinfrastructure@361153320
+/dev/block/dm-31   20M  19M     0 100% /apex/com.android.cellbroadcast@361343440
+/dev/block/dm-30  4.5M 4.5M     0 100% /apex/com.android.neuralnetworks@361153320
+/dev/block/loop33 2.1M 2.1M     0 100% /apex/com.motorola.enterprise@160100029
+/dev/block/loop37 328K 296K   28K  92% /apex/com.motorola.motosecure@160100013
+/dev/block/dm-36  5.1M 5.0M     0 100% /apex/com.android.conscrypt@361331220
+/dev/block/dm-35  788K 756K   16K  98% /apex/com.android.tzdata@361157000
+/dev/block/dm-34   22M  22M     0 100% /apex/com.android.adservices@361153320
+/dev/block/dm-24   27M  27M     0 100% /apex/com.android.permission@361336160
+/dev/block/dm-22  232K 104K  124K  46% /apex/com.android.scheduling@361153320
+/dev/block/loop40 748K 720K   16K  98% /apex/com.android.virt@3
+/dev/block/dm-26   26M  26M     0 100% /apex/com.android.mediaprovider@361334080
+/dev/block/dm-28  840K 812K   12K  99% /apex/com.android.ipsec@361153320
+/dev/block/dm-19   10M  10M     0 100% /apex/com.android.wifi@361335300
+/dev/block/dm-23  4.8M 4.8M     0 100% /apex/com.android.resolv@361335300
+/dev/block/dm-21  1.0M 1.0M   12K  99% /apex/com.android.sdkext@361153320
+/dev/block/dm-25   13M  13M     0 100% /apex/com.android.ondevicepersonalization@361153320
+/dev/block/dm-20   22M  22M     0 100% /apex/com.android.tethering@361335300
+/dev/fuse         108G  24G   84G  23% /storage/emulated
+Battery: Current Battery Service state:
+  AC powered: false
+  USB powered: true
+  Wireless powered: false
+  Dock powered: false
+  Max charging current: 500000
+ Time when the latest updated value of the Max charging current was sent via battery changed broadcast: +2d16h37m6s146ms
+  Max charging voltage: 5000000
+  Charge counter: 4827000
+  status: 2
+  health: 2
+  present: true
+  level: 100
+  scale: 100
+  voltage: 4456
+ Time when the latest updated value of the voltage was sent via battery changed broadcast: +2d17h25m3s945ms
+ The last voltage value sent via the battery changed broadcast: 4455
+  temperature: 350
+  technology: Li-ion
+  Charging state: 0
+  Charging policy: 0
+  Capacity level: 5
+  vbus state: true
+  lpd state: false
+  cid state: 0
+  charge watt: 2
+  AdaptiveCharging: config package:com.motorola.actions, mUpperLimit:-1, mLowerLimit:-1, mChargingDisabled:false, mLastLimitsUpdateTime:232626714 (3124798 ms ago), mLastChargingStatusChangedTime:NOT SET, Health service:com.motorola.server.health.MotoHealthServiceWrapperAidl@6ad84aa
+  charge watt design: 30
+  charge type: 1
+  cycle count: 13
+  charge counter property: 4827000
+  current now property: -152500
+  current average property: 247100
+  capacity property: 100
+  energy counter property: 100
+  status property: 2
+RemoteException on getProperty!
+  Full capacity: 4827000
+  Full design capacity: 4827000
+Screen Resolution: 1080x2388
+Security Patch: 2025-10-01
+CPU Architecture: arm64-v8a
+Storage Type: 
+
+=== Docker Desktop Full Version ===
+{"Client":{"Version":"29.2.1","ApiVersion":"1.53","DefaultAPIVersion":"1.53","GitCommit":"a5c7197","GoVersion":"go1.25.6","Os":"windows","Arch":"amd64","BuildTime":"Mon Feb  2 17:20:16 2026","Context":"desktop-linux"},"Server":null}
+docker : failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open 
+//./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+At line:1 char:21
++ try { Write-Report (docker version --format json 2>&1 | Out-String) } ...
++                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (failed to conne...file specified.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+=== Docker Desktop Build Number ===
+File Version: 4.62.0.0 Product Version: 4.62.0.219486
+
+=== Docker Engine Daemon.json Content ===
+daemon.json not found or inaccessible: Cannot find path 'C:\ProgramData\Docker\config\daemon.json' because it does not exist.
+
+=== Docker Local Image Digest for neuro-rag-memory ===
+REPOSITORY                                                      TAG                DIGEST                                                                    IMAGE ID       CREATED        SIZE
+(See sensitive_data.txt)   v2-with-deps       (See sensitive_data.txt)   fd28dfc10854   9 hours ago    3.23GB
+
+=== WSL Kernel Version ===
+Default Distribution: docker-desktop
+Default Version: 2
+
+=== AWS CLI Full Configuration ===
+NAME       : VALUE                    : TYPE             : LOCATION
+profile    : <not set>                : None             : None
+access_key : (See sensitive_data.txt)     : shared-credentials-file : 
+secret_key : (See sensitive_data.txt)     : shared-credentials-file : 
+region     : us-east-1                : config-file      : \~/.aws/config
+
+=== AWS ECR Full Image Details for neuro-rag-memory Repo ===
+{
+    "imageDetails": [
+        {
+            "registryId": "(See sensitive_data.txt)",
+            "repositoryName": "neuro-rag-memory",
+            "imageDigest": "(See sensitive_data.txt)",
+            "imageSizeInBytes": 747219066,
+            "imagePushedAt": "2026-03-01T10:16:27.890000-06:00",
+            "imageManifestMediaType": "application/vnd.oci.image.manifest.v1+json",
+            "artifactMediaType": "application/vnd.oci.image.config.v1+json",
+            "lastRecordedPullTime": "2026-03-01T10:34:00.605000-06:00",
+            "imageStatus": "ACTIVE"
+        },
+        {
+            "registryId": "(See sensitive_data.txt)",
+            "repositoryName": "neuro-rag-memory",
+            "imageDigest": "(See sensitive_data.txt)",
+            "imageTags": [
+                "v2-with-deps"
+            ],
+            "imageSizeInBytes": 747219068,
+            "imagePushedAt": "2026-03-01T10:39:42.892000-06:00",
+            "imageManifestMediaType": "application/vnd.oci.image.manifest.v1+json",
+            "artifactMediaType": "application/vnd.oci.image.config.v1+json",
+            "lastRecordedPullTime": "2026-03-01T10:47:16.589000-06:00",
+            "imageStatus": "ACTIVE"
+        }
+    ]
+}
+
+=== ECR Image Manifest mediaType for :latest tag ===
+Was removed from ECR (Remember for Windows cleanup)
+
+=== Full S3 Bucket Object List ===
+2026-02-27 10:14:43 2466338592 Phi-3.5-mini-instruct-Q4_K_L.gguf
+2026-02-27 08:51:52  237752589 all-MiniLM-L6-v2.zip
+
+=== Lambda Function ARN ===
+(See sensitive_data.txt)
+
+=== Lambda Function Full Details ===
+aws : 
+At line:1 char:21
++ ... ite-Report (aws lambda get-function --function-name neuro-rag-memory- ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+aws: [ERROR]: An error occurred (ResourceNotFoundException) when calling the GetFunction operation: Function not found: 
+(See sensitive_data.txt)
+
+Additional error details:
+Type: User
+
+=== End of Report ===
+"@
+
+$consolidatedContent | Out-File -FilePath "ConsolidatedReport.txt" -Encoding utf8

@@ -1,0 +1,382 @@
+# V3R CONSTRAINT REPORT
+**Document:** V3R-CONSTRAINT-001
+**Version:** 1.0
+**Date:** March 12, 2026
+**Classification:** Living Document — Updated When Hardware or Platform Changes
+**Author:** V3R Documentation Agent
+
+---
+
+## DOCUMENT PURPOSE
+
+This report is the permanent record of every hardware and platform constraint that governs V3R development. Every code decision, every library choice, every AWS service selection, and every build strategy is made within the boundaries defined here. Any AI agent or developer working on V3R must read this document before writing a single line of code or issuing a single AWS command. A constraint violation does not produce a warning — it produces a broken build, a broken deployment, or a broken production system.
+
+---
+
+## PART 1 — DESIGN PHILOSOPHY
+
+### Constraints as Architecture
+
+V3R is built entirely on constrained hardware with no admin access, no GPU, limited upload bandwidth, and a permanent free-tier budget. This is not a temporary state waiting to be resolved with funding. It is a permanent design principle.
+
+The thesis: if V3R can be architected, built, and operated under these constraints, then the system's eventual capabilities prove that industrial-scale AI engineering intelligence does not require enterprise infrastructure. Every constraint that is worked around — not avoided, not ignored, but engineered around — is a proof point for that thesis.
+
+A developer who understands the constraints does not fight them. They design with them. The constraints are the architecture.
+
+### Constraint Priority Order
+
+When a decision must be made between two approaches, constraints are applied in this order:
+
+1. **Correctness** — will it actually run in the Lambda container?
+2. **Free tier** — does it cost money?
+3. **Build time** — how long does a rebuild take?
+4. **Upload speed** — how long does a push take?
+5. **Memory** — will it fit in 2048 MB Lambda memory?
+6. **Local machine capability** — can it be done on this hardware?
+
+---
+
+## PART 2 — LOCAL MACHINE CONSTRAINTS
+
+### 2.1 Hardware
+
+| Component | Specification |
+|---|---|
+| Machine | HP Pavilion x360 14-ba0xx |
+| Serial | (See sensitive_data.txt) |
+| CPU | Intel Core i3-7100U (2 cores, 4 threads, 2.4 GHz) |
+| RAM | 8 GB |
+| Storage | 238 GB NVMe SSD |
+| GPU | Intel HD Graphics 620 (integrated — no CUDA, no compute capability) |
+| Display | 14-inch touchscreen |
+
+### 2.2 Operating System and Permissions
+
+| Constraint | Value | Implication |
+|---|---|---|
+| OS | Windows 10 Home | No WSL2 by default, no Hyper-V in Home edition |
+| Admin rights | None | Cannot install system-level software without workarounds |
+| Shell | PowerShell 5.1 | JSON handling is fundamentally broken — see FP-006 |
+| Python version | 3.14.3 | DO NOT use to generate wheels — Lambda runs Python 3.12 |
+
+### 2.3 Python Version Mismatch — Critical
+
+The local machine runs Python 3.14.3. The Lambda base image runs Python 3.12. This creates a critical wheel compatibility trap:
+
+**If pip is run locally to download or build wheels, it will produce cp314 wheels by default.** cp314 wheels are compiled for Python 3.14 and are incompatible with Lambda's Python 3.12 runtime. This is FP-005 in the Forbidden Patterns Registry.
+
+**Rule:** Never use local pip to generate wheels for the Docker build. All wheels must be pre-sourced cp312 manylinux x86_64 wheels. The wheels/ directory is a curated offline library — not a pip download cache.
+
+### 2.4 Network
+
+| Constraint | Value | Implication |
+|---|---|---|
+| Download speed | ~10 Mbps | Base image pull: ~5 minutes for 3+ GB |
+| Upload speed | 7 Mbps | ECR push: 60-90 minutes for 3184 MB image |
+| Connection type | Wi-Fi (802.11n) | Susceptible to drops during long push operations |
+| SSID | Restricted2 | No control over router settings |
+
+**Upload speed implication on build strategy:** The 7 Mbps upload cap is the primary reason build cycles are 90-120 minutes total. The Docker build itself takes 30-40 minutes. The remaining 50-80 minutes is the ECR push at 7 Mbps. Layer caching is critical — when only handler .py files change, only the final COPY layers are invalidated and the push transfers only a few KB instead of 3+ GB.
+
+**Wi-Fi drop risk:** During Phase 3 Build 1, the Wi-Fi showed 0 Kbps throughput for an extended period during the push phase. The Docker buildx --push mode streams directly to ECR — a network drop during push does not abort the build layers (cached) but does stall the push indefinitely. The process must be killed and restarted with a fresh ECR login after connectivity is restored. See FP-009.
+
+**Mitigation strategy:** Before starting any build, verify Wi-Fi throughput is non-zero via Task Manager → Performance → Wi-Fi. Do not start a build on a marginal connection.
+
+### 2.5 Docker Desktop
+
+| Constraint | Value | Implication |
+|---|---|---|
+| Platform | Docker Desktop for Windows | Requires WSL2 backend (enabled via Docker Desktop installer) |
+| Build target | linux/amd64 ALWAYS | --platform linux/amd64 must be specified on every build command |
+| Buildx | Enabled | Required for --platform cross-compilation |
+
+**--platform linux/amd64 is mandatory on every build.** Without it, Docker Desktop on Windows defaults to building for the local architecture (Windows x86_64, but with Windows ABI). Lambda runs Linux. The resulting image will not execute correctly in the container. This is the most common first-build failure for developers new to this environment.
+
+---
+
+## PART 3 — AWS CONSTRAINTS
+
+### 3.1 Account
+
+| Constraint | Value |
+|---|---|
+| Account ID | (See sensitive_data.txt) |
+| Region | us-east-1 (permanent — never change) |
+| Billing tier | Free tier |
+| Free tier expiry | Monitor — if account ages out of free tier, cost structure changes |
+
+### 3.2 Lambda Free Tier
+
+| Resource | Free Tier Allocation | V3R Usage |
+|---|---|---|
+| Requests | 1,000,000 per month | Development-level: well within limit |
+| Compute | 400,000 GB-seconds per month | 2048 MB × invocations — monitor in Phase 5+ |
+| Concurrent executions | 1,000 | Development-level: well within limit |
+
+**Memory configuration:** All three Lambda functions are set to 2048 MB. This is required to load the PyTorch model and perform embedding inference within the Lambda timeout window. Lower memory causes OOM failures. Higher memory is unnecessary and would consume GB-seconds faster.
+
+**Timeout configuration:** All three Lambda functions are set to 10 minutes. Cold start + model load + inference can take 60-120 seconds on first invocation. The 10-minute timeout ensures cold start invocations complete rather than timing out.
+
+**Cold start behavior:** The model is loaded at module initialization (outside lambda_handler). On cold start, Lambda loads the module, which loads the tokenizer and model from /var/task/models/ into memory. This takes 30-90 seconds depending on Lambda infrastructure state. Subsequent warm invocations skip this step and respond in 1-5 seconds.
+
+### 3.3 ECR Free Tier and Storage
+
+| Resource | Free Tier Allocation | V3R Usage |
+|---|---|---|
+| Storage | 500 MB per month (private) | ml-offline-torch26: ~3184 MB — EXCEEDS FREE TIER |
+| Data transfer in | Free | N/A |
+| Data transfer out to Lambda | Free within same region | All transfers are us-east-1 |
+
+**ECR storage cost:** The ml-offline-torch26 image at ~3184 MB exceeds the 500 MB free tier by ~2684 MB. At $0.10 per GB per month, this costs approximately $0.27 per month. This is the only V3R component that incurs any AWS cost. It is acceptable and cannot be avoided given the offline model requirement.
+
+**Single image strategy:** All three Lambda functions share the same image to minimize ECR storage. Separate images would triple the storage cost. This is the primary reason for the single-image architecture.
+
+**ECR cleanup protocol:** Any time a new image is pushed, old images must be deleted. Accumulating untagged images multiplies the storage cost. Phase 2 cleanup removed all obsolete images. Every future push should be followed by an ECR audit if the build fails mid-push (partial uploads may create untagged fragments).
+
+### 3.4 DynamoDB Free Tier
+
+| Resource | Free Tier Allocation | V3R Usage |
+|---|---|---|
+| Storage | 25 GB (permanent free) | Current: < 1 MB — well within limit |
+| Write capacity units | 25 WCU (permanent free) | PAY_PER_REQUEST — monitor at scale |
+| Read capacity units | 25 RCU (permanent free) | PAY_PER_REQUEST — monitor at scale |
+
+**PAY_PER_REQUEST billing mode:** Both tables use PAY_PER_REQUEST. At development-level usage (< 1,000 operations per day), costs are zero or negligible. This mode must be re-evaluated at Phase 5+ when multi-agent orchestration may produce high-frequency DynamoDB operations.
+
+**Storage trajectory:** Each rag-chunks record stores a 384-float embedding as a JSON string (~2 KB) plus text and metadata (~1-3 KB). Total ~5 KB per chunk. At 10,000 chunks, storage is ~50 MB — well within 25 GB free tier. Phase 4 GNN will add an adjacency table — storage impact must be estimated before Phase 4 begins.
+
+### 3.5 IAM Role
+
+**Role:** rag-ingest-ultra-test-role-hi7s90re
+**Policies attached:**
+- AmazonDynamoDBFullAccess — required for all three Lambda functions
+- AWSLambda_FullAccess — required for rag-chat to invoke rag-retrieve
+
+**Security note:** AmazonDynamoDBFullAccess and AWSLambda_FullAccess are broad policies. For production hardening in Phase 5+, these should be replaced with least-privilege inline policies that specify only the exact DynamoDB tables and Lambda functions each role needs. For current development phase, the broad policies are acceptable.
+
+---
+
+## PART 4 — DOCKER BUILD CONSTRAINTS
+
+### 4.1 Base Image
+
+```
+public.ecr.aws/lambda/python:3.12
+```
+
+This image is mandatory. It is the official AWS Lambda Python 3.12 runtime image. It includes the Lambda runtime interface client and the correct Linux environment for Lambda execution. Alternatives (standard Python images, Amazon Linux 2) are not compatible with Lambda image-based deployments.
+
+### 4.2 Build Command Requirements
+
+Every Docker build command must include all of these flags:
+
+| Flag | Required Value | Reason |
+|---|---|---|
+| --platform | linux/amd64 | Lambda runs on Linux x86_64 |
+| --provenance | false | Prevents OCI attestation manifests that break Lambda |
+| --sbom | false | Prevents SBOM manifests that break Lambda |
+| -f | Dockerfile-ml-offline | Explicit file — never use default Dockerfile name |
+| -t | full ECR URI with :ml-offline-torch26 | Exact tag required |
+| --push | (included) | Pushes directly to ECR after build |
+
+**The complete confirmed build command:**
+```powershell
+docker buildx build --platform linux/amd64 --provenance false --sbom false -f Dockerfile-ml-offline -t (See sensitive_data.txt) --push .
+```
+
+### 4.3 Layer Cache Strategy
+
+Docker builds layers sequentially. If a layer changes, all subsequent layers are invalidated and rebuilt. The Dockerfile-ml-offline layer order is optimized for cache efficiency:
+
+```
+Layer 1:  FROM base image                    — never changes
+Layer 2:  RUN dnf update + install gcc etc  — changes only if OS deps change
+Layer 3:  RUN pip upgrade setuptools         — rarely changes
+Layer 4:  COPY wheels/ /wheels/              — changes only if wheels change
+Layer 5:  RUN pip install pillow             — changes only if pillow version changes
+Layer 6:  RUN pip install torch torchvision  — changes only if torch changes
+Layer 7:  RUN pip install sentence-transformers — changes only if ST changes
+Layer 8:  RUN rm -rf /wheels                — never changes
+Layer 9:  COPY models/                       — changes only if model changes
+Layer 10: COPY lambda_ingest_v4.py           — changes when ingest handler changes
+Layer 11: COPY lambda_retrieve.py            — changes when retrieve handler changes
+Layer 12: COPY lambda_chat.py               — changes when chat handler changes
+```
+
+**Handler-only changes (most common):** Only layers 10-12 invalidated. Push transfers only the final few layers — minutes, not hours.
+
+**Wheel changes (rare):** Layers 4-12 invalidated. Full reinstall of all Python packages. Near full rebuild time.
+
+**Model changes (never planned):** Layers 9-12 invalidated. Requires re-copying ~90 MB model. Moderate rebuild.
+
+### 4.4 Wheel Requirements
+
+All wheels in the wheels/ directory must satisfy ALL of these criteria:
+
+| Criterion | Required Value | Forbidden Values |
+|---|---|---|
+| Python version tag | cp312 | cp314, cp311, cp310, cp39 |
+| ABI tag | cp312 | abi3, none |
+| Platform tag | manylinux_2_17_x86_64 or manylinux2014_x86_64 | win_amd64, win32, macosx |
+| Architecture | x86_64 | aarch64, arm64 |
+
+**Current confirmed wheels in wheels/:**
+- torch (CPU build, manylinux cp312 x86_64)
+- torchvision (manylinux cp312 x86_64)
+- sentence-transformers==2.3.0 (py3 none any — pure Python, compatible)
+- transformers (py3 none any — pure Python, compatible)
+- numpy (manylinux cp312 x86_64)
+- pillow==12.1.1 (manylinux cp312 x86_64)
+- Supporting packages (mpmath, sympy, networkx, filelock, etc.)
+
+---
+
+## PART 5 — LAMBDA RUNTIME CONSTRAINTS
+
+### 5.1 Execution Environment
+
+| Constraint | Value | Implication |
+|---|---|---|
+| Base OS | Amazon Linux 2 | Linux paths, Linux filesystem |
+| Python runtime | 3.12.x | All code and wheels must target cp312 |
+| Handler directory | /var/task/ | All COPYed files land here |
+| Model directory | /var/task/models/all-MiniLM-L6-v2 | Baked in at build time |
+| Tmp directory | /tmp (512 MB) | Writable at runtime — use for temp files if needed |
+| Network access | Outbound allowed | ECR, Groq API, DynamoDB all reachable |
+| Filesystem | Read-only except /tmp | Cannot write to /var/task at runtime |
+
+### 5.2 Memory and Performance
+
+| Constraint | Current Setting | Rationale |
+|---|---|---|
+| Lambda memory | 2048 MB | PyTorch + model require ~700-800 MB at load |
+| Lambda timeout | 10 minutes | Cold start + model load + inference = up to 120 seconds |
+| Cold start memory observed | 720-721 MB (ingest/retrieve) | Model loaded into memory |
+| Warm invocation memory | 89 MB (chat) | Model already in memory from prior cold start |
+
+**Memory budget breakdown (at cold start):**
+- Lambda runtime overhead: ~100 MB
+- PyTorch CPU libraries: ~400 MB
+- all-MiniLM-L6-v2 model weights: ~90 MB
+- Tokenizer: ~10 MB
+- Python + other packages: ~100 MB
+- Total: ~700 MB — fits within 2048 MB with 1300 MB headroom for inference
+
+### 5.3 Invocation Patterns
+
+**rag-ingest-ultra-test:** Invoked via Function URL from HF Space or direct HTTP. Body contains text and source. Synchronous. Can take 60-120 seconds on cold start due to model load.
+
+**rag-retrieve:** Invoked by rag-chat via boto3 Lambda client (Lambda-to-Lambda). InvocationType=RequestResponse (synchronous). No Function URL. Not directly externally callable. Shares the same cold start characteristics.
+
+**rag-chat:** Invoked via Function URL from HF Space. Itself invokes rag-retrieve synchronously. Total latency = rag-chat cold start + rag-retrieve cold start + Groq API call. On warm invocations: typically 2-5 seconds total.
+
+---
+
+## PART 6 — GROQ API CONSTRAINTS
+
+### 6.1 Free Tier Limits
+
+| Resource | Free Tier Limit | V3R Usage |
+|---|---|---|
+| Requests per minute | 30 RPM (llama-3.1-8b-instant) | Development-level: well within |
+| Tokens per minute | 14,400 TPM | Each request: ~1,000-2,000 tokens |
+| Tokens per day | 500,000 TPD | Development-level: well within |
+
+### 6.2 Model Constraint
+
+Current model: `llama-3.1-8b-instant`
+Context window: 8,192 tokens
+
+**Context budget per request:**
+- System prompt: ~200 tokens
+- RAG context (3 chunks × ~150 tokens): ~450 tokens
+- Conversation history (6 turns × ~300 tokens): ~1,800 tokens
+- Current query: ~100 tokens
+- Response: ~500-1,000 tokens
+- Total: ~3,050-3,550 tokens — well within 8,192 token limit
+
+The [-6:] history slice in lambda_chat.py is calibrated to this budget. Increasing to [-10:] would risk context overflow on long conversations.
+
+### 6.3 API Key Management
+
+The Groq API key must never be hardcoded in source files (FP-004 related). Current storage: Lambda environment variable `GROQ_API_KEY` on rag-chat function. The key is read at module load via `os.environ.get("GROQ_API_KEY", "")`. If the key is empty string, all Groq calls will return 401 responses with no choices array, producing "No response" from the generation layer.
+
+---
+
+## PART 7 — HUGGINGFACE SPACE CONSTRAINTS
+
+### 7.1 Free Tier
+
+| Resource | Free Tier | V3R Usage |
+|---|---|---|
+| CPU | 2 vCPU | Gradio UI only — no inference on Space |
+| RAM | 16 GB | Well within for UI |
+| Storage | 50 GB | Well within |
+| Uptime | Sleeps after 48 hours of inactivity | Cold start on first visit after sleep |
+
+**Sleep behavior:** HF Spaces on free tier sleep after 48 hours of inactivity. The first request after sleep takes 30-60 seconds to wake the Space. This is separate from Lambda cold starts — the full first-request latency can be Space wake (30s) + Lambda cold start (60-90s) = up to 2 minutes.
+
+### 7.2 Environment Variables
+
+Secrets are set in the Space settings and are available as environment variables at runtime. Currently set:
+- `CHAT_LAMBDA_URL` — rag-chat Function URL
+- `INGEST_LAMBDA_URL` — rag-ingest-ultra-test Function URL
+
+These must match the current Function URLs. If Lambda functions are deleted and recreated, Function URLs change and Space secrets must be updated.
+
+### 7.3 Git Push Deployment
+
+Space deployment is git-based. Changes to app.py are deployed by pushing to the HF Space git remote:
+```powershell
+cd C:\Users\Source-1\Desktop\rag-deploy\hf-space
+git add app.py
+git commit -m "description"
+git push
+```
+
+HF write token for git authentication: `(See sensitive_data.txt)`
+
+---
+
+## PART 8 — CONSTRAINT EVOLUTION BY PHASE
+
+### Current (P1-P3)
+All constraints apply as documented. Primary bottleneck is upload speed (7 Mbps) making each build cycle 90-120 minutes.
+
+### Phase 4 — GNN
+New constraint: GNN library (PyTorch Geometric or DGL) wheel availability for cp312 manylinux x86_64 must be confirmed by Knowledge Retrieval Agent before planning the build. These libraries have complex dependencies and their wheel availability for the exact cp312 manylinux target is not guaranteed. If wheels are unavailable, source compilation will be required inside the Docker build — adding significant build time.
+
+### Phase 5 — Multi-Agent
+New constraint: Lambda-to-Lambda invocation latency compounds. If a single user request triggers a chain of 5 Lambda invocations, total latency could reach 10+ seconds on warm invocations. The 10-minute Lambda timeout must be re-evaluated if orchestration chains become long.
+
+### Phase 7 — Self-Improvement
+New constraint: V3R must be able to trigger its own Docker builds and ECR pushes. This requires either a build server (not available on free tier) or a pre-approved set of build scripts that the system can invoke via Lambda. The 7 Mbps upload constraint makes automated build-test-deploy cycles extremely slow — each cycle takes 90-120 minutes. Phase 7 architecture must account for this and batch improvements rather than deploying each one individually.
+
+### Phase 8 — Product Generation
+New constraint: Long-running workflows (potentially hours) must persist across Lambda invocations (15-minute maximum). DynamoDB becomes the workflow state store. Lambda invocations become workflow steps. The orchestration architecture must handle Lambda timeouts as a first-class concern, not an edge case.
+
+---
+
+## APPENDIX — CONSTRAINT REFERENCE CARD
+
+For quick reference during development:
+
+```
+MACHINE:    HP Pavilion x360 / Win10 Home / No admin / i3-7100U / 8GB RAM
+SHELL:      PowerShell 5.1 — JSON via WriteAllText only
+PYTHON:     3.14.3 local / 3.12 in Lambda — NEVER use local pip for Lambda wheels
+DOCKER:     linux/amd64 / --provenance false --sbom false / ALWAYS
+UPLOAD:     7 Mbps — full push ~60-90 min / handler-only push ~5-10 min
+LAMBDA:     python:3.12 base / 2048 MB / 10 min timeout / /var/task/ handler dir
+ECR:        rag-ingest-container:ml-offline-torch26 — NEVER change tag
+DYNAMODB:   rag-chunks (chunk_id PK) / rag-memory (vector_id PK + timestamp SK)
+GROQ:       llama-3.1-8b-instant / 8192 token window / key in env var
+HF SPACE:   dnsxt/rag-memory / sleeps after 48hr inactivity / git push to deploy
+REGION:     us-east-1 — ALWAYS
+ACCOUNT:    (See sensitive_data.txt) — ALWAYS
+```
+
+---
+
+*End of V3R Constraint Report — V3R-CONSTRAINT-001 v1.0*
+*Next update: Phase 4 (new GNN library constraints)*

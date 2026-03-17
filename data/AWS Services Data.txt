@@ -1,0 +1,24 @@
+AWS Profile
+AWS Login: (See sensitive_data.txt)
+Password: (See sensitive_data.txt)
+
+AWS Account
+Sign-in URL for IAM users in this account: https://(See sensitive_data.txt).signin.aws.amazon.com/console
+
+Account Details
+ARN: (See sensitive_data.txt)
+
+AWS Security Credentials
+Account Name: dnsxt
+AWS Account ID: (See sensitive_data.txt)
+Email Address: (See sensitive_data.txt)
+Canonical User ID: (See sensitive_data.txt)
+
+Access Key: (See sensitive_data.txt)
+Secret Access Key: (See sensitive_data.txt)
+
+AWS S3
+Bucket: (See sensitive_data.txt)
+
+AWS ECR
+Repository URI: (See sensitive_data.txt)

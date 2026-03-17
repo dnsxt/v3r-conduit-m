@@ -1,0 +1,1 @@
+{"TableName":"v3r-routing","Item":{"route_id":{"S":"default"},"primary":{"S":"groq"},"fallback_1":{"S":"cerebras"},"fallback_2":{"S":"mistral"},"fallback_3":{"S":"fireworks"},"strategy":{"S":"failover"},"status":{"S":"active"}}}

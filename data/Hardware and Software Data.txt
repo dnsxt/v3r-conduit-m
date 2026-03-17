@@ -1,0 +1,190 @@
+# Merged System Report: Hardware Specs, Model/Serial Numbers, and Software Versions
+
+## Laptop Hardware Specs
+- Model: HP Pavilion x360 Convertible 14-ba0xx
+- Manufacturer: HP
+- System Family: 103C_5335KV HP Pavilion
+- Serial Number: (See sensitive_data.txt)
+- BIOS Version: F.53 (Release Date: 05/02/2019)
+- OS: Microsoft Windows 10 Home (Version: 10.0.19045, Build: 19045, Architecture: 64-bit)
+- Install Date: 02/02/2025
+- CPU: Intel(R) Core(TM) i3-7100U @ 2.40GHz (Cores: 2, Threads: 4, Max Clock Speed: 2400 MHz)
+- GPU: Intel(R) HD Graphics 620 (RAM: 1 GB, Driver Version: 25.20.100.6617)
+- Total RAM: 8 GB
+- Disk: WDC PC SN520 SDAPNUW-256G-1006 (Size: 238 GB)
+- Screen Resolution: 1920 x 1080
+
+## Phone 1 Hardware Specs
+- Model: Samsung A32 (Implied from Build Fingerprint: samsung/a32xsq/a32x)
+- Serial Number: (See sensitive_data.txt)
+- OS: Android 13 (Build Fingerprint: samsung/a32xsq/a32x:13/TP1A.220624.014/A326USQUADWG4:user/release-keys)
+- Security Patch: 2023-06-01
+- Screen Resolution: 720 x 1600
+
+## Phone 2 Hardware Specs
+- Model: Motorola Vegas (Implied from Build Fingerprint: motorola/vegas_g_sys/vegas)
+- Serial Number: (See sensitive_data.txt)
+- OS: Android 16 (Build Fingerprint: motorola/vegas_g_sys/vegas:16/W1VES36H.10-12-3-1/df1380-c2190:user/release-keys)
+- Security Patch: 2025-10-01
+- CPU Architecture: arm64-v8a (8 Processors: ARM Cortex-A76/A55 variants, Features: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics etc.)
+- Total RAM: \~7.8 GB (MemTotal: 7845148 kB)
+- Storage: \~108 GB (/data: 108G total, various partitions including /system_ext 758M, /vendor 555M)
+- Battery: Li-ion (Full Capacity: 4827000 mAh, Technology: Li-ion, Cycle Count: 13)
+- Screen Resolution: 1080 x 2388 (Physical Density: 390)
+
+## Software and Version Numbers
+### General Software
+- PowerShell Version: 5.1.19041.6456 (Edition: Desktop, CLR Version: 4.0.30319.42000)
+- Python Version (Local): 3.14.3
+- Python Version (Container): 3.12
+- Pip Version: 26.0.1
+- WSL Kernel Version: Default Version 2 (Default Distribution: docker-desktop)
+
+### Docker-Related
+- Docker Desktop Version: 29.2.1 (Build Time: Mon Feb 2 17:20:16 2026, Git Commit: a5c7197, API Version: 1.53)
+- Docker Desktop File/Product Version: 4.62.0.0 / 4.62.0.219486
+- Docker Daemon Configuration: None (daemon.json not found)
+
+### AWS-Related
+- AWS CLI Configuration: Profile: default, Region: us-east-1
+- Lambda Function rag-chat ARN: (See sensitive_data.txt)
+- Lambda Function rag-ingest ARN: (See sensitive_data.txt)
+- Lambda Function rag-retrieve ARN: (See sensitive_data.txt)
+
+### Installed Pip Packages
+- annotated-doc: 0.0.4
+- annotated-types: 0.7.0
+- anyio: 4.12.1
+- attrs: 25.4.0
+- backoff: 2.2.1
+- bcrypt: 5.0.0
+- build: 1.4.0
+- certifi: 2026.2.25
+- cffi: 2.0.0
+- charset-normalizer: 3.4.5
+- chromadb: 1.5.1
+- click: 8.3.1
+- colorama: 0.4.6
+- decorator: 5.2.1
+- cryptography: 46.0.5
+- distro: 1.9.0
+- durationpy: 0.10
+- fastapi: 0.133.0
+- filelock: 3.25.1
+- flatbuffers: 25.12.19
+- fsspec: 2026.2.0
+- google-api-core: 2.30.0
+- google-auth: 2.48.0
+- google-cloud-core: 2.5.0
+- google-cloud-storage: 3.9.0
+- google-crc32c: 1.8.0
+- google-resumable-media: 2.8.0
+- googleapis-common-protos: 1.72.0
+- grpcio: 1.78.1
+- h11: 0.16.0
+- hf-xet: 1.1.3
+- httpcore: 1.0.9
+- httptools: 0.7.1
+- httpx: 0.28.1
+- huggingface_hub: 0.36.2
+- idna: 3.11
+- importlib_metadata: 8.7.1
+- importlib_resources: 6.5.2
+- jinja2: 3.1.6
+- jiter: 0.13.0
+- joblib: 1.5.3
+- jsonpatch: 1.33
+- jsonpointer: 3.0.0
+- jsonschema: 4.26.0
+- jsonschema-specifications: 2025.9.1
+- kubernetes: 35.0.0
+- langchain: 1.2.10
+- langchain-core: 1.2.15
+- langgraph: 1.0.9
+- langgraph-checkpoint: 4.0.0
+- langgraph-prebuilt: 1.0.8
+- langgraph-sdk: 0.3.8
+- langsmith: 0.7.6
+- markdown-it-py: 4.0.0
+- markupsafe: 2.1.5
+- mdurl: 0.1.2
+- mmh3: 5.2.0
+- mpmath: 1.3.0
+- networkx: 3.6.1
+- nltk: 3.9.3
+- numpy: 2.2.6
+- oauthlib: 3.3.1
+- onnxruntime: 1.24.2
+- openai: 2.23.0
+- opentelemetry-api: 1.39.1
+- opentelemetry-exporter-otlp-proto-common: 1.39.1
+- opentelemetry-exporter-otlp-proto-grpc: 1.39.1
+- opentelemetry-proto: 1.39.1
+- opentelemetry-sdk: 1.39.1
+- opentelemetry-semantic-conventions: 0.60b1
+- orjson: 3.11.7
+- ormsgpack: 1.12.2
+- overrides: 7.7.0
+- packaging: 26.0
+- pillow: 12.1.1
+- pip: 26.0.1
+- posthog: 5.4.0
+- proto-plus: 1.27.1
+- protobuf: 6.33.5
+- pyasn1: 0.6.2
+- pyasn1_modules: 0.4.2
+- pybase64: 1.4.3
+- pycparser: 3.0
+- pydantic: 2.12.5
+- pydantic_core: 2.41.5
+- pydantic-settings: 2.13.1
+- Pygments: 2.19.2
+- pypdf: 6.8.0
+- PyPika: 0.51.1
+- pyproject_hooks: 1.2.0
+- python-dateutil: 2.9.0.post0
+- python-dotenv: 1.2.1
+- PyYAML: 6.0.3
+- referencing: 0.37.0
+- regex: 2026.2.28
+- requests: 2.32.5
+- requests-oauthlib: 2.0.0
+- requests-toolbelt: 1.0.0
+- rich: 14.3.3
+- rpds-py: 0.30.0
+- rsa: 4.9.1
+- safetensors: 0.7.0
+- scikil_learn: 1.7.2
+- scipy: 1.16.3
+- sentence_transformers: 2.3.0
+- sentencepiece: 0.2.0
+- setuptools: 82.0.1
+- shellingham: 1.5.4
+- six: 1.17.0
+- sniffio: 1.3.1
+- SQLAlchemy: 2.0.47
+- starlette: 0.52.1
+- sympy: 1.13.1
+- tenacity: 9.1.4
+- threadpoolctl: 3.6.0
+- tiktoken: 0.12.0
+- tokenizers: 0.22.2
+- torch: 2.6.0
+- torchvision: 0.21.0
+- tqdm: 4.67.3
+- transformers: 4.57.6
+- typer: 0.24.1
+- typer-slim: 0.24.0
+- typing_extensions: 4.15.0
+- typing-inspect: 0.9.0
+- typing-inspection: 0.4.2
+- urllib3: 2.6.3
+- uuid_utils: 0.14.1
+- uvicorn: 0.41.0
+- watchfiles: 1.1.1
+- websocket-client: 1.9.0
+- websockets: 16.0
+- xxhash: 3.6.0
+- yarl: 1.23.0
+- zipp: 3.23.0
+- zstandard: 0.25.0

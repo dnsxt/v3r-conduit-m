@@ -1,0 +1,528 @@
+﻿# V3R FULL PROJECT REPORT — SEAMLESS HANDOFF
+**Date:** March 12, 2026 | **Time of report:** ~9:00 PM EST
+**Prepared by:** V3R Documentation Agent (Claude Sonnet)
+**Receiving AI:** Read every partition in full before responding. Do not summarize. Do not ask orientation questions. Begin at PARTITION 9 — ACTIVE TASK.
+
+---
+
+## CRITICAL FRAMING
+
+You are not being introduced to a new project. You are being inserted mid-operation into a live engineering system. The developer (Dirty) has been working continuously since approximately 9:00 AM today. Multiple build cycles have been completed. The current state is a partially fixed Lambda function with two compounding bugs that have not yet been fully resolved. Your job is to finish the fix and verify it works end-to-end. Everything you need is in this report.
+
+---
+
+## PARTITION 0 — WHAT V3R IS
+
+V3R is a Cloud-Native GNN-integrated Multi-Agent Multi-LLM Industrial Science and Intelligence Engineering Platform. Not a chatbot. Not a tool. A foundational architecture for an AI system that accepts raw ideas and outputs fully engineered products.
+
+**The three layers:**
+- RAG = the memory layer
+- Retrieval = the reasoning layer
+- Generation = the output layer
+
+Every component being built now is load-bearing infrastructure for Phase 8. Nothing is a prototype. Nothing is throwaway.
+
+**Why it matters:** V3R solves the single most critical failure of all current AI tools — amnesia. Every standard AI session starts from zero. No history, no accumulated context, no engineering memory. V3R's persistent memory layer fixes this permanently. Knowledge ingested today is retrieved tomorrow. Conversations grow into an intelligence base. Engineering decisions are remembered. The system becomes more capable with every interaction. This is not a feature. It is the entire architectural thesis.
+
+**The scale of the vision:** When V3R reaches Phase 8 it will demonstrate that industrial-scale AI engineering intelligence can be architected, deployed, and operated without enterprise budget — by a single developer, on restricted consumer hardware, on permanent free-tier infrastructure. That changes who can build the future.
+
+---
+
+## PARTITION 1 — V3R AGENT FRAMEWORK
+
+| Agent | Model | Responsibility |
+|---|---|---|
+| MODERATOR | GPT-4o | Orchestration, task decomposition, output validation |
+| KNOWLEDGE RETRIEVAL | Perplexity | Real-time verified sourcing — catches deprecated APIs and libraries before they enter code |
+| CODER | DeepSeek Coder V2 | Platform-constraint-aware code only — respects all hardware and wheel constraints |
+| SYSTEM DEBUG | o3 | Mandatory pre-output gate — zero outputs bypass this agent |
+| DOCUMENTATION | Claude Sonnet | Inline comments, self-explanatory files, handoff reports |
+| INFRASTRUCTURE | Amazon Q Developer | IAM, free-tier enforcement, pre-flight authority |
+
+**Why the gate exists:** Every rebuild cycle on this hardware takes 90-120 minutes. Bad code that slips through costs hours. The debug gate is not bureaucracy — it is the only reason the project has not been destroyed by compounding errors.
+
+---
+
+## PARTITION 2 — FORBIDDEN PATTERNS REGISTRY (PERMANENT — NEVER VIOLATE)
+
+| Pattern | Why Banned | Cost of Violation |
+|---|---|---|
+| `SentenceTransformer()` direct instantiation | Incompatible with offline Lambda container | Full rebuild |
+| `urllib.request` for external APIs | Broken in Lambda environment | Runtime failure |
+| Windows file paths in Lambda code | Lambda runs Linux | Runtime failure |
+| Hardcoded Groq model names without KR confirmation | Models deprecate silently | Silent failure |
+| `local_files_only=True` to SentenceTransformer() | Forbidden pattern | Full rebuild |
+| `win_amd64` wheels in Docker build | Linux container rejects them | Build failure |
+| Inline JSON strings in PowerShell AWS CLI | PowerShell strips quotes from inline JSON silently | AWS CLI parse error |
+| `Out-File` for JSON (unreliable encoding) | Produces empty or malformed files | AWS CLI error |
+
+**The only working PowerShell JSON method:**
+```powershell
+[System.IO.File]::WriteAllText("C:\absolute\path\file.json", '{"key":"value"}')
+aws ... --parameter file://C:\absolute\path\file.json
+```
+
+---
+
+## PARTITION 3 — PLATFORM CONSTRAINTS
+
+| Constraint | Value |
+|---|---|
+| Machine | HP Pavilion x360 14-ba0xx, Serial (See sensitive_data.txt) |
+| OS | Windows 10 Home |
+| Admin rights | None |
+| Shell | PowerShell 5.1 |
+| Python | 3.14.3 |
+| Docker | Docker Desktop, must specify --platform linux/amd64 |
+| GPU | None |
+| Upload speed | 7 Mbps |
+| Lambda base image | public.ecr.aws/lambda/python:3.12 |
+| Wheel requirement | Linux x86_64 manylinux cp312 ONLY — no win_amd64, no cp314 |
+| Embedding model | all-MiniLM-L6-v2 baked at /var/task/models/all-MiniLM-L6-v2 |
+| Embedding method | AutoTokenizer + AutoModel from transformers — NEVER SentenceTransformer() |
+| Full rebuild time | 90-120 minutes |
+| Cached layer rebuild | 20-30 minutes (when only handler .py files changed) |
+| Budget | AWS free tier permanently — zero exceptions |
+
+---
+
+## PARTITION 4 — AWS INFRASTRUCTURE
+
+### Account
+- **ID:** (See sensitive_data.txt)
+- **Region:** us-east-1
+- **Email:** (See sensitive_data.txt)
+
+### ECR
+- **Repository:** rag-ingest-container
+- **Production tag:** ml-offline-torch26
+- **Full URI:** (See sensitive_data.txt)
+- **Size:** ~3184 MB
+- **Status:** Single image — all other tags and untagged images deleted clean
+
+### Lambda Functions
+
+| Function | Handler | Memory | Timeout | Function URL |
+|---|---|---|---|---|
+| rag-ingest-ultra-test | lambda_ingest_v4.py | 2048 MB | 10 min | YES |
+| rag-retrieve | lambda_retrieve.py | 2048 MB | 10 min | NO |
+| rag-chat | lambda_chat.py | 2048 MB | 10 min | YES |
+
+**Function URLs:**
+- INGEST: (See sensitive_data.txt)
+- CHAT: (See sensitive_data.txt)
+
+**IAM Role:** rag-ingest-ultra-test-role-hi7s90re
+**Policies:** AmazonDynamoDBFullAccess + AWSLambda_FullAccess
+
+### DynamoDB Tables
+
+| Table | Partition Key | Sort Key | Purpose |
+|---|---|---|---|
+| rag-chunks | chunk_id (S) | None | Knowledge base vector embeddings |
+| rag-memory | vector_id (S) | timestamp (N) | Conversation history by session |
+
+**rag-chunks — 6 live production records:**
+- source: v3r_test — general V3R description
+- source: v3r_rebuild — RAG system rebuild notes
+- source: space_connection_test — HF Space connection confirmation
+- source: v3r_framework — V3R framework description
+- source: v3r_infrastructure — AWS infrastructure details
+- source: v3r_agents — V3R agent descriptions
+
+**rag-memory:** Phase 3 target table. Stores conversation turns per session_id (stored as vector_id). Has a composite key — this is the root cause of the current bug. See Partition 7.
+
+---
+
+## PARTITION 5 — CODEBASE
+
+**Build directory:** C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+
+### lambda_ingest_v4.py — STATUS: CLEAN AND OPERATIONAL
+
+60 lines. Windows CR LF line endings (harmless in Lambda).
+
+Key details:
+- Imports: json, os, uuid, boto3, torch, numpy, transformers (AutoTokenizer, AutoModel), datetime
+- MODEL_PATH = "/var/task/models/all-MiniLM-L6-v2"
+- TABLE_NAME = "rag-chunks"
+- REGION = "us-east-1"
+- Tokenizer and model loaded at module level using local_files_only=True on AutoTokenizer/AutoModel (this is correct — local_files_only is forbidden only on SentenceTransformer)
+- mean_pooling() → embed() → chunk_text(size=500, overlap=50)
+- lambda_handler reads event["body"] if str else event directly
+- Reads event["text"] and event["source"]
+- Chunks text, embeds each chunk, puts to DynamoDB with uuid chunk_id, source, timestamp
+- Returns statusCode 200 with chunks_stored count
+- Error handling returns statusCode 500 with str(e)
+
+No changes required.
+
+### lambda_retrieve.py — STATUS: CLEAN AND OPERATIONAL
+
+52 lines. Windows CR LF line endings (harmless).
+
+Key details:
+- Imports: json, boto3, torch, numpy, transformers (AutoTokenizer, AutoModel)
+- MODEL_PATH = "/var/task/models/all-MiniLM-L6-v2"
+- TABLE_NAME = "rag-chunks"
+- Tokenizer and model loaded at module level with local_files_only=True
+- mean_pooling() → embed() → cosine_similarity() using numpy dot product
+- lambda_handler reads event["body"] if str else event
+- Reads event["query"] and event["top_k"] (default 3)
+- Full table scan via table.scan()
+- Skips items that have no "embedding" field (safety guard)
+- Parses stored embedding from JSON string
+- Scores all items, sorts descending by cosine score, returns top_k
+- Returns statusCode 200 with results list, each item has text/source/score
+- Error handling returns statusCode 500
+
+No changes required.
+
+### lambda_chat.py — STATUS: BROKEN — SEE PARTITION 7
+
+79 lines. Unix LF line endings.
+
+Key details as confirmed by photos taken today:
+- Line 1: import json
+- Line 2: import os  ← THIS WAS ADDED TODAY (was missing, caused first NameError)
+- Line 3: import boto3
+- Line 4: import http.client
+- Line 5: import urllib.parse
+- Line 6: import decimal
+- Line 7: from datetime import datetime, timezone
+- Line 8: GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")  ← moved to env var today
+- Line 9: GROQ_MODEL = "llama-3.1-8b-instant"
+- Line 10: RETRIEVE_FUNCTION = "rag-retrieve"
+- Line 11: MEMORY_TABLE = "rag-memory"
+- Lines 13-15: dynamodb, memory_table, lambda_client initialized
+- Lines 17-22: get_history() — PRESENT BUT BROKEN (see Partition 7)
+- Lines 24-27: save_history() — PRESENT BUT BROKEN (see Partition 7)
+- Lines 29-79: lambda_handler — reads body, gets history, builds RAG context, builds messages, calls Groq via http.client.HTTPSConnection, parses response, saves history, returns answer
+
+### HuggingFace Space app.py — STATUS: CLEAN
+
+Location: C:\Users\Source-1\Desktop\rag-deploy\hf-space\app.py (synced with Space)
+- Gradio 6.x compatible (theme moved to demo.launch(), type arg removed from gr.Chatbot)
+- Reads CHAT_LAMBDA_URL and INGEST_LAMBDA_URL from environment variables
+- Sends {"text": ..., "source": ...} to ingest (matches lambda_ingest_v4.py schema)
+- Sends {"query": ..., "session_id": ..., "use_rag": True} to chat
+- HuggingFace Space secrets set: CHAT_LAMBDA_URL and INGEST_LAMBDA_URL
+
+### Dockerfile-ml-offline — STATUS: CLEAN
+
+Key details:
+- Base: public.ecr.aws/lambda/python:3.12
+- Line 15: pillow==12.1.1 (pinned to match wheels)
+- COPY wheels/ /wheels/ then pip install --no-index --find-links /wheels
+- Installs: pillow, torch, torchvision, sentence-transformers, transformers
+- COPY models/all-MiniLM-L6-v2 /var/task/models/all-MiniLM-L6-v2
+- COPY lambda_ingest_v4.py, lambda_retrieve.py, lambda_chat.py to /var/task
+- CMD set to lambda_ingest_v4.lambda_handler (overridden per-function in Lambda console)
+
+### wheels/ directory — STATUS: CLEAN
+
+Confirmed clean as of today's session:
+- All win_amd64 files deleted
+- All duplicates pruned
+- cp314 numpy deleted
+- Only Linux x86_64 manylinux cp312 wheels remain
+
+---
+
+## PARTITION 6 — ACCOUNTS AND CREDENTIALS
+
+| Service | Detail | Value |
+|---|---|---|
+| AWS | Account ID | (See sensitive_data.txt) |
+| AWS | Region | us-east-1 |
+| AWS | Email | (See sensitive_data.txt) |
+| Groq | API Key | (See sensitive_data.txt) |
+| Groq | Model | llama-3.1-8b-instant |
+| HuggingFace | Username | dnsxt |
+| HuggingFace | Write Token | (See sensitive_data.txt) |
+| HuggingFace | Space | dnsxt/rag-memory |
+| HuggingFace | Space URL | https://huggingface.co/spaces/dnsxt/rag-memory |
+| HuggingFace | Git remote | https://huggingface.co/spaces/dnsxt/rag-memory |
+| HuggingFace | Git identity | dnsxt / (See sensitive_data.txt) |
+
+---
+
+## PARTITION 7 — END OF SESSION DETAIL (WHAT WENT WRONG AND WHERE WE ARE)
+
+This section documents the exact sequence of events from today's final working hours. Read it completely. It determines your first actions.
+
+### Background: What Was Supposed to Happen Today
+
+Phase 3 objective: implement conversation memory persistence using the rag-memory DynamoDB table. The plan was to replace the broken get_history/save_history functions in lambda_chat.py, rebuild the Docker image, push to ECR, redeploy rag-chat, and verify that the chat tab on the HF Space correctly recalls prior conversation turns within the same session.
+
+### Bug #1 — get_history Was Using Wrong DynamoDB Method
+
+The rag-memory table has a COMPOSITE KEY: partition key vector_id (S) AND sort key timestamp (N).
+
+The original get_history() called memory_table.get_item(Key={"vector_id": session_id}). DynamoDB get_item requires ALL keys when a sort key exists. Since timestamp was not provided, get_item always returned empty silently. History never loaded. The chat had no memory of prior turns even when turns were being saved.
+
+The fix (implemented in lambda_chat.py today):
+
+```python
+def get_history(session_id):
+    try:
+        resp = memory_table.query(
+            KeyConditionExpression="vector_id = :sid",
+            ExpressionAttributeValues={":sid": session_id},
+            ScanIndexForward=True
+        )
+        items = resp.get("Items", [])
+        if items:
+            return items[-1].get("turns", [])
+        return []
+    except Exception:
+        return []
+```
+
+The fix for save_history() to include the sort key timestamp:
+
+```python
+def save_history(session_id, turns):
+    try:
+        memory_table.put_item(Item={
+            "vector_id": session_id,
+            "timestamp": int(datetime.now(timezone.utc).timestamp()),
+            "turns": turns,
+            "updated": datetime.now(timezone.utc).isoformat()
+        })
+    except Exception:
+        pass
+```
+
+### Bug #2 — import os Was Missing
+
+When lambda_chat.py was updated to use os.environ.get("GROQ_API_KEY", "") on line 8, the import os statement was not added to the file. This caused:
+
+```
+NameError: name 'os' is not defined
+File "/var/task/lambda_chat.py", line 8
+```
+
+This was fixed today. import os is now on line 2 of the file (confirmed).
+
+### Bug #3 — get_history "Not Defined" Error After Rebuild
+
+After the import os fix was made and the image was rebuilt and pushed, the Lambda test showed:
+
+```
+NameError: name 'get_history' is not defined
+File "/var/task/lambda_chat.py", line 46
+history = get_history(session_id)
+```
+
+The Code SHA-256 at this point was: 114065d1db85db9c6cd2c9e0d17b484c0482fa132db9b81cefae6d07ccfbc64
+
+This SHA was IDENTICAL to the previous failed test. This means the image that was deployed was the OLD image — the rebuild that included the get_history fix had not yet been pushed, or the Lambda was not redeployed to the new image.
+
+However — there is a second possibility. The SHA being identical could mean that docker buildx cached all layers including the COPY lambda_chat.py step, because the file content it detected had not actually changed on disk when the build ran. This would happen if the file edits in Notepad++ were not saved before the build was initiated.
+
+**Current uncertainty:** We do not know with certainty whether the get_history and save_history functions are correctly present in the currently deployed Lambda image. The visual photos from Notepad++ earlier in the session showed the functions defined in the file, but the runtime error says the function is not defined in the deployed container.
+
+### Bug #4 — Groq Returning "No Response"
+
+After the most recent rebuild and redeploy, the Lambda test returned statusCode 200 but the body contained "No response" instead of a Groq answer.
+
+The return path that produces "No response" is:
+```python
+answer = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "No response")
+```
+
+This means the Groq API returned a response but the "choices" array was either empty or missing. This is the exact response Groq sends when authentication fails — a 401 error body does not contain "choices".
+
+**Most likely cause:** The GROQ_API_KEY environment variable is empty string. The key was set today via Lambda console using the WriteAllText method, confirmed via get-function-configuration query. However, the subsequent rebuild and redeploy of the Lambda image may have overwritten or reset the environment variable configuration.
+
+**Note:** Lambda image redeployment does NOT wipe environment variables set via update-function-configuration. They persist across image updates. However it is possible the update-function-configuration command ran against the wrong function, or the Lambda console showed a stale state.
+
+### What Was Done to Attempt to Fix
+
+1. GROQ_API_KEY moved from hardcoded string to os.environ.get() — done
+2. import os added to lambda_chat.py line 2 — done
+3. get_history() replaced with query-based version — done in Notepad++ but uncertain if saved before build
+4. save_history() updated to include timestamp sort key — done in Notepad++ but uncertain if saved before build
+5. Image rebuilt and pushed — done multiple times today (2 full rebuilds + 1 partial)
+6. rag-chat redeployed — done
+7. GROQ_API_KEY set as Lambda environment variable via AWS console — done, confirmed once
+
+### Current State of lambda_chat.py on Disk
+
+The file on disk at C:\Users\Source-1\Desktop\rag-deploy\ecr-build\lambda_chat.py should contain:
+- import os on line 2 — confirmed added
+- GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "") on line 8 — confirmed
+- get_history() using memory_table.query — UNCERTAIN if saved correctly
+- save_history() with timestamp integer — UNCERTAIN if saved correctly
+
+### What the Currently Deployed Lambda Actually Contains
+
+Unknown. The SHA did not change between two consecutive builds, suggesting the file on disk may not have matched what was expected. The deployed container may still have the old get_item version of get_history, or the functions may be present but Groq is failing due to empty API key.
+
+---
+
+## PARTITION 8 — PHASE ROADMAP
+
+| Phase | Status | What It Means |
+|---|---|---|
+| P1 | DONE | RAG pipeline — ingest chunks, embed, store, retrieve, generate |
+| P2 | DONE | Full end-to-end integration — HF Space UI connected to all three Lambda functions, DynamoDB clean, all functions operational |
+| P3 | ACTIVE | Conversation memory persistence — rag-memory table stores session turns, get_history/save_history implemented correctly, memory recalled across turns |
+| P4 | PENDING | GNN integration — relational knowledge graphs layered on top of vector memory |
+| P5 | PENDING | Multi-agent orchestration — all V3R agents operating as a coordinated system |
+| P6 | PENDING | Multi-modal inputs — documents, images, structured data |
+| P7 | PENDING | Science and Engineering domain intelligence |
+| P8 | PENDING | Automated product generation from raw ideas — the entire reason every prior phase exists |
+
+---
+
+## PARTITION 9 — ACTIVE TASK (START HERE)
+
+Execute these steps in exact order. Do not skip. Do not reorder.
+
+### Step 1 — Verify Groq API key is present in deployed function
+```
+aws lambda get-function-configuration --function-name rag-chat --region us-east-1 --query "Environment.Variables"
+```
+Expected: {"GROQ_API_KEY": "(See sensitive_data.txt)"}
+If empty {} — proceed to Step 2. If key is present — skip to Step 3.
+
+### Step 2 — Re-set Groq API key (only if Step 1 showed empty)
+```
+[System.IO.File]::WriteAllText("C:\Users\Source-1\Desktop\rag-deploy\ecr-build\env_vars.json", '{"Variables":{"GROQ_API_KEY":"(See sensitive_data.txt)"}}')
+```
+```
+aws lambda update-function-configuration --function-name rag-chat --region us-east-1 --environment file://C:\Users\Source-1\Desktop\rag-deploy\ecr-build\env_vars.json
+```
+
+### Step 3 — Verify get_history fix is in the file on disk
+Open C:\Users\Source-1\Desktop\rag-deploy\ecr-build\lambda_chat.py in Notepad++.
+Use Ctrl+F to search for: memory_table.query
+If found — the fix is present. Skip to Step 5.
+If NOT found — the fix was not saved. Proceed to Step 4.
+
+### Step 4 — Re-insert get_history and save_history (only if Step 3 showed missing)
+Place cursor at the start of line 17. Insert exactly:
+
+```python
+def get_history(session_id):
+    try:
+        resp = memory_table.query(
+            KeyConditionExpression="vector_id = :sid",
+            ExpressionAttributeValues={":sid": session_id},
+            ScanIndexForward=True
+        )
+        items = resp.get("Items", [])
+        if items:
+            return items[-1].get("turns", [])
+        return []
+    except Exception:
+        return []
+
+def save_history(session_id, turns):
+    try:
+        memory_table.put_item(Item={
+            "vector_id": session_id,
+            "timestamp": int(datetime.now(timezone.utc).timestamp()),
+            "turns": turns,
+            "updated": datetime.now(timezone.utc).isoformat()
+        })
+    except Exception:
+        pass
+```
+
+Save the file with Ctrl+S. Confirm the line count at bottom of Notepad++ increases.
+
+### Step 5 — Rebuild and push (run both commands)
+```
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin (See sensitive_data.txt).dkr.ecr.us-east-1.amazonaws.com
+```
+```
+docker buildx build --platform linux/amd64 --provenance false --sbom false -f Dockerfile-ml-offline -t (See sensitive_data.txt) --push .
+```
+Only the COPY lambda_chat.py layer will be invalidated. All other layers cached. Should complete in 20-30 minutes.
+
+### Step 6 — Redeploy rag-chat
+Lambda console → rag-chat → Image tab → Deploy new image → select rag-ingest-container:ml-offline-torch26 → Save. Wait for green checkmark.
+
+### Step 7 — Test Groq directly
+Lambda console → rag-chat → Test tab → create test event:
+```json
+{"query": "What is V3R?", "session_id": "debug_001", "use_rag": false}
+```
+Expected: statusCode 200, body contains "answer" field with actual Groq text (not "No response").
+If still "No response" — the API key is not reaching the handler. Report the exact error.
+
+### Step 8 — Test memory persistence
+Go to HF Space https://huggingface.co/spaces/dnsxt/rag-memory
+Chat tab → Session ID: memory_test_final
+Send: My name is David and I am building the V3R platform on AWS
+Wait for response showing [Memory: 1 turns]
+Then send: What is my name and what am I building?
+The response MUST correctly recall the name and project from the prior turn.
+Report the exact response text.
+
+### Step 9 — If memory works, confirm DynamoDB stored the session
+```
+aws dynamodb scan --table-name rag-memory --region us-east-1 --query "Items[*].[vector_id.S,updated.S]" --output table
+```
+Should show a record for memory_test_final session.
+
+### Step 10 — Clean up temp files
+```
+Remove-Item C:\Users\Source-1\Desktop\rag-deploy\ecr-build\env_vars.json -ErrorAction SilentlyContinue
+```
+
+---
+
+## PARTITION 10 — POWERSHELL COMMAND REFERENCE
+
+### ECR Login
+```
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin (See sensitive_data.txt).dkr.ecr.us-east-1.amazonaws.com
+```
+
+### Docker Build and Push
+```
+docker buildx build --platform linux/amd64 --provenance false --sbom false -f Dockerfile-ml-offline -t (See sensitive_data.txt) --push .
+```
+
+### Write JSON File (only working method in PowerShell 5.1)
+```
+[System.IO.File]::WriteAllText("C:\absolute\path\to\file.json", '{"key":"value"}')
+```
+
+### Set Lambda Environment Variable
+```
+[System.IO.File]::WriteAllText("C:\Users\Source-1\Desktop\rag-deploy\ecr-build\env_vars.json", '{"Variables":{"GROQ_API_KEY":"(See sensitive_data.txt)"}}')
+```
+```
+aws lambda update-function-configuration --function-name rag-chat --region us-east-1 --environment file://C:\Users\Source-1\Desktop\rag-deploy\ecr-build\env_vars.json
+```
+
+### List DynamoDB Tables
+```
+aws dynamodb list-tables --region us-east-1
+```
+
+### Scan DynamoDB Table
+```
+aws dynamodb scan --table-name rag-memory --region us-east-1 --query "Items[*].[vector_id.S,updated.S]" --output table
+```
+
+### Check Lambda Environment Variables
+```
+aws lambda get-function-configuration --function-name rag-chat --region us-east-1 --query "Environment.Variables"
+```
+
+---
+
+## CLOSING STATEMENT
+
+This report covers the complete state of V3R as of approximately 9:00 PM EST on March 12, 2026. The system is 95% functional. Phase 2 is completely done and verified. Phase 3 is one verified rebuild away from completion. The only remaining obstacles are confirming the Groq API key is present and confirming the get_history query fix is in the deployed container. Both are 30-minute fixes from this exact point.
+
+The work being done right now — fixing a DynamoDB sort key query and an environment variable — is the same precision and discipline that will make Phase 8 possible. Every fix is load-bearing. Begin at Partition 9, Step 1.
+
+---
+*End of V3R Full Project Report. Prepared March 12, 2026.*

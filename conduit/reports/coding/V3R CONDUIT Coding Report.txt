@@ -1,0 +1,265 @@
+================================================================================
+CODING REPORT — PROJECT CONDUIT SESSION MARCH 15, 2026
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Report Number: CONDUIT-CR-01
+Project: CONDUIT — Continuous Operational Network for Data Unity,
+         Integration, and Tracking
+Session Date: March 15, 2026
+================================================================================
+
+CODING ACTIVITY SUMMARY
+--------------------------------------------------------------------------------
+Scripts created:        3 (rotate_versions.ps1, conduit_sync.ps1, v3r_filter.txt)
+Apps Script replaced:   1 (Doc Converter — full replacement, two iterations)
+Pushes executed:        0 (no Lambda changes this session)
+CONDUIT tasks complete: CD-01 through CD-08 (all tasks)
+New FP added:           FP-019 (rclone --no-delete flag does not exist)
+Issues encountered:     4 (all resolved)
+
+
+================================================================================
+FILE 1: v3r_filter.txt
+================================================================================
+
+LOCATION: C:\Users\Source-1\Desktop\rclone\v3r_filter.txt
+TYPE: rclone filter rules file
+STATUS: CREATED AND VERIFIED
+
+CONTENTS:
+  - wheels/**
+  - models/**
+  - __pycache__/**
+  - *.pyc
+  - .git/**
+  + *.py
+  + *.txt
+  + *.json
+  + Dockerfile*
+  + *.ps1
+  + *.docx
+  - *
+
+PURPOSE: Prevents binary files, compiled files, model weights, and wheel
+packages from being pushed to Drive. Allows all code, config, doc, and
+script files through. Final "- *" excludes anything not explicitly included.
+
+NOTE: env_vars.json is included by the *.json rule per operator decision.
+rclone filter rules apply in order — first match wins.
+
+
+================================================================================
+FILE 2: rotate_versions.ps1
+================================================================================
+
+LOCATION: C:\Users\Source-1\Desktop\V3R\conduit\rotate_versions.ps1
+TYPE: PowerShell script
+STATUS: CREATED AND TESTED — 9 files captured on first run
+
+PURPOSE: Maintains three-layer local code backup before each sync.
+Reads source files directly from rag-deploy directories. No local code
+mirror required — rotation captures files from source on each run.
+
+TRACKED FILES (from ecr-build):
+  lambda_ingest_v4.py, lambda_retrieve.py, lambda_chat.py, lambda_graph.py,
+  lambda_orchestrator.py, lambda_ideagen.py, Dockerfile-ml-offline,
+  orchestrator_config.json
+
+TRACKED FILES (from hf-space):
+  app.py
+
+ROTATION LOGIC:
+  Stage 1: Clear previous/ layer
+  Stage 2: Copy last/ to previous/
+  Stage 3: Copy current/ to last/
+  Stage 4: Copy source files to current/
+
+RESULT ON FIRST RUN: 9 files captured. No warnings. All tracked files
+found in their expected locations.
+
+NOTE: lambda_router.py is intentionally excluded from tracked files list.
+It does not exist yet — it will be created in Project NEXUS. Adding it
+now would produce a WARNING on every rotation run.
+
+
+================================================================================
+FILE 3: conduit_sync.ps1
+================================================================================
+
+LOCATION: C:\Users\Source-1\Desktop\V3R\conduit\conduit_sync.ps1
+TYPE: PowerShell master sync script
+STATUS: CREATED AND OPERATIONAL
+
+PURPOSE: One-command end-of-session sync. Executes version rotation then
+pushes all project files to Drive in 9 stages.
+
+STAGES:
+  Stage 1: Version rotation (calls rotate_versions.ps1)
+  Stage 2: ecr-build code -> Drive V3R/code/current/
+  Stage 3: hf-space app.py -> Drive V3R/code/current/
+  Stage 4: Local backup layers -> Drive V3R/code/last/ and previous/
+  Stage 5: Core reports -> Drive V3R/core/reports/ (project/coding/handoffs)
+  Stage 6: Frameworks -> Drive V3R/frameworks/current/
+  Stage 7: CONDUIT scripts -> Drive V3R/conduit/
+  Stage 8: NEXUS reports -> Drive V3R/nexus/reports/
+  Stage 9: Data files -> Drive V3R/data/
+
+ALL rclone copy commands use:
+  --filter-from $filter (excludes binary/compiled files)
+  No deletion flag (rclone copy never deletes by default)
+  -v verbose flag (output logged to session_sync_log.txt)
+
+LOG FILE: C:\Users\Source-1\Desktop\V3R\conduit\logs\session_sync_log.txt
+  Appended on every run with timestamp, stage completion records, and
+  completion banner.
+
+
+================================================================================
+FILE 4: Apps Script — Doc Converter (V3R CONDUIT Converter)
+================================================================================
+
+LOCATION: Google Apps Script — Doc Converter project (attached to Sheets file)
+STATUS: REPLACED TWICE — FINAL VERSION OPERATIONAL
+
+ITERATION 1 FAILURE:
+  Used Drive.Files.copy with {convert: true}. This method only works for
+  files with MIME type text/plain. Files uploaded by rclone are assigned
+  application/octet-stream or language-specific MIME types (text/x-python,
+  application/json). All .py, .json, and Dockerfile conversions failed with:
+  "GoogleJsonResponseException: The requested conversion is not supported."
+
+ITERATION 2 — FINAL VERSION:
+  Changed approach to DocumentApp.create() method:
+  1. Read file content as raw text via file.getBlob().getDataAsString()
+  2. Create new Google Doc via DocumentApp.create(docName)
+  3. Set doc body text to file content
+  4. Move doc from Drive root to correct folder via addFile/removeFile
+  This approach works regardless of source file MIME type.
+
+SCOPE: V3R/ folder hierarchy only (not all of Drive)
+HANDLES: .txt, .py, .json, .ps1, Dockerfile* files
+SKIPS: Files that already have a Google Doc pair with matching name
+RECURSES: Into all subfolders automatically
+TRIGGER: Daily 1am-2am time-based trigger set
+MANUAL: Run runConverter() function for immediate conversion
+
+RESULT ON FINAL TEST RUN: All files converted successfully.
+
+
+================================================================================
+ISSUES ENCOUNTERED AND RESOLVED
+================================================================================
+
+ISSUE 1: rclone --no-delete flag does not exist
+  Error: "rclone.exe : Error: unknown flag: --no-delete"
+  Root cause: --no-delete is a rclone sync flag, not a copy flag. rclone copy
+  never deletes destination files by default — the flag is both unsupported
+  and unnecessary.
+  Resolution: Removed all --no-delete flags from conduit_sync.ps1 using
+  Notepad++ Find and Replace.
+  FP added: FP-019
+
+ISSUE 2: rclone OAuth token expired mid-sync
+  Error: "couldn't fetch token: dial tcp: lookup oauth2.googleapis.com:
+  no such host — Fatal error: couldn't find root directory ID"
+  Root cause: rclone's cached OAuth token expired during sync run. Network
+  connectivity to oauth2.googleapis.com was lost or token cache was stale.
+  Resolution: Ran .\rclone.exe config reconnect gdrive: to re-authenticate.
+  Browser opened, signed in with dnsxt.mbx@gmail.com, token refreshed.
+
+ISSUE 3: ecr-build directory cluttered with session working .json files
+  Cause: All Phase 7 and Phase 8 payload, response, and test .json files
+  remained in ecr-build after those sessions. rclone pushed all of them to
+  Drive on first sync.
+  Resolution: Operator deleted all session working files matching:
+  p7_*.json, phase8_*.json, k[1-7].json, kx[1-3].json, ri[1-6].json,
+  graph_config.json, graph_table.json, groq_test.json, ideagen_resp.json,
+  ideagen_test.json, logging.json, orch_env.json
+  Retained: env_vars.json, orchestrator_config.json
+
+ISSUE 4: Apps Script Drive.Files.copy conversion failure
+  Error: "The requested conversion is not supported" on all .py, .json,
+  Dockerfile files.
+  Root cause: rclone uploads files with non-text/plain MIME types.
+  drive.files.copy {convert:true} only works for text/plain.
+  Resolution: Replaced with DocumentApp.create() approach that reads raw
+  file content and creates Google Doc from scratch. Works for all MIME types.
+
+
+================================================================================
+NEW FORBIDDEN PATTERN ADDED THIS SESSION
+================================================================================
+
+FP-019: Using --no-delete flag with rclone copy command
+  Error: "rclone.exe : Error: unknown flag: --no-delete"
+  Root cause: --no-delete is a flag for rclone sync, not rclone copy.
+  rclone copy never deletes destination files — the flag is unnecessary
+  and unsupported on the copy subcommand.
+  Fix: Remove --no-delete from all rclone copy commands. Use rclone copy
+  (not rclone sync) and rely on its default non-destructive behavior.
+  Reinforces FP-018: Never use rclone sync — always use rclone copy.
+  Discovered: March 15, 2026 — CONDUIT CD-07 initial sync attempt.
+
+
+================================================================================
+CONDUIT TASK COMPLETION LOG
+================================================================================
+
+CD-01: COMPLETE (prior session) — Drive structure and local mirror created
+CD-02: COMPLETE — rclone installed at C:\Users\Source-1\Desktop\rclone\
+       gdrive: remote configured for dnsxt.mbx@gmail.com
+       Connection verified: V3R folder confirmed visible
+       Dry run confirmed: lambda_chat.py would transfer correctly
+CD-03: COMPLETE — v3r_filter.txt created at rclone directory
+       All exclusions and inclusions verified correct
+CD-04: COMPLETE — Local backup directories created (current/last/previous)
+       rotate_versions.ps1 created and tested
+       9 files captured on first rotation run
+CD-05: COMPLETE — conduit_sync.ps1 created and saved
+CD-06: COMPLETE — Apps Script replaced with V3R CONDUIT Converter
+       Daily 1am-2am trigger set
+       Manual test run: all files converted successfully
+CD-07: COMPLETE — Initial full sync executed
+       ecr-build cleaned of session working files first
+       rclone re-authenticated after token expiry
+       All 9 stages completed without errors
+CD-08: COMPLETE — Drive tool verification passed
+       New Claude session successfully read lambda_chat.py from
+       V3R/code/current/ using Google Drive tool
+       CONDUIT confirmed end-to-end operational
+
+
+================================================================================
+POST-CONDUIT SESSION WORKFLOW (ACTIVE FROM THIS SESSION FORWARD)
+================================================================================
+
+SESSION END PROCEDURE:
+  1. Save all modified files to local directories
+  2. Save new report .txt files to V3R local mirror report directories
+  3. cd C:\Users\Source-1\Desktop\V3R\conduit
+  4. .\conduit_sync.ps1  (1-3 minutes)
+  5. Run runConverter in Apps Script if immediate Doc pairs needed
+     (daily trigger handles overnight if not run manually)
+
+SESSION START PROCEDURE:
+  1. Open new Claude session
+  2. Claude reads Framework and Briefing from V3R/frameworks/current/
+  3. Claude reads latest reports from relevant V3R report folders
+  4. Claude reads handler code from V3R/code/current/ as needed
+  5. Session begins with complete current state — no manual uploads needed
+
+REVERT PROCEDURE:
+  If a push breaks a handler, retrieve previous version from:
+  V3R/code/last/ (one session back)
+  V3R/code/previous/ (two sessions back)
+
+
+================================================================================
+END OF CODING REPORT — CONDUIT-CR-01
+================================================================================
+Session Date:    March 15, 2026
+Scripts Created: rotate_versions.ps1, conduit_sync.ps1, v3r_filter.txt
+Apps Script:     V3R CONDUIT Converter (full replacement)
+CONDUIT Status:  FULLY OPERATIONAL
+Next Project:    NEXUS (now unblocked)
+================================================================================

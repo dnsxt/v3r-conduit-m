@@ -1,0 +1,921 @@
+================================================================================
+PROJECT CONDUIT — SEAMLESS HANDOFF REPORT
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 15, 2026
+Report Type: Full Project Handoff — Implementation Ready
+================================================================================
+
+CRITICAL INSTRUCTION TO RECEIVING AI
+--------------------------------------------------------------------------------
+This is a live operational handoff for Project CONDUIT. Read every section
+before responding. Do not summarize. Do not ask orientation questions. Pick up
+exactly where this report ends. This is not a new project briefing — it is a
+continuation document. All prior V3R context applies. Partition 0 (V3R AI
+Framework v3.1) and Partition 1 (V3R AI Briefing v1.3) are active and govern
+all outputs from this session forward.
+
+
+================================================================================
+SECTION 1 — WHAT CONDUIT IS
+================================================================================
+
+Project CONDUIT — Continuous Operational Network for Data Unity, Integration,
+and Tracking — is the infrastructure bridge between V3R's operational codebase
+and the AI sessions that build it.
+
+CONDUIT solves the operational gap that existed through all of V3R Phases 1-8:
+no automated synchronization between the local development machine, Google Drive
+My Drive, and the AI sessions that need to read current system state. Every
+session prior to CONDUIT started with manual file uploads and ended with manual
+Drive updates — inconsistent, incomplete, and unreliable.
+
+When CONDUIT is fully operational:
+- One PowerShell command at the end of every session syncs everything to Drive.
+- All code files in rag-deploy are pushed directly to V3R/code/current/ in Drive.
+- Three-layer version rotation maintains current, last, and previous states.
+- All uploaded files (.py, .txt, .json, Dockerfile) are automatically converted
+  to Google Docs format so the Drive tool can read them in future AI sessions.
+- Every session begins with complete, current, readable system state in Drive.
+
+CONDUIT is a prerequisite for Project NEXUS. NEXUS cannot be built safely
+without CONDUIT operational. CONDUIT first. NEXUS second.
+
+
+================================================================================
+SECTION 2 — PARENT PROJECT CONTEXT
+================================================================================
+
+CONDUIT exists within the V3R project ecosystem. The following projects are
+relevant context:
+
+V3R (Phases 1-8) — COMPLETE
+  Cloud-Native GNN-Integrated Multi-Agent Multi-LLM Platform. Phases 1-8
+  complete as of March 14-15, 2026. Six Lambda functions operational on AWS
+  free tier. Full project state documented in V3R Project Report 12.
+
+Project CORE — COMPLETE
+  The V3R self-knowledge domain intelligence phase (Phase 7). All V3R
+  architectural, agent, phase, constraint, and forbidden pattern knowledge
+  ingested into the RAG system. Reports and schema documents in
+  V3R/core/ in Drive.
+
+Project CONDUIT — ACTIVE (this project)
+  Infrastructure synchronization pipeline. Currently at implementation start.
+
+Project NEXUS — PENDING (blocked on CONDUIT)
+  Neurally Extensible Cross-provider Unified System. Full project report
+  available at V3R/nexus/reports/project/ in Drive.
+
+
+================================================================================
+SECTION 3 — OPERATOR CONTEXT
+================================================================================
+
+Developer: David Schroeder (dnsxt.mbx@gmail.com)
+Machine: HP Pavilion x360 14-ba0xx
+OS: Windows 10 Home
+Shell: PowerShell 5.1
+Admin rights: Full local machine admin. No network router access.
+Google account: dnsxt.mbx@gmail.com
+AWS Account: 236510207245 (us-east-1)
+HuggingFace: dnsxt/rag-memory
+
+Key local directories:
+  Build directory:  C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+  HF Space:         C:\Users\Source-1\Desktop\rag-deploy\hf-space\
+  V3R local mirror: C:\Users\Source-1\Desktop\V3R\ (excludes code/ — no local mirror)
+
+Note on local mirror: The operator confirmed no local code directory mirror.
+rclone reads code files directly from rag-deploy build and hf-space directories
+and pushes to Drive. The V3R local mirror contains all non-code project files.
+
+Credentials: Retrieve from General Data file in V3R/data/ in Drive. Never
+hardcode credentials in any CONDUIT script.
+
+
+================================================================================
+SECTION 4 — GOOGLE DRIVE STRUCTURE (CONFIRMED)
+================================================================================
+
+Confirmed by photo on March 15, 2026. Full tree:
+
+V3R/
+  code/
+    current/       <- Active code. rclone target for all handler pushes.
+    last/          <- Previous session code. Version rotation layer 2.
+    previous/      <- Two sessions back. Version rotation layer 3.
+  conduit/
+    logs/          <- session_sync_log.txt lives here.
+    reports/
+      coding/      <- CONDUIT coding reports
+      handoffs/    <- CONDUIT handoff reports (this file goes here)
+      project/     <- CONDUIT project report
+  core/
+    logs/
+    reports/
+      coding/      <- V3R Coding Reports 8-12 (complete through Phase 8)
+      handoffs/    <- V3R Handoff Reports
+      project/     <- V3R Project Reports 1-12 (complete through Phase 8)
+    schema/        <- Architecture, agents, phase, forbidden patterns, constraint reports
+  data/            <- AWS Services Data, Hardware Data, General Data, System Blueprint,
+                      Function URLs
+  frameworks/
+    critique/      <- Critique Prompts document
+    current/       <- V3R AI Framework v3.1 (Partition 0)
+                      V3R AI Briefing v1.3 (Partition 1)
+    partitioning/  <- V3R AI Partitioning v1.0
+  knowledge base/  <- Reserved for knowledge base reference documents
+  nexus/
+    logs/
+    reports/
+      coding/
+      handoffs/
+      project/     <- Project NEXUS Report v1.0
+
+All existing V3R root-level files have been relocated to the above structure
+as of March 15, 2026. Drive is clean and organized.
+
+
+================================================================================
+SECTION 5 — WHAT HAS BEEN COMPLETED
+================================================================================
+
+CD-01: COMPLETE
+  GDMD folder structure created as shown in Section 4.
+  Local V3R mirror created at C:\Users\Source-1\Desktop\V3R\ (excludes code/).
+  All existing Drive files relocated to correct folders.
+  Missing files identified — code files not yet in Drive (see Section 7).
+
+CD-02 through CD-08: PENDING (start here)
+  rclone not yet installed.
+  No version rotation scripts exist yet.
+  Apps Script converter not yet extended.
+  conduit_sync.ps1 not yet written.
+  No code files in V3R/code/current/ yet.
+
+
+================================================================================
+SECTION 6 — APPS SCRIPT CONVERTER — CURRENT STATE
+================================================================================
+
+The operator has an existing Google Apps Script project called "Doc Converter"
+attached to a Google Sheets file. It is confirmed operational. Current code:
+
+  function convertTxtToGoogleDocs() {
+    var files = DriveApp.getFilesByType(MimeType.PLAIN_TEXT);
+    while (files.hasNext()) {
+      var file = files.next();
+      var fileName = file.getName();
+      if (fileName.toLowerCase().endsWith('.txt')) {
+        var nameWithoutExtension = fileName.replace(/\.txt$/i, "");
+        var parentFolder = file.getParents().next();
+        if (alreadyExists(nameWithoutExtension, parentFolder)) {
+          Logger.log('Skipped (Already exists): ' + nameWithoutExtension);
+          continue;
+        }
+        var resource = {
+          title: nameWithoutExtension,
+          mimeType: MimeType.GOOGLE_DOCS,
+          parents: [{id: parentFolder.getId()}]
+        };
+        try {
+          Drive.Files.copy(resource, file.getId(), {convert: true});
+          Logger.log('Converted: ' + fileName);
+        } catch (e) {
+          Logger.log('Failed to convert ' + fileName + ': ' + e.toString());
+        }
+      }
+    }
+    console.log("Process complete.");
+  }
+
+  function alreadyExists(name, folder) {
+    var existingFiles = folder.getFilesByName(name);
+    while (existingFiles.hasNext()) {
+      var file = existingFiles.next();
+      if (file.getMimeType() === MimeType.GOOGLE_DOCS) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+Current limitations:
+- Only processes .txt files. Does not handle .py, .json, or Dockerfile files.
+- Scans all of Drive. Not scoped to V3R/ folder hierarchy.
+- No automatic trigger. Manual execution only.
+
+Required extensions (see Section 9 for full implementation):
+- Add .py, .json, and Dockerfile file handling.
+- Scope processing to V3R/ folder and subfolders only.
+- Add daily 2:00 AM time-based trigger.
+- Add immediate trigger capability via Apps Script execution API.
+
+
+================================================================================
+SECTION 7 — FILES MISSING FROM DRIVE (upload required)
+================================================================================
+
+The following code files exist on the operator's machine in the build directory
+but are NOT yet in Drive. They must be uploaded to V3R/code/current/ as the
+first post-rclone action.
+
+From C:\Users\Source-1\Desktop\rag-deploy\ecr-build\:
+  - lambda_ingest_v4.py      (82 lines — operational)
+  - lambda_retrieve.py       (52 lines — operational)
+  - lambda_chat.py           (106 lines — operational)
+  - lambda_graph.py          (42 lines — operational)
+  - lambda_orchestrator.py   (79 lines — operational)
+  - lambda_ideagen.py        (58 lines — operational — Phase 8)
+  - Dockerfile-ml-offline    (43 lines — current)
+  - orchestrator_config.json
+
+From C:\Users\Source-1\Desktop\rag-deploy\hf-space\:
+  - app.py                   (163 lines — operational)
+
+Reports not yet in Drive:
+  - V3R Project Report 12 (.txt) -> V3R/core/reports/project/
+  - V3R Coding Report 12 (.txt)  -> V3R/core/reports/coding/
+
+These will be handled by rclone after CD-02 is complete. Manual upload
+is not required — rclone will push them on first sync run.
+
+
+================================================================================
+SECTION 8 — IMPLEMENTATION INSTRUCTIONS — CD-02: rclone Installation
+================================================================================
+
+rclone is a free open-source tool for syncing files to Google Drive.
+No admin rights required for portable installation.
+Communicates over HTTPS port 443 — compatible with current network.
+
+STEP 1 — Download rclone:
+Open browser. Navigate to:
+
+  https://rclone.org/downloads/
+
+Download: rclone-current-windows-amd64.zip
+
+STEP 2 — Extract:
+Extract the zip to:
+
+  C:\Users\Source-1\Desktop\rclone\
+
+The extracted folder will contain rclone.exe among other files.
+Confirm rclone.exe is present before continuing.
+
+STEP 3 — Open PowerShell and navigate to rclone directory:
+
+  cd C:\Users\Source-1\Desktop\rclone
+
+STEP 4 — Start configuration:
+
+  .\rclone.exe config
+
+STEP 5 — In the rclone config menu:
+  - Type: n (new remote)
+  - Name: gdrive
+  - Storage type: type "drive" or select the Google Drive option number
+  - client_id: leave blank (press Enter)
+  - client_secret: leave blank (press Enter)
+  - scope: type 1 (full drive access)
+  - root_folder_id: leave blank (press Enter)
+  - service_account_file: leave blank (press Enter)
+  - Edit advanced config: n
+  - Use auto config: y
+  - Browser will open. Sign in with dnsxt.mbx@gmail.com. Grant access.
+  - Configure as Shared Drive: n
+  - Confirm remote looks correct: y
+  - Quit config: q
+
+STEP 6 — Test the connection:
+
+  .\rclone.exe lsd gdrive:
+
+Expected output: list of folders in Google Drive My Drive root including V3R.
+If V3R appears in the list, rclone is configured correctly.
+
+STEP 7 — Test navigation into V3R:
+
+  .\rclone.exe lsd gdrive:V3R
+
+Expected output: code, conduit, core, data, frameworks, knowledge base, nexus
+
+STEP 8 — Test a single file copy (dry run — no files transferred):
+
+  .\rclone.exe copy --dry-run "C:\Users\Source-1\Desktop\rag-deploy\ecr-build\lambda_chat.py" gdrive:V3R/code/current/
+
+Expected output: lines showing what WOULD be transferred. No actual transfer.
+If output shows lambda_chat.py would be copied, rclone is working correctly.
+
+Report back result of Step 8 before proceeding to CD-03.
+
+
+================================================================================
+SECTION 9 — IMPLEMENTATION INSTRUCTIONS — CD-03: rclone Filter File
+================================================================================
+
+The filter file tells rclone what to include and exclude from sync operations.
+This prevents binary files (wheels, models) from being pushed to Drive.
+
+STEP 1 — Create the filter file:
+
+  [System.IO.File]::WriteAllText("C:\Users\Source-1\Desktop\rclone\v3r_filter.txt", "- wheels/**`n- models/**`n- __pycache__/**`n- *.pyc`n- .git/**`n+ *.py`n+ *.txt`n+ *.json`n+ Dockerfile*`n+ *.ps1`n+ *.docx`n- *")
+
+STEP 2 — Verify file contents:
+
+  Get-Content C:\Users\Source-1\Desktop\rclone\v3r_filter.txt
+
+Expected output:
+  - wheels/**
+  - models/**
+  - __pycache__/**
+  - *.pyc
+  - .git/**
+  + *.py
+  + *.txt
+  + *.json
+  + Dockerfile*
+  + *.ps1
+  + *.docx
+  - *
+
+Filter rules explained:
+  Lines starting with - are exclusions.
+  Lines starting with + are inclusions.
+  Order matters — first match wins.
+  The final "- *" excludes everything not explicitly included above.
+
+Report back filter file contents before proceeding to CD-04.
+
+
+================================================================================
+SECTION 10 — IMPLEMENTATION INSTRUCTIONS — CD-04: Version Rotation Script
+================================================================================
+
+The rotation script maintains the three-layer code backup before each sync.
+It reads directly from rag-deploy — no local code mirror needed.
+
+STEP 1 — Create the backup directory structure on local machine:
+
+  New-Item -ItemType Directory -Force -Path "C:\Users\Source-1\Desktop\V3R\code\current"
+  New-Item -ItemType Directory -Force -Path "C:\Users\Source-1\Desktop\V3R\code\last"
+  New-Item -ItemType Directory -Force -Path "C:\Users\Source-1\Desktop\V3R\code\previous"
+
+STEP 2 — Create the rotation script file. Open Notepad++. New file. Save as:
+
+  C:\Users\Source-1\Desktop\V3R\conduit\rotate_versions.ps1
+
+Paste the following complete file content:
+
+--------------------------------------------------------------------------------
+# rotate_versions.ps1
+# V3R CONDUIT — Version Rotation Script
+# Maintains three-layer local backup: current, last, previous
+# Reads source files directly from rag-deploy — no local code mirror required
+# Run before every conduit_sync.ps1 execution
+
+$sourceEcr = "C:\Users\Source-1\Desktop\rag-deploy\ecr-build"
+$sourceHf = "C:\Users\Source-1\Desktop\rag-deploy\hf-space"
+$backupRoot = "C:\Users\Source-1\Desktop\V3R\code"
+$current = "$backupRoot\current"
+$last = "$backupRoot\last"
+$previous = "$backupRoot\previous"
+
+$trackedFiles = @(
+    "lambda_ingest_v4.py",
+    "lambda_retrieve.py",
+    "lambda_chat.py",
+    "lambda_graph.py",
+    "lambda_orchestrator.py",
+    "lambda_ideagen.py",
+    "lambda_router.py",
+    "Dockerfile-ml-offline",
+    "orchestrator_config.json"
+)
+
+$trackedHfFiles = @(
+    "app.py"
+)
+
+Write-Host "=== V3R CONDUIT Version Rotation ===" -ForegroundColor Cyan
+Write-Host "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') Starting rotation..." -ForegroundColor Gray
+
+# Stage 1: Delete previous (will be replaced by last)
+Write-Host "Stage 1: Clearing previous layer..." -ForegroundColor Yellow
+Remove-Item -Path "$previous\*" -Force -ErrorAction SilentlyContinue
+
+# Stage 2: Copy last to previous
+Write-Host "Stage 2: Shifting last -> previous..." -ForegroundColor Yellow
+$lastFiles = Get-ChildItem -Path $last -ErrorAction SilentlyContinue
+foreach ($file in $lastFiles) {
+    Copy-Item -Path $file.FullName -Destination $previous -Force
+}
+
+# Stage 3: Copy current to last
+Write-Host "Stage 3: Shifting current -> last..." -ForegroundColor Yellow
+$currentFiles = Get-ChildItem -Path $current -ErrorAction SilentlyContinue
+foreach ($file in $currentFiles) {
+    Copy-Item -Path $file.FullName -Destination $last -Force
+}
+
+# Stage 4: Copy source files to current
+Write-Host "Stage 4: Capturing current state from rag-deploy..." -ForegroundColor Yellow
+$copied = 0
+foreach ($file in $trackedFiles) {
+    $sourcePath = "$sourceEcr\$file"
+    if (Test-Path $sourcePath) {
+        Copy-Item -Path $sourcePath -Destination $current -Force
+        $copied++
+    } else {
+        Write-Host "  WARNING: $file not found in ecr-build" -ForegroundColor Red
+    }
+}
+foreach ($file in $trackedHfFiles) {
+    $sourcePath = "$sourceHf\$file"
+    if (Test-Path $sourcePath) {
+        Copy-Item -Path $sourcePath -Destination $current -Force
+        $copied++
+    } else {
+        Write-Host "  WARNING: $file not found in hf-space" -ForegroundColor Red
+    }
+}
+
+Write-Host "Rotation complete. $copied files captured in current layer." -ForegroundColor Green
+--------------------------------------------------------------------------------
+
+STEP 3 — Test the rotation script:
+
+  cd C:\Users\Source-1\Desktop\V3R\conduit
+  .\rotate_versions.ps1
+
+Expected output:
+  === V3R CONDUIT Version Rotation ===
+  [timestamp] Starting rotation...
+  Stage 1: Clearing previous layer...
+  Stage 2: Shifting last -> previous...
+  Stage 3: Shifting current -> last...
+  Stage 4: Capturing current state from rag-deploy...
+  Rotation complete. 9 files captured in current layer.
+
+STEP 4 — Verify files in current layer:
+
+  Get-ChildItem C:\Users\Source-1\Desktop\V3R\code\current
+
+Expected: 9 files listed (8 from ecr-build + app.py from hf-space).
+
+Note: lambda_router.py will show a WARNING until it is created in NEXUS.
+This is expected behavior — not an error.
+
+Report back file count before proceeding to CD-05.
+
+
+================================================================================
+SECTION 11 — IMPLEMENTATION INSTRUCTIONS — CD-05: conduit_sync.ps1
+================================================================================
+
+The master sync script orchestrates all CONDUIT stages in sequence.
+One command. Full pipeline.
+
+STEP 1 — Create the script. Open Notepad++. New file. Save as:
+
+  C:\Users\Source-1\Desktop\V3R\conduit\conduit_sync.ps1
+
+Paste the following complete file content:
+
+--------------------------------------------------------------------------------
+# conduit_sync.ps1
+# V3R CONDUIT — Master Sync Script
+# Run at end of every V3R/NEXUS/CONDUIT session
+# Executes: version rotation -> rclone code sync -> rclone reports sync ->
+#           rclone frameworks sync -> rclone conduit sync -> log completion
+
+$rclone = "C:\Users\Source-1\Desktop\rclone\rclone.exe"
+$filter = "C:\Users\Source-1\Desktop\rclone\v3r_filter.txt"
+$logFile = "C:\Users\Source-1\Desktop\V3R\conduit\logs\session_sync_log.txt"
+$conduitScript = "C:\Users\Source-1\Desktop\V3R\conduit\rotate_versions.ps1"
+
+$sourceEcr = "C:\Users\Source-1\Desktop\rag-deploy\ecr-build"
+$sourceHf = "C:\Users\Source-1\Desktop\rag-deploy\hf-space"
+$sourceReportsCore = "C:\Users\Source-1\Desktop\V3R\core\reports"
+$sourceFrameworks = "C:\Users\Source-1\Desktop\V3R\frameworks"
+$sourceConduit = "C:\Users\Source-1\Desktop\V3R\conduit"
+$sourceNexus = "C:\Users\Source-1\Desktop\V3R\nexus"
+$sourceData = "C:\Users\Source-1\Desktop\V3R\data"
+
+$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+# Ensure log directory exists
+New-Item -ItemType Directory -Force -Path "C:\Users\Source-1\Desktop\V3R\conduit\logs" | Out-Null
+
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "  V3R CONDUIT SYNC — $timestamp" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Add-Content -Path $logFile -Value "`n========================================"
+Add-Content -Path $logFile -Value "CONDUIT SYNC — $timestamp"
+Add-Content -Path $logFile -Value "========================================"
+
+# STAGE 1 — Version rotation
+Write-Host "`n[Stage 1] Running version rotation..." -ForegroundColor Yellow
+& $conduitScript
+Add-Content -Path $logFile -Value "[Stage 1] Version rotation complete"
+
+# STAGE 2 — Sync code files from ecr-build to Drive current
+Write-Host "`n[Stage 2] Syncing ecr-build code to Drive V3R/code/current/..." -ForegroundColor Yellow
+& $rclone copy --filter-from $filter --no-delete $sourceEcr gdrive:V3R/code/current/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+Add-Content -Path $logFile -Value "[Stage 2] ecr-build sync complete"
+
+# STAGE 3 — Sync app.py from hf-space to Drive current
+Write-Host "`n[Stage 3] Syncing hf-space app.py to Drive V3R/code/current/..." -ForegroundColor Yellow
+& $rclone copy --filter-from $filter --no-delete $sourceHf gdrive:V3R/code/current/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+Add-Content -Path $logFile -Value "[Stage 3] hf-space sync complete"
+
+# STAGE 4 — Sync local version backup layers to Drive
+Write-Host "`n[Stage 4] Syncing version backup layers to Drive..." -ForegroundColor Yellow
+& $rclone copy --no-delete "C:\Users\Source-1\Desktop\V3R\code\last" gdrive:V3R/code/last/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+& $rclone copy --no-delete "C:\Users\Source-1\Desktop\V3R\code\previous" gdrive:V3R/code/previous/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+Add-Content -Path $logFile -Value "[Stage 4] Version backup sync complete"
+
+# STAGE 5 — Sync core reports to Drive
+Write-Host "`n[Stage 5] Syncing core reports to Drive..." -ForegroundColor Yellow
+& $rclone copy --filter-from $filter --no-delete "$sourceReportsCore\project" gdrive:V3R/core/reports/project/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+& $rclone copy --filter-from $filter --no-delete "$sourceReportsCore\coding" gdrive:V3R/core/reports/coding/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+& $rclone copy --filter-from $filter --no-delete "$sourceReportsCore\handoffs" gdrive:V3R/core/reports/handoffs/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+Add-Content -Path $logFile -Value "[Stage 5] Core reports sync complete"
+
+# STAGE 6 — Sync frameworks to Drive
+Write-Host "`n[Stage 6] Syncing frameworks to Drive..." -ForegroundColor Yellow
+& $rclone copy --filter-from $filter --no-delete "$sourceFrameworks\current" gdrive:V3R/frameworks/current/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+Add-Content -Path $logFile -Value "[Stage 6] Frameworks sync complete"
+
+# STAGE 7 — Sync CONDUIT scripts and logs to Drive
+Write-Host "`n[Stage 7] Syncing CONDUIT scripts to Drive..." -ForegroundColor Yellow
+& $rclone copy --filter-from $filter --no-delete $sourceConduit gdrive:V3R/conduit/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+Add-Content -Path $logFile -Value "[Stage 7] CONDUIT sync complete"
+
+# STAGE 8 — Sync NEXUS reports to Drive
+Write-Host "`n[Stage 8] Syncing NEXUS reports to Drive..." -ForegroundColor Yellow
+& $rclone copy --filter-from $filter --no-delete "$sourceNexus\reports" gdrive:V3R/nexus/reports/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+Add-Content -Path $logFile -Value "[Stage 8] NEXUS sync complete"
+
+# STAGE 9 — Sync data files to Drive
+Write-Host "`n[Stage 9] Syncing data files to Drive..." -ForegroundColor Yellow
+& $rclone copy --filter-from $filter --no-delete $sourceData gdrive:V3R/data/ -v 2>&1 | Tee-Object -Append -FilePath $logFile
+Add-Content -Path $logFile -Value "[Stage 9] Data sync complete"
+
+# COMPLETION
+$endTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+Write-Host "`n========================================" -ForegroundColor Green
+Write-Host "  CONDUIT SYNC COMPLETE — $endTime" -ForegroundColor Green
+Write-Host "  Run converter in Apps Script to" -ForegroundColor Green
+Write-Host "  create Google Doc pairs for new files." -ForegroundColor Green
+Write-Host "========================================" -ForegroundColor Green
+Add-Content -Path $logFile -Value "SYNC COMPLETE — $endTime"
+Add-Content -Path $logFile -Value "Reminder: Run Apps Script converter for new Doc pairs."
+--------------------------------------------------------------------------------
+
+STEP 2 — Do not run conduit_sync.ps1 yet. Complete CD-06 first.
+
+Report back when file is saved before proceeding to CD-06.
+
+
+================================================================================
+SECTION 12 — IMPLEMENTATION INSTRUCTIONS — CD-06: Apps Script Extension
+================================================================================
+
+The Apps Script converter needs to be extended to handle .py, .json, and
+Dockerfile files in addition to .txt files. It also needs to be scoped to
+the V3R/ folder hierarchy instead of scanning all of Drive.
+
+STEP 1 — Open Google Drive. Navigate to the Sheets file containing the
+"Doc Converter" Apps Script project. Open it.
+
+STEP 2 — Open Apps Script: Extensions -> Apps Script.
+
+STEP 3 — Replace the entire existing script with the following complete
+replacement. Select all (Ctrl+A), delete, paste:
+
+--------------------------------------------------------------------------------
+// V3R CONDUIT — Extended Doc Converter
+// Converts .txt, .py, .json, and Dockerfile files to Google Docs format
+// Scoped to V3R/ folder hierarchy only
+// Maintains txt/Doc pairs for Drive tool readability
+
+function convertV3RFilesToDocs() {
+  var v3rFolderName = "V3R";
+  var rootFolders = DriveApp.getFoldersByName(v3rFolderName);
+
+  if (!rootFolders.hasNext()) {
+    Logger.log("ERROR: V3R folder not found in My Drive.");
+    return;
+  }
+
+  var v3rFolder = rootFolders.next();
+  Logger.log("Starting conversion in V3R folder hierarchy...");
+  processFolder(v3rFolder);
+  Logger.log("Conversion complete.");
+}
+
+function processFolder(folder) {
+  var files = folder.getFiles();
+  while (files.hasNext()) {
+    var file = files.next();
+    var fileName = file.getName();
+    var mimeType = file.getMimeType();
+
+    // Skip Google Docs and other Google native formats
+    if (mimeType === MimeType.GOOGLE_DOCS ||
+        mimeType === MimeType.GOOGLE_SHEETS ||
+        mimeType === MimeType.GOOGLE_SLIDES) {
+      continue;
+    }
+
+    var shouldConvert = false;
+    var nameWithoutExtension = fileName;
+
+    if (fileName.toLowerCase().endsWith('.txt')) {
+      nameWithoutExtension = fileName.replace(/\.txt$/i, "");
+      shouldConvert = true;
+    } else if (fileName.toLowerCase().endsWith('.py')) {
+      nameWithoutExtension = fileName.replace(/\.py$/i, "");
+      shouldConvert = true;
+    } else if (fileName.toLowerCase().endsWith('.json')) {
+      nameWithoutExtension = fileName.replace(/\.json$/i, "");
+      shouldConvert = true;
+    } else if (fileName.toLowerCase().endsWith('.ps1')) {
+      nameWithoutExtension = fileName.replace(/\.ps1$/i, "");
+      shouldConvert = true;
+    } else if (fileName.toLowerCase().startsWith('dockerfile')) {
+      nameWithoutExtension = fileName;
+      shouldConvert = true;
+    }
+
+    if (!shouldConvert) {
+      continue;
+    }
+
+    if (alreadyExists(nameWithoutExtension, folder)) {
+      Logger.log('Skipped (Already exists): ' + nameWithoutExtension);
+      continue;
+    }
+
+    var resource = {
+      title: nameWithoutExtension,
+      mimeType: MimeType.GOOGLE_DOCS,
+      parents: [{id: folder.getId()}]
+    };
+
+    try {
+      Drive.Files.copy(resource, file.getId(), {convert: true});
+      Logger.log('Converted: ' + fileName + ' -> ' + nameWithoutExtension);
+    } catch (e) {
+      Logger.log('Failed to convert ' + fileName + ': ' + e.toString());
+    }
+  }
+
+  // Recurse into subfolders
+  var subfolders = folder.getFolders();
+  while (subfolders.hasNext()) {
+    processFolder(subfolders.next());
+  }
+}
+
+function alreadyExists(name, folder) {
+  var existingFiles = folder.getFilesByName(name);
+  while (existingFiles.hasNext()) {
+    var file = existingFiles.next();
+    if (file.getMimeType() === MimeType.GOOGLE_DOCS) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Trigger this function to run manually or via time-based trigger
+function runConverter() {
+  convertV3RFilesToDocs();
+}
+--------------------------------------------------------------------------------
+
+STEP 4 — Save the script (Ctrl+S). Name it "V3R CONDUIT Converter" if prompted.
+
+STEP 5 — Add daily trigger:
+  In Apps Script: Click the clock icon (Triggers) in the left sidebar.
+  Click "+ Add Trigger" (bottom right).
+  Function to run: runConverter
+  Deployment: Head
+  Event source: Time-driven
+  Type: Day timer
+  Time of day: 1am to 2am
+  Click Save.
+  Authorize if prompted.
+
+STEP 6 — Test the converter manually:
+  In Apps Script editor, select function: runConverter
+  Click Run.
+  Check Execution Log for output.
+  Expected: Logs showing conversions or skips for existing files.
+
+STEP 7 — Verify: Open V3R/code/current/ in Drive.
+  Any .txt or .py files already there should now have Google Doc pairs
+  with the same name (no extension) alongside the original files.
+
+Report back converter test results before proceeding to CD-07.
+
+
+================================================================================
+SECTION 13 — IMPLEMENTATION INSTRUCTIONS — CD-07: Initial Full Sync
+================================================================================
+
+This is the first full CONDUIT sync. It uploads all code files, reports,
+and framework files to Drive in one operation.
+
+STEP 1 — Ensure all prior steps are complete:
+  CD-02: rclone installed and configured. gdrive: remote confirmed working.
+  CD-03: v3r_filter.txt created and verified.
+  CD-04: rotate_versions.ps1 created and tested. 9 files in current layer.
+  CD-05: conduit_sync.ps1 created and saved.
+  CD-06: Apps Script extended and daily trigger set.
+
+STEP 2 — Run the initial sync:
+
+  cd C:\Users\Source-1\Desktop\V3R\conduit
+  .\conduit_sync.ps1
+
+The sync will take 1-3 minutes depending on file count and upload speed.
+Watch the PowerShell output. Each stage will report completion.
+
+STEP 3 — Verify sync in Drive:
+  Open V3R/code/current/ in Drive.
+  Confirm all 9 code files are present.
+
+STEP 4 — Run the Apps Script converter manually immediately after sync:
+  Open the Doc Converter Apps Script.
+  Run: runConverter
+  Wait for completion log.
+  Confirm Google Doc pairs appear alongside code files in V3R/code/current/.
+
+STEP 5 — Check the sync log:
+
+  Get-Content C:\Users\Source-1\Desktop\V3R\conduit\logs\session_sync_log.txt
+
+Confirm log shows all 9 stages completing without errors.
+
+Report back all results before proceeding to CD-08.
+
+
+================================================================================
+SECTION 14 — IMPLEMENTATION INSTRUCTIONS — CD-08: Drive Tool Verification
+================================================================================
+
+This is the final verification step. It confirms the end-to-end pipeline works
+and the Drive tool can read V3R code files in a new session.
+
+STEP 1 — Start a new Claude session (separate from this one).
+
+STEP 2 — Instruct the new session to read lambda_chat.py from Drive:
+  "Use the Google Drive tool to read lambda_chat.py from V3R/code/current/"
+
+STEP 3 — Confirm the Drive tool returns the full 106-line file content.
+
+STEP 4 — Instruct the new session to read V3R AI Framework v3.1:
+  "Use the Google Drive tool to read V3R AI Framework v3.1 from
+  V3R/frameworks/current/"
+
+STEP 5 — Confirm full Framework content is returned.
+
+If both reads succeed: CONDUIT is fully operational. CD-08 complete.
+CONDUIT project status: COMPLETE.
+
+If reads fail: The Google Doc pair was not created correctly.
+Return to CD-06 and re-run the converter. Verify Doc pairs exist in Drive
+before testing again.
+
+
+================================================================================
+SECTION 15 — ONGOING SESSION WORKFLOW (post-CONDUIT)
+================================================================================
+
+After CONDUIT is operational, every session follows this workflow:
+
+SESSION START:
+  1. Open Claude.ai. Start new session.
+  2. V3R reads current Framework and Briefing from V3R/frameworks/current/.
+  3. V3R reads latest project and coding reports from relevant reports folders.
+  4. V3R reads any handler code needed from V3R/code/current/.
+  5. Session begins with complete current state.
+
+SESSION END:
+  1. Save all modified files to their local directories.
+  2. Save all new report .txt files to appropriate local V3R report directories.
+  3. Open PowerShell. Navigate to conduit folder.
+  4. Run: .\conduit_sync.ps1
+  5. Wait for completion (1-3 minutes).
+  6. Run Apps Script converter manually if immediate Doc pairs are needed.
+     (Daily trigger will catch it overnight if not run manually.)
+  7. Session fully archived. Next session starts from current state.
+
+REVERT PROCEDURE (if a push breaks something):
+  1. Open V3R/code/last/ in Drive.
+  2. Download the broken handler file.
+  3. Replace in C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+  4. Run Docker build and push to restore last known good state.
+  5. If last/ is also bad, use V3R/code/previous/ instead.
+
+
+================================================================================
+SECTION 16 — FORBIDDEN PATTERNS — CONDUIT ADDITIONS
+================================================================================
+
+All 16 V3R Forbidden Patterns remain active. CONDUIT adds:
+
+FP-017: Never sync credentials to Drive via rclone or any other method.
+  AWS Access Key, Secret Key, Groq API key, HuggingFace token must never
+  appear in any file pushed to Drive. The General Data file in V3R/data/
+  holds credentials by operator choice — CONDUIT does not add to this.
+  The rclone filter file does not currently exclude .json files (they may
+  contain config data). If env_vars.json or any credential file exists in
+  the build directory, exclude it explicitly in the filter file before
+  running conduit_sync.ps1 for the first time.
+
+FP-018: Never use --delete flag with rclone in CONDUIT scripts.
+  All rclone copy commands use --no-delete. Drive is the archive.
+  Files deleted locally must not be deleted from Drive.
+  Use rclone copy, never rclone sync (sync enables deletion).
+
+
+================================================================================
+SECTION 17 — CURRENT STATUS SUMMARY
+================================================================================
+
+As of March 15, 2026:
+
+Project CONDUIT:
+  CD-01: COMPLETE — Folder structure created in Drive and locally.
+  CD-02: PENDING — rclone not yet installed. Start here.
+  CD-03: PENDING
+  CD-04: PENDING
+  CD-05: PENDING
+  CD-06: PENDING
+  CD-07: PENDING
+  CD-08: PENDING
+
+V3R System:
+  Phases 1-8: COMPLETE
+  Lambda functions: 6 operational
+  DynamoDB tables: 4 active (rag-chunks, rag-memory, rag-graph, rag-specs)
+  ECR: ml-offline-torch26 (~3184 MB) in private repository
+  HF Space: dnsxt/rag-memory — running, public
+  Known billing exposure: ECR private repository — addressed in NEXUS ST-01
+
+Project NEXUS:
+  Status: PENDING — blocked on CONDUIT completion
+  Full roadmap: V3R/nexus/reports/project/ in Drive
+
+Next session: Begin with CD-02.
+First instruction to operator: Navigate to rclone.org/downloads and download
+rclone-current-windows-amd64.zip before starting.
+
+
+================================================================================
+SECTION 18 — FILE LOCATIONS REFERENCE
+================================================================================
+
+ALL LOCAL PATHS:
+  rclone executable:     C:\Users\Source-1\Desktop\rclone\rclone.exe
+  rclone filter file:    C:\Users\Source-1\Desktop\rclone\v3r_filter.txt
+  conduit_sync.ps1:      C:\Users\Source-1\Desktop\V3R\conduit\conduit_sync.ps1
+  rotate_versions.ps1:   C:\Users\Source-1\Desktop\V3R\conduit\rotate_versions.ps1
+  sync log:              C:\Users\Source-1\Desktop\V3R\conduit\logs\session_sync_log.txt
+  code backup current:   C:\Users\Source-1\Desktop\V3R\code\current\
+  code backup last:      C:\Users\Source-1\Desktop\V3R\code\last\
+  code backup previous:  C:\Users\Source-1\Desktop\V3R\code\previous\
+  ecr-build source:      C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+  hf-space source:       C:\Users\Source-1\Desktop\rag-deploy\hf-space\
+
+ALL DRIVE PATHS:
+  Code current:          V3R/code/current/
+  Code last:             V3R/code/last/
+  Code previous:         V3R/code/previous/
+  Core project reports:  V3R/core/reports/project/
+  Core coding reports:   V3R/core/reports/coding/
+  Core handoffs:         V3R/core/reports/handoffs/
+  Framework current:     V3R/frameworks/current/
+  Data:                  V3R/data/
+  CONDUIT scripts:       V3R/conduit/
+  CONDUIT logs:          V3R/conduit/logs/
+  CONDUIT reports:       V3R/conduit/reports/project/
+  NEXUS reports:         V3R/nexus/reports/project/
+
+
+================================================================================
+END OF HANDOFF REPORT
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 15, 2026
+Project: CONDUIT
+Status: CD-01 Complete. CD-02 through CD-08 pending.
+Next action: CD-02 — rclone installation.
+Save this file to: V3R/conduit/reports/handoffs/ in Drive.
+================================================================================

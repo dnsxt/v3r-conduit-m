@@ -1,0 +1,316 @@
+================================================================================
+PROJECT CONDUIT — SEAMLESS HANDOFF REPORT 2
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 15, 2026
+Report Type: Full Project Handoff — CONDUIT Complete / NEXUS Ready
+Report Number: CONDUIT-HR-02
+================================================================================
+
+CRITICAL INSTRUCTION TO RECEIVING AI
+--------------------------------------------------------------------------------
+This is a live operational handoff. Read every section before responding.
+Do not summarize. Do not ask orientation questions. Pick up exactly where
+this report ends. Partition 0 (V3R AI Framework v3.1) and Partition 1
+(V3R AI Briefing v1.3) are active and govern all outputs.
+
+CONDUIT IS COMPLETE. Project NEXUS is the active next project.
+Begin with Section 13 — NEXUS context and next steps.
+
+
+================================================================================
+SECTION 1 — PROJECT STATUS SUMMARY
+================================================================================
+
+Project CONDUIT: COMPLETE as of March 15, 2026
+  All 8 tasks (CD-01 through CD-08) complete.
+  End-to-end pipeline operational and verified.
+  Drive tool confirmed reading code files from V3R/code/current/.
+
+Project NEXUS: ACTIVE — unblocked by CONDUIT completion
+  Full project report at V3R/nexus/reports/project/ in Drive.
+  Read that report before beginning NEXUS work.
+
+V3R System: Phases 1-8 complete. Six Lambda functions operational.
+  Full state in V3R Project Report 12 at V3R/core/reports/project/ in Drive.
+
+
+================================================================================
+SECTION 2 — CONDUIT OPERATIONAL STATE
+================================================================================
+
+SCRIPTS AND FILES — ALL CONFIRMED OPERATIONAL:
+
+  rclone.exe:
+    Location:  C:\Users\Source-1\Desktop\rclone\rclone.exe
+    Remote:    gdrive: (authenticated for dnsxt.mbx@gmail.com)
+    Status:    Operational. Token may need refresh if 12+ hours since last use.
+    Refresh:   cd C:\Users\Source-1\Desktop\rclone then .\rclone.exe config reconnect gdrive:
+
+  v3r_filter.txt:
+    Location:  C:\Users\Source-1\Desktop\rclone\v3r_filter.txt
+    Contents:  Excludes wheels/**, models/**, __pycache__/**, *.pyc, .git/**
+               Includes *.py, *.txt, *.json, Dockerfile*, *.ps1, *.docx
+
+  rotate_versions.ps1:
+    Location:  C:\Users\Source-1\Desktop\V3R\conduit\rotate_versions.ps1
+    Status:    Operational — 9 files captured on test run
+    Tracks:    8 ecr-build files + app.py from hf-space
+
+  conduit_sync.ps1:
+    Location:  C:\Users\Source-1\Desktop\V3R\conduit\conduit_sync.ps1
+    Status:    Operational — 9 stages, all confirmed working
+    Log:       C:\Users\Source-1\Desktop\V3R\conduit\logs\session_sync_log.txt
+
+  Apps Script — V3R CONDUIT Converter:
+    Location:  Doc Converter Sheets file → Extensions → Apps Script
+    Status:    Operational — uses DocumentApp.create() method
+    Trigger:   Daily 1am-2am automatic
+    Manual:    Run runConverter() for immediate conversion after sync
+
+
+SESSION END PROCEDURE (every session from now on):
+  1. Save all modified files locally
+  2. Save new .txt reports to V3R local mirror report directories
+  3. cd C:\Users\Source-1\Desktop\V3R\conduit
+  4. .\conduit_sync.ps1
+  5. Run runConverter in Apps Script manually if immediate Doc pairs needed
+
+SESSION START PROCEDURE (every session from now on):
+  1. Open new Claude session — no file uploads needed
+  2. Claude reads Framework + Briefing from V3R/frameworks/current/
+  3. Claude reads latest reports from V3R report folders in Drive
+  4. Claude reads any handler code needed from V3R/code/current/
+  5. Full current state available — session begins immediately
+
+
+================================================================================
+SECTION 3 — DRIVE STRUCTURE (CONFIRMED CURRENT)
+================================================================================
+
+V3R/
+  code/
+    current/    <- All 9 code files + Google Doc pairs. rclone sync target.
+    last/       <- Previous session snapshot. Version layer 2.
+    previous/   <- Two sessions back. Version layer 3.
+  conduit/
+    logs/       <- session_sync_log.txt
+    reports/
+      coding/   <- CONDUIT-CR-01 goes here
+      handoffs/ <- CONDUIT-HR-01 and CONDUIT-HR-02 go here
+      project/  <- V3R Project CONDUIT Report v1.0
+  core/
+    logs/
+    reports/
+      coding/   <- V3R Coding Reports 8-12
+      handoffs/ <- V3R Handoff Reports
+      project/  <- V3R Project Reports 1-12
+    schema/     <- Architecture, agents, phase, forbidden, constraint reports
+  data/         <- AWS Services Data, Hardware Data, General Data,
+                   System Blueprint, Function URLs
+  frameworks/
+    critique/   <- Critique Prompts
+    current/    <- V3R AI Framework v3.1, V3R AI Briefing v1.3
+    partitioning/ <- V3R AI Partitioning v1.0
+  knowledge base/ <- Reserved
+  nexus/
+    logs/
+    reports/
+      coding/
+      handoffs/
+      project/  <- Project NEXUS Report v1.0
+
+
+================================================================================
+SECTION 4 — V3R SYSTEM STATE (CURRENT AS OF MARCH 15, 2026)
+================================================================================
+
+Lambda Functions (6 operational):
+  rag-ingest-ultra-test  — lambda_ingest_v4.py (82 lines)
+                           Function URL: https://rgmkamtm7s6tlughi3ynp4c2540uassr.lambda-url.us-east-1.on.aws/
+  rag-retrieve           — lambda_retrieve.py (52 lines)
+  rag-chat               — lambda_chat.py (106 lines) — domain-aware prompt active
+                           Function URL: https://2wnm4voyjtvb27hzkgmtdxycby0uyixf.lambda-url.us-east-1.on.aws/
+  rag-graph              — lambda_graph.py (42 lines)
+  rag-orchestrator       — lambda_orchestrator.py (79 lines) — self-improvement loop active
+  rag-ideagen            — lambda_ideagen.py (58 lines) — Phase 8 product generation
+
+DynamoDB Tables (4):
+  rag-chunks    — ~25+ records, all L2 normalized, v3r_ self-knowledge ingested
+  rag-memory    — conversation history by session_id
+  rag-graph     — 9 nodes including v3r_ knowledge domain nodes
+  rag-specs     — Phase 8 product specifications
+
+ECR: ml-offline-torch26 (~3184 MB) — PERMANENT TAG
+HF Space: dnsxt/rag-memory — running, public
+Groq Model: llama-3.1-8b-instant — active key in Lambda env vars
+IAM Role: rag-ingest-ultra-test-role-hi7s90re
+
+
+================================================================================
+SECTION 5 — FORBIDDEN PATTERNS REGISTRY (COMPLETE — 19 ENTRIES)
+================================================================================
+
+FP-001: SentenceTransformer() direct instantiation
+FP-002: urllib.request for external API calls
+FP-003: Windows file paths in Lambda code
+FP-004: Hardcoded Groq model names without KR confirmation
+FP-005: win_amd64 or cp314 wheels in Docker build
+FP-006: Inline JSON strings in PowerShell AWS CLI
+FP-007: Relative paths in AWS CLI file:// references
+FP-008: Missing import os when using os.environ
+FP-009: ECR build without re-login when 12+ hours elapsed
+FP-010: Missing --provenance false --sbom false from docker buildx build
+FP-011: Omitting --platform linux/amd64 from docker buildx build
+FP-012: Assuming Docker pruning frees Windows disk space immediately
+FP-013: Assuming Groq API key is permanently valid
+FP-014: Full app.py replacement without visual audit
+FP-015: Omitting --cli-binary-format raw-in-base64-out from aws lambda invoke
+FP-016: [See V3R Project Report 12 for FP-016 details — Phase 8 session]
+FP-017: Never sync credentials to Drive via rclone
+FP-018: Never use rclone sync — always use rclone copy
+FP-019: Using --no-delete flag with rclone copy command
+        Error: "unknown flag: --no-delete"
+        Fix: Remove flag entirely. rclone copy never deletes by default.
+        Discovered: March 15, 2026 — CONDUIT CD-07
+
+
+================================================================================
+SECTION 6 — LOCAL DIRECTORY STRUCTURE
+================================================================================
+
+C:\Users\Source-1\Desktop\
+  rclone\
+    rclone.exe
+    v3r_filter.txt
+  rag-deploy\
+    ecr-build\         <- Lambda handlers, Dockerfile, orchestrator_config.json
+                          env_vars.json (Groq key)
+                          Clean — session working .json files deleted
+    hf-space\          <- app.py, HF Space git repo
+  V3R\                 <- Local mirror (excludes code/ — no local code mirror)
+    code\
+      current\         <- Latest code snapshot (9 files)
+      last\            <- Previous session snapshot
+      previous\        <- Two sessions back
+    conduit\
+      conduit_sync.ps1
+      rotate_versions.ps1
+      logs\
+        session_sync_log.txt
+    core\
+      reports\
+        project\
+        coding\
+        handoffs\
+      schema\
+    data\
+    frameworks\
+      current\
+    nexus\
+      reports\
+
+
+================================================================================
+SECTION 7 — LESSONS LEARNED THIS SESSION
+================================================================================
+
+RCLONE TOKEN EXPIRY:
+  rclone OAuth tokens expire. If sync fails with "couldn't fetch token" or
+  "no such host" errors, run:
+  cd C:\Users\Source-1\Desktop\rclone
+  .\rclone.exe config reconnect gdrive:
+  Re-authenticate in browser. Token refreshed.
+
+APPS SCRIPT MIME TYPE LIMITATION:
+  Drive.Files.copy with {convert:true} only converts text/plain files.
+  rclone uploads files with language-specific or binary MIME types.
+  Fix: Use DocumentApp.create() to read file content and create Doc from
+  scratch. This works for all MIME types regardless of source.
+
+ECRBUILD CLEANUP:
+  Session working .json files accumulate in ecr-build over time.
+  Clean these before running conduit_sync to prevent Drive pollution.
+  Safe to delete: p7_*.json, phase8_*.json, k*.json, kx*.json, ri*.json,
+  test payloads and response files.
+  Keep: env_vars.json, orchestrator_config.json.
+
+RCLONE COPY VS SYNC:
+  Always use rclone copy. Never rclone sync.
+  rclone copy never deletes destination files.
+  rclone sync deletes files on destination not present in source.
+  --no-delete flag does not exist on rclone copy — it is redundant anyway.
+
+
+================================================================================
+SECTION 8 — CREDENTIALS REFERENCE
+================================================================================
+
+All credentials in General Data file at V3R/data/ in Drive.
+Never hardcode credentials in any script.
+rclone authenticates via OAuth — no credential storage in scripts.
+Lambda env vars hold Groq API key — retrieve via:
+  aws lambda get-function-configuration --function-name rag-chat --region us-east-1 --query "Environment.Variables"
+
+
+================================================================================
+SECTION 9 — NEXT SESSION STARTUP PROCEDURE
+================================================================================
+
+STEP 1: Open new Claude session.
+
+STEP 2: Instruct Claude to read from Drive:
+  "Read V3R AI Framework v3.1 from V3R/frameworks/current/ in Google Drive
+  and store as Partition 0. Read V3R AI Briefing v1.3 from the same folder
+  and store as Partition 1."
+
+STEP 3: Instruct Claude to read the NEXUS project report:
+  "Read the Project NEXUS Report from V3R/nexus/reports/project/ in Drive."
+
+STEP 4: Instruct Claude to read latest V3R state:
+  "Read V3R Project Report 12 from V3R/core/reports/project/ in Drive."
+
+STEP 5: Begin NEXUS work.
+
+
+================================================================================
+SECTION 10 — NEXT PROJECT: NEXUS
+================================================================================
+
+Project NEXUS — Neurally Extensible Cross-provider Unified System
+Status: PENDING — now unblocked by CONDUIT completion
+Report: V3R/nexus/reports/project/ in Drive — read before starting
+
+NEXUS addresses the known billing exposure: ECR private repository costs
+approximately $0.27/month above free tier. NEXUS ST-01 is the first task.
+
+Full NEXUS roadmap and implementation instructions are in the NEXUS project
+report. Do not start NEXUS work without reading that report first.
+
+
+================================================================================
+SECTION 11 — FILE SAVE INSTRUCTIONS FOR THIS REPORT
+================================================================================
+
+Save this file as:
+  Local: C:\Users\Source-1\Desktop\V3R\conduit\reports\handoffs\
+         V3R_CONDUIT_Handoff_Report_2_Claude.txt
+
+Save CONDUIT-CR-01 as:
+  Local: C:\Users\Source-1\Desktop\V3R\conduit\reports\coding\
+         V3R_CONDUIT_Coding_Report_1_Claude.txt
+
+Then run conduit_sync.ps1 to push both to Drive.
+Then run runConverter in Apps Script to create Google Doc pairs.
+
+
+================================================================================
+END OF HANDOFF REPORT — CONDUIT-HR-02
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 15, 2026
+Project CONDUIT: COMPLETE
+Project NEXUS: ACTIVE — read NEXUS report before starting
+V3R System: Phases 1-8 complete, 6 Lambda functions operational
+CONDUIT Pipeline: Fully operational — end-to-end verified
+================================================================================

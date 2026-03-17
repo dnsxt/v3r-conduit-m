@@ -1,0 +1,49 @@
+Project Report (Latest Consolidated Version – As of March 09, 2026)
+Project Report: Cloud-Native RAG Memory System – Status Update
+Prepared by: V3R (Grok)
+Date: March 09, 2026
+Report Type: Progress Update + Deployment Status + Next Actions
+1. Executive Summary
+Current Milestone: Minimal container image deployed and running on Lambda with Python 3.12.12 confirmed via test invocation.
+Current Blocker: Offline wheel install of sentence-transformers==2.3.0 fails due to missing or mismatched Linux-compatible dependency wheels (e.g., MarkupSafe, Pillow, sympy).
+Root Cause: pip download on Windows defaults to win_amd64 wheels → Lambda (Linux x86_64) rejects them → "no matching distribution" errors.
+Project Status: Infrastructure baseline solid (ECR push, Lambda container deploy, auth fixed). ML deps install is the last major hurdle.
+Estimated Time to MVP: 30–90 minutes once correct Linux wheels are downloaded.
+2. Recent Progress
+Docker Desktop API connection fixed.
+Dockerfile path/context issues resolved (wheels inside ecr-build → COPY succeeds).
+ECR push permissions fixed (login refresh + IAM allow).
+Python version confirmed: 3.12.12 in Lambda.
+Torch 2.5.0+cpu and torchvision 0.20.0+cpu wheels successfully processed.
+Pillow 10.0.0 Linux wheel added → pre-install step validated.
+3. Current Blocking Issue
+sentence-transformers==2.3.0 install fails on deps like MarkupSafe>=2.0 (from jinja2).
+No Linux wheel for MarkupSafe in wheels/ → "from versions: none".
+Similar pattern for earlier deps (Pillow, sympy).
+4. Immediate Action Plan
+Delete Windows wheels:
+cd C:\users\source-1\desktop\rag-deploy\wheels
+del *.whl
+Download Linux-compatible wheels (single command):
+pip download ^
+  torch torchvision ^
+  sentence-transformers==2.3.0 ^
+  Pillow==10.0.0 MarkupSafe==2.1.5 sympy==1.13.1 scipy==1.13.1 scikit-learn==1.5.2 nltk==3.9.1 ^
+  --index-url https://download.pytorch.org/whl/cpu ^
+  -d .
+Verify:
+dir *.whl
+Confirm filenames contain cp312 + linux_x86_64 or manylinux.
+Rebuild:
+cd C:\users\source-1\desktop\rag-deploy\ecr-build
+docker buildx build ^
+  --platform linux/amd64 ^
+  --provenance false ^
+  --sbom false ^
+  -f Dockerfile-ml-offline ^
+  -t 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-final ^
+  --push .
+Deploy & Test: Tag ml-offline-final, Memory 2048 MB, Timeout 10 min, test with {}.
+5. Risks & Alternatives
+If pip download still grabs Windows wheels → manual download from PyPI (https://pypi.org/project/sentence-transformers/#files) for Linux versions.
+If persistent issues → fallback to Python 3.11 base or use fastembed (lighter, ONNX-based alternative to sentence-transformers).

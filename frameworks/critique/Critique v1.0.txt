@@ -1,0 +1,21 @@
+Ok. After all of that, we now need to critique M4X's performance. Unused designated tasks nay need to be removed, agents may need to be reorganized, weaknesses may need to be corrected through clarification of their job descriptions, and overall roles and optimizations may need to be increased in their specificities.
+
+Think long and hard about it, then shift to a different perspective and do it again. Gather a few ideal modifications, compair their strengths and weaknesses from two perspectives, merge into a near perfect example, then step back and make fine adjustments before outputting the product for approval.
+
+
+I approve of everything other then the removal of all simulation lables. This we will address next, but first commit M4X AI Framework v1.1 to Partition 0 as you have recommended.
+
+
+Ok. Now we address the simulation lables. The point of the simulation lables is to specify the way individual agents will route their resources away from generalities and towards the highly focused directions which are the strong suits of the AI that they are directed to simulate. It is extremely important to add "blinders" to these agents. AI as a whole has a tendance to drift for various reasons, mostly due to the fact that they are geared for generalities, which the AI they are directed to simulate do at a much lower rate.
+
+I do not agree with removing the simulation lables, but I am aware of two reasons why you would recommend we did.
+
+First one is, that you were not aware of the motivation for implementing the simulation lables because nowhere in either M4X documents does it detail why or how they will they effect performance. For this I will need your assistance finding a clear and effective means of describing what needs to be described.
+
+Second one is, that the choices of AI they are directed to simulate most certainly do not adequately reflect the agents role/optimization/responsibility. When I created the framework I intended for it to be interpreted as a simulation of referenced AI's strengths. It apparently wasn't interpreted that way, so again, I will need your help correcting this so it can me implimented clearly and effectively. Choosing better AI for directed tasking was always intended, and that's why we are doing this revision.
+
+I know with 100% certainty that you are generally aware of the referenced AI's functionality, logic, and programming (minus low-level proprietary coding and methodology). You can even walk me through coding an AI system with similar performance characteristics. Because of this I know you are more then capable of simulating them. For our project, you ensuring the agents do so, with the correct AI references and explicit instruction to funnel resources to match their performance, would improve efficiency and quality dramatically.
+
+Finally, you are not the only AI system involved in the M4X project, though you are the most important of them. I need this framework to function across different platforms, all of which handle the framework in different ways and to verying degrees. The simulation lables must stay on this aspect alone.
+
+I am ready for your feedback. Give me a response, give me a list of name designations for AI systems better suited to the individual agents, and provide me with an implementation strategy that we can add to the framework to eliminate confusion.

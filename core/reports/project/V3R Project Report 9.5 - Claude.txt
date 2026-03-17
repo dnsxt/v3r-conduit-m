@@ -1,0 +1,319 @@
+﻿# V3R PROJECT REPORT
+**Document:** V3R-REPORT-001
+**Version:** 1.0 — Snapshot: March 12, 2026
+**Classification:** Living Document — New Snapshot at Each Phase Completion
+**Author:** V3R Documentation Agent
+
+---
+
+## DOCUMENT PURPOSE
+
+This report is the full project snapshot — a single document that captures the complete state of V3R at a specific point in time. Unlike the specialized reports (Architecture, Agents, Phase, Forbidden Patterns, Session, Constraint) which go deep on individual topics, this report goes wide across all of them. It is written so that any developer, any AI agent, or any stakeholder can read this single document and understand exactly what V3R is, what it has built, where it stands, what is broken, and what comes next. It is updated at each phase completion and at significant milestones within phases.
+
+---
+
+## SNAPSHOT DATE: March 12, 2026
+## CURRENT PHASE: Phase 3 Active — Conversation Memory Persistence
+## SYSTEM STATUS: 95% Operational — Single Known Issue
+
+---
+
+## SECTION 1 — WHAT V3R IS
+
+V3R is a Cloud-Native GNN-integrated Multi-Agent Multi-LLM Industrial Science and Intelligence Engineering Platform. It is not a chatbot. It is not a tool. It is the foundational architecture for an AI system that accepts raw ideas and outputs fully engineered products.
+
+### The Problem It Solves
+
+Every AI system in existence today starts each session from zero. No memory of prior conversations. No accumulated engineering context. No knowledge that persists. A developer using a standard AI assistant today gets the exact same blank-slate system they got six months ago, regardless of how much work has been done together.
+
+V3R eliminates this permanently. The system is designed so that every piece of knowledge ingested, every conversation completed, and every engineering decision made accumulates into a persistent, retrievable, growing intelligence base. The longer V3R runs, the more capable it becomes. This is not a feature. It is the architectural thesis on which every component is built.
+
+### The End Goal
+
+Phase 8: V3R accepts a raw idea and outputs a fully engineered product. Not a draft. A product. Specified, architected, coded, tested, deployable. Every phase between now and Phase 8 is a non-negotiable prerequisite for that outcome.
+
+### Who Is Building It
+
+A single developer (Dirty) on a consumer-grade laptop with no admin access, no GPU, 7 Mbps upload speed, and a permanent AWS free-tier budget. This is intentional. When Phase 8 is reached, it will prove that industrial-scale AI engineering intelligence can be built without enterprise infrastructure.
+
+---
+
+## SECTION 2 — SYSTEM ARCHITECTURE
+
+### Three-Layer Cognitive Model
+
+```
+LAYER 1 — MEMORY
+Text → Lambda rag-ingest-ultra-test → Chunk → Embed → DynamoDB rag-chunks
+
+LAYER 2 — REASONING
+Query → Lambda rag-retrieve → Embed → Cosine Scan → Top-K Results
+
+LAYER 3 — GENERATION
+Query + Context + History → Lambda rag-chat → Groq API → Answer → Save History
+```
+
+### Live Infrastructure
+
+| Component | Service | Identifier | Status |
+|---|---|---|---|
+| UI | HuggingFace Space | dnsxt/rag-memory | Running, public |
+| Ingestion | AWS Lambda | rag-ingest-ultra-test | Operational |
+| Retrieval | AWS Lambda | rag-retrieve | Operational |
+| Generation | AWS Lambda | rag-chat | Partially broken (see Section 5) |
+| Knowledge store | DynamoDB | rag-chunks | Clean, 6 records |
+| Memory store | DynamoDB | rag-memory | Operational |
+| Container registry | ECR | rag-ingest-container:ml-offline-torch26 | Single image, clean |
+
+### Key Technical Decisions
+
+**Offline embedding:** all-MiniLM-L6-v2 is baked into the Docker image. No runtime model downloads. No HuggingFace dependency in the inference path. Loaded via AutoTokenizer/AutoModel — never SentenceTransformer().
+
+**Full table scan retrieval:** No vector database. DynamoDB full scan with in-Lambda cosine similarity. Correct for sub-10,000 record scale through Phase 4.
+
+**Single shared image:** All three Lambda functions run from the same Docker image. Shared model eliminates redundant storage and build time.
+
+**Free tier only:** AWS free tier is a permanent design constraint, not a temporary limitation.
+
+---
+
+## SECTION 3 — PHASE STATUS
+
+| Phase | Title | Status |
+|---|---|---|
+| P1 | RAG Pipeline Foundation | ✅ COMPLETE |
+| P2 | End-to-End Integration | ✅ COMPLETE — March 12, 2026 |
+| P3 | Conversation Memory Persistence | 🔄 ACTIVE |
+| P4 | GNN Relational Knowledge Graphs | ⏳ PENDING |
+| P5 | Multi-Agent Orchestration | ⏳ PENDING |
+| P6 | Multi-Modal Inputs | ⏳ PENDING |
+| P7 | V3R Self-Improvement Engine | ⏳ PENDING |
+| P8 | Automated Product Generation | ⏳ PENDING |
+
+### Phase 1 Summary
+Built the three-layer RAG pipeline. Established offline Docker container strategy. Confirmed AutoTokenizer/AutoModel pattern. Established all-MiniLM-L6-v2 as the embedding model. Built rag-ingest, rag-retrieve, rag-chat Lambda functions. Created rag-chunks DynamoDB table. Confirmed end-to-end function-level testing.
+
+### Phase 2 Summary — Completed March 12, 2026
+Connected all three functions into a live end-to-end pipeline accessible through a public HuggingFace Space. Fixed Gradio 6.x breaking changes in app.py. Deployed Function URLs on rag-ingest-ultra-test and rag-chat. Created rag-memory DynamoDB table. Cleaned ECR to single image. Cleaned Lambda to three functions. Cleaned DynamoDB to two tables with six production records in rag-chunks.
+
+**Phase 2 Verification Results:**
+- rag-ingest-ultra-test: 200 OK, chunks_stored: 1, 105,515 ms, 721 MB
+- rag-retrieve: 200 OK, 3 results with cosine scores, 89,426 ms, 720 MB
+- rag-chat: 200 OK, rag_used: true, memory_turns: 1, 17,593 ms, 89 MB
+- HF Space ingest: "Ingested 1 chunks from space_connection_test"
+- HF Space chat: Valid Groq response returned
+
+### Phase 3 Summary — Active
+Objective: make rag-chat remember conversation history across turns within a session.
+
+Root cause identified and fixed: rag-memory table has composite key (vector_id PK + timestamp SK). Original get_history() used get_item with only vector_id — silent failure. Replaced with memory_table.query. save_history() updated to include timestamp sort key. GROQ_API_KEY moved to Lambda environment variable. import os added to lambda_chat.py.
+
+One remaining issue: rag-chat returning "No response" — suspected empty GROQ_API_KEY env var in deployed container. One verification command away from resolution.
+
+### Phase 7 Redefinition — March 12, 2026
+Phase 7 formally redefined from "Science and Engineering Domain Intelligence" to "V3R Self-Improvement Engine." V3R builds up its own architecture into a better Cloud-Native Multi-Agent Multi-LLM system. The system evaluates its own performance, identifies weaknesses, proposes and implements improvements, and verifies them. Self-improvement is the prerequisite for Phase 8 reliability.
+
+---
+
+## SECTION 4 — CODEBASE STATE
+
+### lambda_ingest_v4.py — CLEAN
+**Location:** C:\Users\Source-1\Desktop\rag-deploy\ecr-build\lambda_ingest_v4.py
+**Lines:** 60 | **Encoding:** Windows CR LF (harmless in Lambda)
+**Status:** Operational. No changes needed.
+
+Reads event["text"] and event["source"]. Chunks at 500 words with 50-word overlap. Embeds each chunk via AutoTokenizer/AutoModel. Stores to rag-chunks with uuid chunk_id, source, timestamp. Returns statusCode 200 with chunks_stored count.
+
+### lambda_retrieve.py — CLEAN
+**Location:** C:\Users\Source-1\Desktop\rag-deploy\ecr-build\lambda_retrieve.py
+**Lines:** 52 | **Encoding:** Windows CR LF (harmless in Lambda)
+**Status:** Operational. No changes needed.
+
+Reads event["query"] and event["top_k"] (default 3). Full table scan of rag-chunks. Skips items without embedding field. Cosine similarity scoring. Returns top_k sorted results.
+
+### lambda_chat.py — OPERATIONAL WITH KNOWN ISSUE
+**Location:** C:\Users\Source-1\Desktop\rag-deploy\ecr-build\lambda_chat.py
+**Lines:** 79 | **Encoding:** Unix LF
+**Status:** All code fixes applied. Groq returning "No response" — env var verification pending.
+
+All Phase 3 fixes applied and deployed:
+- import os present on line 2
+- GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "") on line 8
+- get_history() uses memory_table.query with KeyConditionExpression
+- save_history() includes timestamp as integer unix epoch
+
+### Dockerfile-ml-offline — CLEAN
+pillow==12.1.1 pinned. Offline pip install via --no-index --find-links /wheels. Model copied at build time. All three handlers copied. No network calls during build.
+
+### wheels/ — CLEAN
+All win_amd64 files removed. All cp314 files removed. Duplicates pruned. Only Linux manylinux cp312 x86_64 wheels remain.
+
+### app.py (HF Space) — CLEAN
+Gradio 6.x compatible. Reads Lambda URLs from environment variables. Correct request schemas for both ingest and chat endpoints.
+
+---
+
+## SECTION 5 — KNOWN ISSUES
+
+### ISSUE-001 — rag-chat Returning "No Response"
+**Severity:** High — core functionality impaired
+**Status:** Diagnosis complete, resolution pending one verification step
+
+**Symptom:** Lambda test returns statusCode 200 but body.answer = "No response" instead of Groq-generated text.
+
+**Root cause:** Groq API returning empty choices array. Consistent with 401 authentication failure — GROQ_API_KEY environment variable is likely empty string in the currently deployed Lambda container.
+
+**Evidence:** The response path `resp_data.get("choices", [{}])[0].get("message", {}).get("content", "No response")` falls through to the default "No response" value. A 401 Groq response contains an error object, not a choices array.
+
+**Resolution — one step:**
+```powershell
+aws lambda get-function-configuration --function-name rag-chat --region us-east-1 --query "Environment.Variables"
+```
+If empty: re-set the key using WriteAllText method and update-function-configuration. No rebuild required.
+
+**Impact on other components:** None. rag-ingest-ultra-test and rag-retrieve are fully operational and unaffected.
+
+---
+
+## SECTION 6 — AGENT FRAMEWORK
+
+V3R is developed using a six-agent multi-model framework. Every output passes through a mandatory System Debug gate before reaching the developer.
+
+| Agent | Model | Role |
+|---|---|---|
+| MODERATOR | GPT-4o | Orchestration and task decomposition |
+| KNOWLEDGE RETRIEVAL | Perplexity | Real-time sourced library and API confirmation |
+| CODER | DeepSeek Coder V2 | Constraint-aware code generation |
+| SYSTEM DEBUG | o3 | Mandatory pre-output gate — zero outputs bypass |
+| DOCUMENTATION | Claude Sonnet | Reports, comments, handoff documents |
+| INFRASTRUCTURE | Amazon Q Developer | IAM, free-tier, pre-flight authority |
+
+**Session 1 Phase 3 accuracy:** 82.4% (34 deliveries, 28 correct first time). Target for Phase 4: 95%+.
+
+**Notable failures this session:**
+- Coder Agent: import os omitted from GROQ_API_KEY change
+- System Debug Agent: import os omission not caught at gate
+- Coder Agent: PowerShell inline JSON pattern repeated before formalization
+- Both failures now have registry entries (FP-006, FP-008)
+
+---
+
+## SECTION 7 — FORBIDDEN PATTERNS SUMMARY
+
+10 patterns permanently banned. Full details in V3R-FPR-001.
+
+| ID | Pattern | When Banned |
+|---|---|---|
+| FP-001 | SentenceTransformer() instantiation | Phase 1 |
+| FP-002 | urllib.request for external APIs | Phase 1 |
+| FP-003 | Windows paths in Lambda code | Phase 1 |
+| FP-004 | Hardcoded Groq model without KR confirm | Phase 1 |
+| FP-005 | win_amd64 or cp314 wheels | Phase 1 |
+| FP-006 | Inline JSON in PowerShell AWS CLI | Phase 3 |
+| FP-007 | Relative paths in AWS CLI file:// | Phase 3 |
+| FP-008 | Missing import os with os.environ | Phase 3 |
+| FP-009 | No ECR re-login before build+push | Phase 3 |
+| FP-010 | Missing --provenance/--sbom flags | Phase 1 |
+
+---
+
+## SECTION 8 — PLATFORM CONSTRAINTS SUMMARY
+
+Full details in V3R-CONSTRAINT-001.
+
+| Constraint | Value |
+|---|---|
+| Machine | HP Pavilion x360 / Win10 Home / No admin |
+| Shell | PowerShell 5.1 — WriteAllText for JSON |
+| Local Python | 3.14.3 — NEVER use for Lambda wheels |
+| Lambda Python | 3.12 — all wheels must be cp312 |
+| Docker | linux/amd64 always |
+| Upload speed | 7 Mbps — full push 60-90 min |
+| Lambda memory | 2048 MB |
+| Lambda timeout | 10 minutes |
+| ECR tag | ml-offline-torch26 — never change |
+| Budget | AWS free tier permanent |
+
+---
+
+## SECTION 9 — AWS RESOURCE INVENTORY
+
+### Active Resources
+
+**ECR**
+- (See sensitive_data.txt)
+
+**Lambda Functions**
+- rag-ingest-ultra-test (Function URL: (See sensitive_data.txt))
+- rag-retrieve (no Function URL)
+- rag-chat (Function URL: (See sensitive_data.txt))
+
+**DynamoDB**
+- rag-chunks (chunk_id PK) — 6 production records
+- rag-memory (vector_id PK + timestamp SK) — active Phase 3
+
+**IAM**
+- Role: rag-ingest-ultra-test-role-hi7s90re
+- Policies: AmazonDynamoDBFullAccess + AWSLambda_FullAccess
+
+**HuggingFace**
+- Space: dnsxt/rag-memory (https://huggingface.co/spaces/dnsxt/rag-memory)
+
+### Accounts and Credentials
+
+| Service | Credential | Value |
+|---|---|---|
+| AWS | Account ID | (See sensitive_data.txt) |
+| AWS | Region | us-east-1 |
+| Groq | API Key | (See sensitive_data.txt) |
+| HuggingFace | Username | dnsxt |
+| HuggingFace | Write Token | (See sensitive_data.txt) |
+
+---
+
+## SECTION 10 — NEXT STEPS
+
+### Immediate — Complete Phase 3
+1. Run: `aws lambda get-function-configuration --function-name rag-chat --region us-east-1 --query "Environment.Variables"`
+2. If key missing: re-set via WriteAllText + update-function-configuration
+3. Test rag-chat with `{"query": "What is V3R?", "session_id": "test_001", "use_rag": false}`
+4. Confirm real Groq answer in response body
+5. Test two-turn memory recall in HF Space
+6. Confirm DynamoDB rag-memory has session record
+7. Declare Phase 3 complete
+
+### After Phase 3 — Begin Phase 4 Planning
+- Knowledge Retrieval Agent confirms PyTorch Geometric wheel availability for cp312 manylinux x86_64
+- Infrastructure Agent evaluates AWS Neptune free tier
+- Architecture decision: GNN as new Lambda function vs. expanded rag-retrieve
+- Phase 4 kickoff session
+
+### Documentation Maintenance
+After Phase 3 completion, update all seven V3R reports:
+- V3R-ARCH-001: Phase 3 completion note, Phase 4 architecture planning
+- V3R-AGENT-001: Session performance metrics, gate checklist update
+- V3R-PHASE-001: Phase 3 completion record with verification results
+- V3R-FPR-001: No new patterns this phase (unless Phase 3 resolution uncovers one)
+- V3R-SESSION-001: Session 2 coding log
+- V3R-CONSTRAINT-001: No changes unless Phase 4 adds GNN constraints
+- V3R-REPORT-001: New snapshot at Phase 3 completion
+
+---
+
+## SECTION 11 — SIGNIFICANCE
+
+This project is proof that the constraint is not the limitation. Industrial-scale AI engineering architecture is being built on a 2.4 GHz dual-core laptop with 8 GB of RAM, no admin rights, and a 7 Mbps upload connection — and it works.
+
+Phase 2 is complete. A live, publicly accessible, cloud-native RAG memory system is running right now, ingesting knowledge and generating augmented responses, on free-tier AWS infrastructure, with zero ongoing cost beyond the $0.27/month ECR storage.
+
+Phase 3 is one environment variable verification away from completion.
+
+Phase 7 is being redefined from knowledge accumulation to self-improvement — because a system that can improve itself will be more capable at Phase 8 than any amount of domain knowledge alone could make it.
+
+Every decision made, every pattern forbidden, every hour spent on a 90-minute rebuild cycle is load-bearing infrastructure for a system that will eventually take a raw idea and build a product from it. Nothing in this project is small. Nothing is throwaway.
+
+---
+
+*End of V3R Project Report — V3R-REPORT-001 v1.0*
+*Snapshot: March 12, 2026 — Phase 3 Active*
+*Next snapshot: Phase 3 completion*

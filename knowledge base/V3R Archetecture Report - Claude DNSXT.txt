@@ -1,0 +1,278 @@
+# V3R ARCHITECTURE REPORT
+**Document:** V3R-ARCH-001
+**Version:** 1.0
+**Date:** March 12, 2026
+**Classification:** Living Document — Updated Each Phase
+**Author:** V3R Documentation Agent
+
+---
+
+## DOCUMENT PURPOSE
+
+This report records every structural decision made in building V3R, the rationale behind each decision, the alternatives that were considered and rejected, and the architectural implications for future phases. It serves as the single source of truth for why V3R is built the way it is — preventing future development from accidentally undoing deliberate design choices.
+
+---
+
+## PART 1 — ARCHITECTURAL THESIS
+
+### 1.1 The Core Problem V3R Solves
+
+Every AI system in existence today has amnesia. Each session begins from zero. No accumulated knowledge. No memory of prior engineering decisions. No context that persists. A developer using a standard AI assistant today gets the same blank-slate system they got yesterday, regardless of how much work was done.
+
+V3R's architectural thesis is the permanent elimination of that amnesia. The system is designed so that every piece of knowledge ingested, every conversation completed, every engineering decision made — all of it accumulates into a persistent, retrievable, queryable intelligence base that grows more capable with every interaction.
+
+This is not a feature layered onto an existing system. It is the load-bearing foundation that every phase of V3R is built to serve.
+
+### 1.2 The End Goal
+
+Phase 8: A system that accepts a raw idea as input and outputs a fully engineered product. Not a suggestion. Not a draft. A product. The path from Phase 1 to Phase 8 is a deliberate, sequential construction of the cognitive infrastructure that makes that possible.
+
+### 1.3 Phase 7 Redefinition (March 12, 2026)
+
+Phase 7 was originally defined as "Science and Engineering Domain Intelligence." It has been formally redefined as follows:
+
+**Phase 7 — V3R Self-Improvement Engine:** V3R builds up its own architecture into a better Cloud-Native Multi-Agent Multi-LLM system. The system evaluates its own performance, identifies architectural weaknesses, proposes improvements, and implements them. V3R improves itself. This is the bridge between Phase 6 (multi-modal intelligence) and Phase 8 (automated product generation) — a system that cannot improve itself cannot reliably build products for others.
+
+---
+
+## PART 2 — SYSTEM ARCHITECTURE OVERVIEW
+
+### 2.1 Three-Layer Architecture
+
+V3R is organized into three functional layers that map directly to human cognitive function:
+
+```
+LAYER 1 — MEMORY:        Ingest → Embed → Store (rag-chunks)
+LAYER 2 — REASONING:     Query → Retrieve → Rank (rag-retrieve)
+LAYER 3 — GENERATION:    Context + History → Prompt → Answer (rag-chat)
+```
+
+Every other architectural decision flows from this three-layer model. Adding a component to V3R means identifying which layer it belongs to and how it interacts with the layers adjacent to it.
+
+### 2.2 Persistent Knowledge vs. Persistent Conversation
+
+V3R maintains two distinct types of memory and they are intentionally separated:
+
+| Type | Table | Key Structure | Content | Lifecycle |
+|---|---|---|---|---|
+| Knowledge Memory | rag-chunks | chunk_id (PK) | Embedded text chunks from ingested documents | Permanent |
+| Conversation Memory | rag-memory | vector_id (PK) + timestamp (SK) | Turn-by-turn conversation history per session | Session-scoped, persistent |
+
+**Rationale for separation:** Knowledge memory and conversation memory have fundamentally different retrieval patterns. Knowledge memory is queried by semantic similarity — you ask "what do I know about X?" Conversation memory is queried by session identity — you ask "what was said in session Y?" Combining them into a single table would require complex filtering logic and would degrade retrieval performance for both. Keeping them separate means each can be optimized independently.
+
+**Rationale for composite key on rag-memory:** The sort key `timestamp (N)` on rag-memory enables ordered retrieval of conversation turns. A session may have many turns across multiple put_item calls. The sort key allows query operations to return turns in chronological order without a post-query sort. It also allows future range queries — "give me all turns from session X in the last 24 hours" — which will be needed in Phase 5 multi-agent coordination.
+
+### 2.3 Stateless Lambda Architecture
+
+Each Lambda function is deliberately stateless. No global mutable state persists between invocations except for the tokenizer and model objects loaded at module initialization (which are read-only after load). All state lives in DynamoDB.
+
+**Rationale:** Stateless functions can be scaled, replaced, or redeployed independently without affecting the other functions. When rag-retrieve is redeployed, rag-chat and rag-ingest continue operating without interruption. This is critical on free-tier infrastructure where function timeouts and cold starts are facts of life — a stateful architecture would corrupt shared state during a timeout.
+
+### 2.4 Offline-First Embedding Strategy
+
+The embedding model all-MiniLM-L6-v2 is baked directly into the Docker image at build time. It is not downloaded at runtime. It is not fetched from HuggingFace on cold start.
+
+**Rationale:** Lambda cold starts on free tier can take 5-15 seconds. Downloading a 90 MB model on every cold start would push that to 60+ seconds and introduce a network dependency in the critical inference path. Baking the model into the image means cold start model loading is a filesystem read, not a network transfer. The tradeoff is a larger image (~3184 MB vs ~200 MB) but on this architecture that tradeoff is unambiguously correct.
+
+**Why AutoTokenizer/AutoModel instead of SentenceTransformer():** SentenceTransformer() performs network checks at initialization even when local_files_only is set. In a Lambda container with no outbound network access to HuggingFace at runtime, this causes initialization failures. AutoTokenizer.from_pretrained() and AutoModel.from_pretrained() with local_files_only=True load purely from disk with no network calls. This is the confirmed working pattern.
+
+---
+
+## PART 3 — COMPONENT ARCHITECTURE
+
+### 3.1 rag-ingest-ultra-test
+
+**Purpose:** Accept raw text, chunk it, embed each chunk, store to rag-chunks.
+
+**Input schema:**
+```json
+{"text": "raw text content", "source": "source_identifier"}
+```
+
+**Processing pipeline:**
+1. Parse event body (handles both raw dict and JSON string body from API Gateway/Function URL)
+2. Extract text and source
+3. chunk_text(text, size=500, overlap=50) — word-level chunking with overlap
+4. For each chunk: embed(chunk) → 384-dimensional float vector
+5. DynamoDB put_item with uuid chunk_id, text, embedding (JSON string), source, timestamp
+
+**Chunking rationale — size=500, overlap=50:** 500 words produces chunks that are semantically coherent without being so long that they dilute the embedding signal. At 500 words, a chunk covers a complete idea or argument. The 50-word overlap prevents context loss at chunk boundaries — a sentence split across two chunks will have its context preserved in both. This is the industry-standard sliding window approach for RAG ingestion.
+
+**Embedding storage as JSON string rationale:** DynamoDB does not have a native float array type. Storing the 384-dimensional vector as a JSON-serialized list allows retrieval and deserialization in rag-retrieve without any additional encoding layer. The tradeoff is storage size (~2KB per chunk) but at free-tier DynamoDB pricing this is negligible.
+
+**uuid chunk_id rationale:** Using uuid4 as the primary key means every chunk is globally unique regardless of source. This enables deduplication detection in Phase 3+ and allows the same source to be re-ingested with new chunk IDs without key conflicts.
+
+### 3.2 rag-retrieve
+
+**Purpose:** Accept a query, embed it, scan rag-chunks, return top-k most semantically similar chunks.
+
+**Input schema:**
+```json
+{"query": "question or search text", "top_k": 3}
+```
+
+**Processing pipeline:**
+1. Embed query using same model and method as ingest (consistency is critical)
+2. Full table scan of rag-chunks
+3. For each item: skip if no embedding field (safety guard for malformed records)
+4. Deserialize stored embedding, compute cosine similarity against query embedding
+5. Sort all scored items descending, return top_k
+
+**Full scan rationale:** DynamoDB does not support native vector similarity search. Options considered: (A) Full scan with in-Lambda cosine scoring, (B) AWS OpenSearch with vector index, (C) custom inverted index. Option A was chosen because the rag-chunks table will remain under ~10,000 records through Phase 4, and a full scan at this scale takes under 1 second on the Lambda 2048 MB tier. Options B and C both require paid AWS services or significant complexity. Full scan is the architecturally correct choice until Phase 4 GNN integration introduces relational graph traversal that will require indexed access patterns.
+
+**Cosine similarity rationale:** Cosine similarity measures the angle between two vectors in embedding space regardless of their magnitude. This is the correct metric for semantic similarity because two texts can be semantically identical while having very different word counts (magnitudes). Dot product alone would favor longer texts. Euclidean distance would conflate magnitude with direction. Cosine is the standard for transformer-based embedding similarity.
+
+**Same model for ingest and retrieve rationale:** The query embedding and chunk embeddings must be produced by the same model to be comparable. If different models were used, the vector spaces would be incompatible and cosine similarity scores would be meaningless. Both functions use the same baked-in all-MiniLM-L6-v2 from the same Docker image.
+
+### 3.3 rag-chat
+
+**Purpose:** Accept a query and session_id, retrieve relevant knowledge, load conversation history, build an augmented prompt, call Groq, save updated history, return answer.
+
+**Input schema:**
+```json
+{"query": "user message", "session_id": "unique_session_identifier", "use_rag": true}
+```
+
+**Processing pipeline:**
+1. Parse body
+2. get_history(session_id) — query rag-memory for prior turns
+3. If use_rag: invoke rag-retrieve Lambda synchronously, extract context chunks
+4. Build history_text from last 6 turns ([-6:] slice)
+5. Build system_prompt — base assistant prompt + context if RAG used
+6. Build messages array — history as prior user/assistant turns + current query
+7. POST to api.groq.com via http.client.HTTPSConnection
+8. Parse response, extract answer from choices[0].message.content
+9. Append new turn to history, save_history(session_id, turns)
+10. Return statusCode 200 with answer, rag_used, memory_turns
+
+**http.client.HTTPSConnection rationale:** The requests library is not available in the Lambda base image and is not in the offline wheels. urllib.request is in the Forbidden Patterns Registry due to unreliable behavior in Lambda. http.client is part of the Python standard library and is always available. It is the correct choice for this constraint environment.
+
+**[-6:] history slice rationale:** Groq's llama-3.1-8b-instant has a context window of 8192 tokens. Each conversation turn occupies approximately 200-400 tokens. Six turns (3 user + 3 assistant) uses approximately 1200-2400 tokens, leaving sufficient room for the system prompt (~200 tokens), RAG context (~1000 tokens), and current query (~200 tokens) within the 8192 token limit. Going beyond 6 turns risks context window overflow on long messages.
+
+**Synchronous Lambda invocation for retrieve rationale:** rag-chat invokes rag-retrieve using boto3 Lambda client with InvocationType=RequestResponse (synchronous). This means rag-chat waits for rag-retrieve to return results before continuing. Asynchronous invocation was rejected because rag-chat needs the retrieve results to build the prompt — there is no way to proceed without them.
+
+**GROQ_API_KEY as environment variable rationale:** The key was originally hardcoded in the source file. Hardcoded credentials in source files are a security risk in any context, and a critical risk if the file is ever committed to a public repository (GitHub, HuggingFace). Moving to an environment variable set in the Lambda console separates the credential from the code, follows AWS security best practices, and allows key rotation without a rebuild.
+
+---
+
+## PART 4 — INFRASTRUCTURE ARCHITECTURE
+
+### 4.1 Free-Tier Constraint as Design Principle
+
+Every infrastructure decision is made within the constraint of AWS free tier. This is not a temporary limitation to be lifted when funding arrives. It is a permanent design principle that validates the thesis: industrial-scale AI engineering can be built without enterprise budget.
+
+**Free tier allocations used:**
+- Lambda: 1 million requests/month, 400,000 GB-seconds compute
+- DynamoDB: 25 GB storage, 25 WCU, 25 RCU
+- ECR: 500 MB/month (exceeded on first month — 3184 MB image in private repo, billed beyond free tier at $0.10/GB/month — approximately $0.27/month, acceptable)
+
+### 4.2 Single ECR Image Strategy
+
+All three Lambda functions run from the same Docker image (ml-offline-torch26). No separate images per function.
+
+**Rationale:** The 90MB embedding model and 800MB+ torch installation are shared across all three functions. Maintaining three separate images would triple the storage footprint and triple the build time. The single image approach means a rebuild deploys improvements to all functions simultaneously. Individual functions are differentiated by their handler setting in the Lambda console, not by their image.
+
+**Risk:** A broken image breaks all three functions simultaneously. Mitigation: always test in Lambda console before relying on the HF Space UI. The broken image can be redeployed over by a corrected push without downtime longer than a Lambda cold start.
+
+### 4.3 Function URL Architecture
+
+rag-ingest-ultra-test and rag-chat have Function URLs (HTTPS endpoints that invoke Lambda directly). rag-retrieve does not.
+
+**Rationale:** The HF Space needs to call ingest and chat directly from Python via requests. Function URLs provide simple HTTPS access without requiring API Gateway (paid service beyond free tier). rag-retrieve is not called externally — it is invoked internally by rag-chat via Lambda-to-Lambda invocation. Giving rag-retrieve a Function URL would expose it unnecessarily.
+
+### 4.4 HuggingFace Space as Frontend
+
+The UI layer is hosted on HuggingFace Spaces (free tier) rather than AWS.
+
+**Rationale:** Serving a web frontend from AWS requires either S3+CloudFront (paid) or an EC2 instance (paid beyond free tier hours). HuggingFace Spaces provides free Gradio hosting with environment variable support for secrets. The space communicates with Lambda via Function URLs over HTTPS. The frontend and backend are fully decoupled — the Space can be updated without touching Lambda, and Lambda can be updated without touching the Space.
+
+---
+
+## PART 5 — DATA ARCHITECTURE
+
+### 5.1 rag-chunks Schema
+
+| Field | Type | Description |
+|---|---|---|
+| chunk_id | String (PK) | UUID4 — globally unique per chunk |
+| text | String | Raw text content of the chunk |
+| embedding | String | JSON-serialized 384-float list |
+| source | String | Identifier of the source document or event |
+| timestamp | String | ISO 8601 UTC timestamp of ingestion |
+
+### 5.2 rag-memory Schema
+
+| Field | Type | Description |
+|---|---|---|
+| vector_id | String (PK) | Session identifier — set by the calling UI |
+| timestamp | Number (SK) | Unix epoch integer — enables ordered retrieval |
+| turns | List | Array of {user, assistant, timestamp} dicts |
+| updated | String | ISO 8601 UTC timestamp of last save |
+
+**Composite key design decision:** The timestamp sort key was added to support multiple save operations per session. Without a sort key, each save to a session_id would overwrite the previous record (DynamoDB put_item is upsert by default). With the sort key, each save creates a new record with a unique timestamp, preserving the full history of saves. The get_history function retrieves the most recent record (items[-1]) which contains the complete accumulated turns list.
+
+### 5.3 Embedding Dimensions
+
+all-MiniLM-L6-v2 produces 384-dimensional embeddings. This is intentionally smaller than models like text-embedding-ada-002 (1536 dimensions) or all-mpnet-base-v2 (768 dimensions).
+
+**Rationale:** 384 dimensions provides sufficient semantic resolution for the knowledge base sizes anticipated through Phase 5 (estimated under 50,000 chunks). Smaller dimensions mean faster cosine similarity computation during full table scans, smaller DynamoDB storage footprint per record, and faster embedding generation on CPU-only Lambda (no GPU available). For Phase 4 GNN integration, 384-dimensional node feature vectors are computationally tractable on free-tier Lambda.
+
+---
+
+## PART 6 — PHASE ARCHITECTURE IMPLICATIONS
+
+### Phase 3 — Conversation Memory (ACTIVE)
+Architecture change: get_history must use DynamoDB query (not get_item) due to composite key on rag-memory. save_history must include timestamp as integer unix epoch. No schema changes required — table was created correctly in Phase 2.
+
+### Phase 4 — GNN Integration
+Architecture implication: A graph layer will sit between rag-retrieve and rag-chat. Instead of returning flat cosine-ranked results, rag-retrieve will return a subgraph of related knowledge nodes. This requires either a new Lambda function (rag-graph) or an expanded rag-retrieve that performs graph traversal. DynamoDB will need either a new adjacency table or a graph database (Neptune — evaluate free tier availability). The 384-dimensional embeddings become node feature vectors in the GNN.
+
+### Phase 5 — Multi-Agent Orchestration
+Architecture implication: The current architecture is single-agent (one LLM call per user message). Phase 5 introduces agent routing — different queries are dispatched to different specialized agents (CODER, RETRIEVAL, DEBUG, etc.) based on intent classification. This requires a new orchestration Lambda or an expanded rag-chat that classifies intent before routing. Conversation memory in rag-memory will need to track which agent produced each turn.
+
+### Phase 6 — Multi-Modal Inputs
+Architecture implication: rag-ingest must accept not only text but structured data, code files, and potentially images. The chunking strategy must be extended to handle non-text modalities. Groq's multi-modal capabilities (if available) or a separate vision model will be needed for image inputs.
+
+### Phase 7 — Self-Improvement Engine (REDEFINED March 12, 2026)
+Architecture implication: V3R must be able to read its own architecture, evaluate its own performance metrics, propose improvements, and implement them. This requires a meta-layer above the current three-layer architecture — a self-evaluation pipeline that queries V3R's own knowledge base about V3R's architecture, compares actual performance metrics against targets, and generates improvement proposals. The system must be able to modify its own Lambda functions, rebuild and push images, and verify the improvements worked. This is recursive engineering intelligence — the system engineering itself.
+
+### Phase 8 — Automated Product Generation
+Architecture implication: All prior phases converge. The system receives a raw idea, uses multi-modal ingestion (P6) to understand requirements, uses GNN (P4) to traverse related engineering knowledge, uses multi-agent orchestration (P5) to decompose and parallelize engineering tasks, uses self-improvement (P7) to optimize its own approach, and produces a fully specified, deployable product. The architecture must support long-running stateful workflows (potentially hours) that persist across Lambda invocations using DynamoDB as the workflow state store.
+
+---
+
+## PART 7 — ARCHITECTURAL DECISIONS LOG
+
+| Decision | Date | Chosen Approach | Rejected Alternatives | Rationale |
+|---|---|---|---|---|
+| Embedding model | Phase 1 | all-MiniLM-L6-v2 (baked into image) | Download at runtime, SentenceTransformer() | Offline required, no network dependency in inference path |
+| Vector storage | Phase 1 | DynamoDB + full scan | OpenSearch, Pinecone, pgvector | Free tier, no paid services |
+| LLM provider | Phase 1 | Groq (llama-3.1-8b-instant) | OpenAI, Anthropic, local model | Free tier, fast inference, sufficient quality |
+| Frontend hosting | Phase 2 | HuggingFace Spaces | AWS S3+CloudFront, EC2 | Free tier, Gradio native |
+| Lambda invocation | Phase 2 | Function URLs | API Gateway | Free tier, no API Gateway cost |
+| Image strategy | Phase 1 | Single shared image | Per-function images | Shared model, reduced build time |
+| HTTP library | Phase 2 | http.client | requests, urllib.request | Standard library, no wheel needed, urllib.request forbidden |
+| Credential management | Phase 3 | Lambda environment variables | Hardcoded, AWS Secrets Manager | Security, Secrets Manager is paid |
+| Chunking strategy | Phase 1 | Word-level sliding window 500/50 | Sentence-level, fixed-byte, paragraph | Semantic coherence, overlap preserves boundary context |
+| Conversation history | Phase 3 | DynamoDB query on composite key | Single-key table, Redis, in-memory | Persistence across Lambda restarts, free tier |
+| Phase 7 focus | Phase 3 | V3R Self-Improvement Engine | Science/Engineering domain intelligence | Self-improvement is the prerequisite for Phase 8 reliability |
+
+---
+
+## PART 8 — ARCHITECTURAL INVARIANTS
+
+These decisions are permanently locked. They cannot be changed without a full architectural review and explicit approval.
+
+1. **ECR tag ml-offline-torch26 is the production tag.** Never switch without explicit instruction.
+2. **Embedding model is all-MiniLM-L6-v2 loaded via AutoTokenizer/AutoModel.** Never SentenceTransformer(). Never changed without Knowledge Retrieval Agent confirmation.
+3. **All Lambda functions run from the same image.** Never split into per-function images without architectural review.
+4. **rag-chunks and rag-memory are the only DynamoDB tables.** No new tables without phase-level justification.
+5. **All infrastructure remains on AWS free tier.** No paid services without explicit approval.
+6. **Groq model name is confirmed by Knowledge Retrieval Agent before any change.** Never hardcoded without KR confirmation.
+7. **Every code change passes System Debug Agent gate before deployment.**
+8. **Every Docker build specifies --platform linux/amd64 explicitly.**
+
+---
+
+*End of V3R Architecture Report — V3R-ARCH-001 v1.0*
+*Next update: Phase 3 completion*

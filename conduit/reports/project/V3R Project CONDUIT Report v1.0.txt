@@ -1,0 +1,398 @@
+V3R PROJECT CONDUIT
+Continuous Operational Network for Data Unity, Integration, and Tracking
+Automated Code Synchronization, Version Control, and Drive-Native Readability Pipeline
+
+
+
+Project Classification
+V3R Intermediary Project — Pre-NEXUS Infrastructure
+Prepared by
+V3R (Claude Sonnet 4.6) — Documentation Agent
+Date
+March 15, 2026
+Predecessor
+V3R Phases 1-8 — Complete
+Successor
+Project NEXUS — Pending CONDUIT completion
+Status
+Pre-Implementation — Architecture Defined
+Budget
+Zero. Absolute. Non-negotiable.
+Admin Rights
+Full local machine access. No network router access.
+
+
+
+
+Project CONDUIT is the infrastructure bridge between V3R's operational state and the AI sessions that build it. It solves the single most critical operational gap remaining in the V3R platform: the absence of automated, versioned, Drive-native code synchronization. Without CONDUIT, every session starts with manual file uploads and ends with manual Drive updates. With CONDUIT, every file V3R touches is automatically synchronized, versioned, converted, and readable by the next session before the operator closes their laptop.
+
+TABLE OF CONTENTS
+
+
+1
+Executive Summary
+3
+2
+Problem Statement — The Operational Gap
+3
+3
+Project Scope
+4
+4
+Architecture Overview
+4
+5
+Component 1 — Google Drive My Drive (GDMD) Folder Structure
+5
+6
+Component 2 — rclone Installation and Configuration
+6
+7
+Component 3 — PowerShell Version Rotation Script
+7
+8
+Component 4 — Apps Script Converter Extension
+8
+9
+Component 5 — CONDUIT Master Sync Script
+9
+10
+End-to-End Workflow
+10
+11
+File Coverage Matrix
+11
+12
+Constraints and Non-Negotiables
+12
+13
+Implementation Roadmap
+12
+14
+Closing Statement
+13
+
+
+1. EXECUTIVE SUMMARY
+
+
+Project CONDUIT establishes a permanent, automated pipeline that synchronizes V3R's entire codebase and document library from the local development machine to Google Drive My Drive in real time, maintains a three-layer version backup of every code file, and ensures every file type — including Python handlers, Dockerfiles, and JSON configs — has a Google Docs-format counterpart that the Drive tool can read in any future V3R session.
+CONDUIT has five components: a structured GDMD folder hierarchy, rclone for Drive synchronization, a PowerShell version rotation script, an extended Apps Script converter, and a master sync script that orchestrates all four in a single command. Once deployed, the operator runs one PowerShell command at the end of each session. Everything else is automatic.
+CONDUIT is a prerequisite for Project NEXUS. NEXUS requires that every session begins with complete awareness of current system state. CONDUIT guarantees that state is always current, always readable, and always recoverable.
+2. PROBLEM STATEMENT — The Operational Gap
+
+
+Manual Drive Updates: Every V3R session ends with manual file uploads to Google Drive. Files are uploaded inconsistently, incompletely, or not at all when sessions run long. The Drive library frequently lags behind the actual codebase state on the local machine.
+No Version History: When a handler is modified and pushed, the previous version is overwritten locally with no backup. If a deployed change introduces a regression, there is no automated path to the previous working state. Recovery requires reconstructing the file from memory or prior session reports.
+Drive Tool Cannot Read Code Files: The Google Drive tool reads only native Google Docs format. Python handlers, Dockerfiles, JSON configs, and .txt reports uploaded as raw files are invisible to the Drive tool. Sessions must rely on handoff reports and uploaded files rather than live Drive reads.
+No Single Source of Truth: Code exists in three places: the local build directory, the ECR container image, and partially in Google Drive. These three sources diverge over time. There is no mechanism to confirm that what is in Drive matches what is deployed in Lambda.
+.md Files in Circulation: Prior V3R sessions produced .md format outputs that cannot be read by the Drive tool and are inconsistent with the Priority 14 .txt-only rule now locked in Partition 1. These files exist in Drive but are operationally dead.
+
+3. PROJECT SCOPE
+
+
+CONDUIT covers the following scope:
+In scope:
+All Python Lambda handlers in C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+Dockerfile-ml-offline
+orchestrator_config.json and all JSON config files in the build directory
+app.py in C:\Users\Source-1\Desktop\rag-deploy\hf-space\
+All V3R .txt report files produced during sessions
+All V3R project reports, coding reports, handoff reports, and framework documents
+The CONDUIT scripts themselves — versioned and backed up like all other code
+Out of scope:
+Wheel files in the wheels/ directory — binary files, not Drive-readable, excluded by rclone filter
+Model files in models/ directory — 400MB+, excluded by rclone filter
+ECR container image — managed separately via Docker/ECR workflow
+AWS credentials and API keys — never synced to Drive under any circumstances
+.md files — Priority 14 prohibits .md format. Existing .md files in Drive are not migrated.
+4. ARCHITECTURE OVERVIEW
+
+
+CONDUIT operates as a five-stage pipeline triggered by a single PowerShell command at the end of each session. The stages execute in sequence. Each stage is independent — if one stage fails, the others are unaffected and the operator is notified.
+Stage
+Name
+Description
+Stage 1
+Version Rotation
+PowerShell script shifts current → last → previous for all tracked code files in the local backup directory before sync begins.
+Stage 2
+Local Backup Update
+Current versions of all in-scope files are copied to the local backup structure before being pushed to Drive. This preserves a local three-layer backup independent of Drive.
+Stage 3
+rclone Drive Sync
+rclone pushes all in-scope files from local directories to the corresponding GDMD folders. New files are uploaded. Changed files are updated. Deleted files are not removed from Drive (safety: Drive retains all history).
+Stage 4
+Apps Script Conversion
+Google Apps Script convertTxtToGoogleDocs() is triggered via the Apps Script API or manually. All new .txt and .py files uploaded in Stage 3 are converted to Google Docs format, creating the readable pairs required by the Drive tool.
+Stage 5
+Verification Log
+PowerShell outputs a sync summary: files uploaded, files updated, conversion count, any errors. Logged to a session_sync_log.txt file appended with each run.
+
+
+5. COMPONENT 1 — GDMD Folder Structure
+
+
+The following folder structure is created in Google Drive My Drive before CONDUIT is operational. All folders are created manually in Drive by the operator. rclone maps to these folders by folder ID stored in the rclone config.
+V3R/  —  Root folder for all V3R and NEXUS project files
+V3R/code/  —  All code files — Python handlers, Dockerfile, JSON configs
+V3R/code/current/  —  Current deployed version of every code file
+V3R/code/last/  —  Previous version — the version before the most recent push
+V3R/code/previous/  —  Version before last — two pushes back. Safe revert target.
+V3R/reports/  —  All session reports — project, coding, handoff, agents, architecture
+V3R/reports/project/  —  V3R Project Reports 1-12 and all future project reports
+V3R/reports/coding/  —  V3R Coding Reports 8-12 and all future coding reports
+V3R/reports/handoff/  —  Handoff reports for session continuity
+V3R/frameworks/  —  V3R AI Framework versions and V3R AI Briefing versions
+V3R/frameworks/current/  —  Current active Framework and Briefing (Partition 0 and 1)
+V3R/data/  —  Infrastructure data files — AWS Services Data, Hardware and Software Data, General Data
+V3R/nexus/  —  Project NEXUS report and all future NEXUS session reports
+V3R/conduit/  —  Project CONDUIT scripts, this report, and sync logs
+V3R/conduit/logs/  —  session_sync_log.txt — running log of all sync operations
+Note: The existing Drive library (39 documents currently in GDMD root) will remain in place. CONDUIT does not move or delete existing files. New files sync to the structured folders above. Over time the structured library becomes the canonical reference and the root files become legacy.
+6. COMPONENT 2 — rclone Installation and Configuration
+
+
+rclone is a free, open-source command-line tool for syncing files to cloud storage. It supports Google Drive natively, requires no admin rights for portable installation, and communicates over HTTPS port 443 — fully compatible with the current network environment.
+Installation — portable, no admin required:
+1. Download rclone Windows portable zip from rclone.org/downloads — select amd64 zip.
+2. Extract to C:\Users\Source-1\Desktop\rclone\ — no installer, no admin rights needed.
+3. Open PowerShell. Navigate to rclone directory.
+4. Run rclone config to begin configuration. Select New remote.
+5. Name the remote: gdrive
+6. Select storage type: Google Drive (option 17 or search 'drive').
+7. Follow OAuth flow in browser — authorize rclone to access Google Drive.
+8. Select scope: drive (full access).
+9. Complete config. rclone will confirm the remote is working.
+10. Test with: rclone lsd gdrive: — should list all GDMD root folders.
+rclone filter file — excludes binary and large files from sync:
+Create file: C:\Users\Source-1\Desktop\rclone\v3r_filter.txt
+Contents: exclude wheels/** and models/** directories. Include all .py, .txt, .json, Dockerfile* files. This prevents the 400MB model files and binary wheels from being pushed to Drive while capturing all code and report files.
+
+7. COMPONENT 3 — PowerShell Version Rotation Script
+
+
+The version rotation script runs before each sync. It maintains a three-layer local backup of all tracked code files. The backup lives at C:\Users\Source-1\Desktop\rag-deploy\backup\ in three subdirectories: current, last, previous.
+Rotation logic:
+1. Delete all files in previous/ — they are being replaced by last/.
+2. Copy all files from last/ to previous/ — last becomes the new previous.
+3. Copy all files from current/ to last/ — current becomes the new last.
+4. Copy all in-scope files from ecr-build/ and hf-space/ to current/ — latest state captured.
+5. Rotation complete. Three layers now hold: current session state, previous session state, session before that.
+The backup directory is also synced to Drive via rclone — mapping to V3R/code/current/, V3R/code/last/, and V3R/code/previous/ respectively. This means the three-layer backup exists both locally and in Drive. Loss of the local machine does not lose the version history.
+Tracked file list — version rotation applies to:
+lambda_ingest_v4.py
+lambda_retrieve.py
+lambda_chat.py
+lambda_graph.py
+lambda_orchestrator.py
+lambda_ideagen.py
+lambda_router.py (NEXUS — pending creation)
+lambda_key_reset.py (NEXUS — pending creation)
+Dockerfile-ml-offline
+orchestrator_config.json
+app.py (from hf-space directory)
+8. COMPONENT 4 — Apps Script Converter Extension
+
+
+The existing Apps Script converter (convertTxtToGoogleDocs, 48 lines, confirmed operational) currently processes only files with MimeType.PLAIN_TEXT. Python files uploaded to Drive are assigned MIME type text/x-python or text/plain depending on upload method. The converter may or may not catch them depending on how rclone uploads them.
+The required extension adds explicit .py file handling to guarantee Python handler files receive Google Doc pairs regardless of their MIME type assignment. The extension also adds folder-scoped processing — instead of scanning all of Drive, the extended converter processes only the V3R/ folder hierarchy, making it faster and more targeted.
+Changes to existing Apps Script:
+Add folder-scoped processing: Replace DriveApp.getFilesByType(MimeType.PLAIN_TEXT) with a recursive folder scan of the V3R/ root folder. This prevents the converter from scanning unrelated Drive files and speeds up execution.
+Add .py MIME type handling: After the .txt check on line 8, add an equivalent check for files ending in .py. Apply identical conversion logic — same alreadyExists() check, same Drive.Files.copy() with convert:true.
+Add .json handling: JSON config files (orchestrator_config.json, env_vars.json) should also get Google Doc pairs for Drive tool readability. Add .json extension check with identical conversion logic.
+Add Dockerfile handling: Dockerfile-ml-offline has no extension. Add a check for files named Dockerfile* with identical conversion logic.
+Add execution trigger: Add a time-based trigger: run convertTxtToGoogleDocs() daily at 2:00 AM. This means even if the operator forgets to run it manually, all new files are converted overnight. Trigger is set once in Apps Script triggers panel.
+
+9. COMPONENT 5 — CONDUIT Master Sync Script
+
+
+The master sync script is a single PowerShell file: conduit_sync.ps1. Located at C:\Users\Source-1\Desktop\conduit_sync.ps1. The operator runs this one script at the end of every session. It orchestrates all five CONDUIT stages in sequence.
+conduit_sync.ps1 — execution sequence:
+Stage 1 — Timestamp: Write session timestamp to session_sync_log.txt. Format: yyyy-MM-dd HH:mm:ss. Log header for this sync run.
+Stage 2 — Version Rotation: Execute rotate_versions.ps1. Shifts previous backup layers. Copies current code files to current/ backup. Logs file count.
+Stage 3 — rclone code sync: Execute rclone sync with filter file. Syncs V3R/code/current/, last/, previous/ to Drive. Logs transfer count and any errors.
+Stage 4 — rclone reports sync: Execute rclone sync for reports directory. Syncs all .txt report files to V3R/reports/ in Drive by subdirectory.
+Stage 5 — rclone frameworks sync: Syncs Framework and Briefing .txt files to V3R/frameworks/current/.
+Stage 6 — rclone conduit sync: Syncs CONDUIT scripts and logs to V3R/conduit/.
+Stage 7 — Apps Script trigger: Calls Google Apps Script execution API to trigger convertTxtToGoogleDocs() immediately after sync. Requires Apps Script API enabled and OAuth credentials configured. If API call fails, logs a reminder to run converter manually.
+Stage 8 — Completion log: Writes sync completion timestamp and summary to session_sync_log.txt. Outputs summary to PowerShell console.
+The entire conduit_sync.ps1 script executes in under 60 seconds for a typical session sync. rclone only transfers changed files — unchanged files are skipped. The Apps Script conversion runs asynchronously in Google's infrastructure after the PowerShell script completes.
+10. END-TO-END WORKFLOW
+
+
+Session start workflow:
+Open Claude.ai. Start new V3R session.
+V3R reads current Framework and Briefing from Google Drive via Drive tool.
+V3R reads latest Project Report and Coding Report from Drive.
+V3R reads any new or updated files in V3R/code/current/ if context requires.
+Session begins with complete awareness of current system state.
+Session end workflow:
+V3R session produces new or modified code files and/or report files.
+Operator saves all files to local directories.
+Operator runs: .\conduit_sync.ps1 from PowerShell.
+Stage 1-6: Version rotation and rclone sync complete in under 60 seconds.
+Stage 7: Apps Script converter triggered. New .txt, .py, .json, Dockerfile files converted to Google Docs.
+Stage 8: Sync log updated. Console shows summary.
+Session is fully archived. Next session begins from complete Drive state.
+Revert workflow (if deployment goes wrong):
+Open V3R/code/last/ in Drive — this is the version before the most recent push.
+Download the affected handler file.
+Replace local file with downloaded version.
+Run Docker build and push — restores last known good state.
+If last/ is also bad, repeat from V3R/code/previous/ — two pushes back.
+
+11. FILE COVERAGE MATRIX
+
+
+The following matrix confirms Drive destination, version tracking status, and Google Doc conversion status for every file in scope.
+File
+Source Directory
+Drive Destination
+Versioned
+Doc Pair
+lambda_ingest_v4.py
+ecr-build/
+V3R/code/current/
+Yes
+Yes
+lambda_retrieve.py
+ecr-build/
+V3R/code/current/
+Yes
+Yes
+lambda_chat.py
+ecr-build/
+V3R/code/current/
+Yes
+Yes
+lambda_graph.py
+ecr-build/
+V3R/code/current/
+Yes
+Yes
+lambda_orchestrator.py
+ecr-build/
+V3R/code/current/
+Yes
+Yes
+lambda_ideagen.py
+ecr-build/
+V3R/code/current/
+Yes
+Yes
+lambda_router.py
+ecr-build/
+V3R/code/current/
+Yes
+Yes
+Dockerfile-ml-offline
+ecr-build/
+V3R/code/current/
+Yes
+Yes
+orchestrator_config.json
+ecr-build/
+V3R/code/current/
+Yes
+Yes
+app.py
+hf-space/
+V3R/code/current/
+Yes
+Yes
+V3R Project Reports (all)
+Local reports/
+V3R/reports/project/
+No — reports are final
+Yes
+V3R Coding Reports (all)
+Local reports/
+V3R/reports/coding/
+No — reports are final
+Yes
+V3R Handoff Reports (all)
+Local reports/
+V3R/reports/handoff/
+No — reports are final
+Yes
+V3R AI Framework v3.1
+Local/
+V3R/frameworks/current/
+Yes — on Framework update
+Yes
+V3R AI Briefing v1.3
+Local/
+V3R/frameworks/current/
+Yes — on Briefing update
+Yes
+conduit_sync.ps1
+Desktop/
+V3R/conduit/
+Yes
+Yes
+rotate_versions.ps1
+Desktop/
+V3R/conduit/
+Yes
+Yes
+session_sync_log.txt
+Desktop/
+V3R/conduit/logs/
+No — append only
+Yes
+Project NEXUS Report
+Local/
+V3R/nexus/
+No — report is final
+Yes
+Project CONDUIT Report
+Local/
+V3R/conduit/
+No — report is final
+Yes
+
+
+12. CONSTRAINTS AND NON-NEGOTIABLES
+
+
+ZERO COST: rclone is free and open-source. Google Drive storage is free up to 15GB. Apps Script is free. PowerShell is built into Windows 10. CONDUIT has zero recurring cost.
+NO CREDENTIALS IN DRIVE: AWS Access Key, Secret Key, Groq API key, HuggingFace token, and all other credentials are explicitly excluded from rclone sync scope. They are never uploaded to Drive. The General Data file in Drive holds these values by your choice — CONDUIT does not add to that exposure.
+NO BINARY FILES: Wheels and model files are excluded by rclone filter. They are large, binary, not Drive-readable, and already managed separately via the local backup library rule established in V3R Phase 8.
+TXT FORMAT ONLY: Priority 14 — no .md files. All V3R outputs are .txt. CONDUIT syncs .txt, .py, .json, and Dockerfile only. No .md files are synced or converted.
+DRIVE RETAINS HISTORY: rclone sync in CONDUIT is configured with --no-delete flag. Files deleted locally are not deleted from Drive. Drive retains the complete history of every file ever synced. This is intentional — Drive is the archive, not a mirror.
+THREE LAYERS MINIMUM: The version rotation script must maintain all three layers at all times. If previous/ is empty (first two sessions), that is acceptable. After three sessions all three layers must be populated and rotation must function correctly.
+13. IMPLEMENTATION ROADMAP
+
+
+[CD-01] [CRITICAL] Create GDMD folder structure
+Create V3R/ root and all subdirectories in Google Drive My Drive manually. Takes 5 minutes. Required before rclone can be configured.
+[CD-02] [CRITICAL] Install rclone portable
+Download rclone Windows amd64 portable zip. Extract to Desktop. Run rclone config. Authorize Google Drive access via OAuth browser flow. Test with rclone lsd gdrive:. No admin rights required.
+[CD-03] [CRITICAL] Create rclone filter file
+Create v3r_filter.txt at C:\Users\Source-1\Desktop\rclone\v3r_filter.txt. Define include/exclude rules for .py, .txt, .json, Dockerfile. Exclude wheels/ and models/ directories.
+[CD-04] [CRITICAL] Write rotate_versions.ps1
+PowerShell script implementing three-layer rotation logic. Creates backup/ directory structure if not present. Copies tracked files through rotation layers before sync.
+[CD-05] [CRITICAL] Write conduit_sync.ps1
+Master sync script orchestrating all eight stages. Calls rotate_versions.ps1, then rclone for each Drive destination, then Apps Script API trigger, then logs completion.
+[CD-06] [HIGH] Extend Apps Script converter
+Add .py, .json, and Dockerfile handling to existing converter. Add folder-scoped processing targeting V3R/ root. Add daily time-based trigger at 2:00 AM. Test with sample files.
+[CD-07] [HIGH] Initial full sync
+Run conduit_sync.ps1 for the first time. All current code files, all existing reports, all framework files sync to Drive. Apps Script converter runs. All files get Google Doc pairs.
+[CD-08] [MEDIUM] Verify Drive tool readability
+Start a new Claude session. Use Drive tool to read lambda_chat.py Google Doc from V3R/code/current/. Confirm full code is readable. Verify reports are readable. Confirm end-to-end pipeline is operational.
+14. CLOSING STATEMENT
+
+
+V3R solves AI amnesia. It remembers everything ingested into it. But the system that builds V3R has its own amnesia problem — every session starts with manual file uploads, partial context, and no guarantee that what the operator uploads matches what is deployed. CONDUIT closes that gap permanently.
+When CONDUIT is operational, every session starts from a complete, current, readable state. Every handler V3R has ever written is in Drive, versioned, convertible, and readable. Every report is archived and accessible. The three-layer backup means no push can permanently break the system — recovery is always one Drive download away.
+CONDUIT does not advance V3R's capability. It advances V3R's reliability. And reliability at this stage of the project — with NEXUS ahead and a mesh of providers, agents, and accounts to coordinate — is the most important infrastructure investment remaining.
+CONDUIT first. NEXUS second. That is the correct sequence.
+
+
+Report: Project CONDUIT — Full Project Report v1.0
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 15, 2026
+Predecessor: V3R Phases 1-8 Complete
+Successor: Project NEXUS
+First Action: CD-01: Create GDMD folder structure

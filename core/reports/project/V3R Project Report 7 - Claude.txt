@@ -1,0 +1,42 @@
+V3R PROJECT REPORT 6
+Prepared by: V3R (Claude)
+Date: March 10, 2026
+Report Type: Full Project Handoff Document
+SECTION 1: SESSION SUMMARY
+This session completed Phase 1 of the V3R roadmap. All three core Lambda functions are now fully operational. The RAG pipeline is end-to-end functional for the first time.
+SECTION 2: WHAT WAS BUILT THIS SESSION
+Three Lambda functions are now live and working together:
+rag-ingest-ultra-test — Accepts text input, chunks it, embeds it locally using all-MiniLM-L6-v2 via AutoTokenizer/AutoModel from transformers, and writes chunks to DynamoDB rag-chunks table with chunk_id, text, embedding, source, and timestamp fields.
+rag-retrieve — Accepts a query, embeds it using the same local model, scans rag-chunks, runs cosine similarity against all stored embeddings, and returns the top-k most relevant chunks. Skips records with no embedding field.
+rag-chat — Accepts a query, invokes rag-retrieve to get context chunks, sends the query and context to Groq API using llama-3.1-8b-instant, and returns a memory-augmented generated answer with source attribution.
+SECTION 3: INFRASTRUCTURE STATE
+ECR Repository: rag-ingest-container, tag ml-offline-torch26 (3.9 GB, contains all three handlers plus all-MiniLM-L6-v2 model files baked in)
+DynamoDB Tables: rag-chunks (partition key: chunk_id), rag-memory (unused, reserved for conversation history)
+IAM Role: rag-ingest-ultra-test-role-hi7s90re with AmazonDynamoDBFullAccess and AWSLambda_FullAccess attached
+Lambda Configuration: All three functions use image ml-offline-torch26, 2048 MB memory, 10 minute timeout
+Groq Model: llama-3.1-8b-instant (active, free tier)
+SECTION 4: KEY TECHNICAL DECISIONS MADE THIS SESSION
+SentenceTransformer() was abandoned in favor of AutoTokenizer/AutoModel from transformers with manual mean pooling. This bypasses HuggingFace hub validation entirely and loads the model from the baked-in local path /var/task/models/all-MiniLM-L6-v2 without any network calls.
+urllib.request was replaced with http.client.HTTPSConnection for Groq API calls for more precise header control.
+llama3-8b-8192 was replaced with llama-3.1-8b-instant after confirming the former was decommissioned by Groq.
+Tag ml-offline-torch26 is the permanent production tag. Do not switch tags without explicit instruction.
+All three handlers are baked into the same container image. CMD override in Lambda Image Configuration selects which handler runs per function.
+SECTION 5: CURRENT BLOCKING ISSUES
+None. Phase 1 is complete.
+SECTION 6: NEXT STEPS — PHASE 2
+Enable Function URLs on all three Lambda functions with auth set to NONE so the system can be called from outside AWS without the console.
+Build a HuggingFace Space (dnsxt/rag-memory) as a Gradio frontend UI connecting to the Function URLs for ingest and chat.
+Begin ingesting real project data — V3R reports, session notes, and knowledge base content — to populate the memory system.
+Implement rag-memory DynamoDB table for conversation history persistence.
+SECTION 7: CREDENTIALS AND KEYS
+AWS Account ID: 236510207245, region us-east-1
+ECR Repository: rag-ingest-container, tag ml-offline-torch26
+Lambda Functions: rag-ingest-ultra-test, rag-retrieve, rag-chat
+IAM Role: rag-ingest-ultra-test-role-hi7s90re
+DynamoDB Tables: rag-chunks, rag-memory
+Groq Model: llama-3.1-8b-instant
+HuggingFace Username: dnsxt
+END OF REPORT
+Prepared by: V3R (Claude)
+Session Date: March 10, 2026
+Project Status: Phase 1 Complete — Full RAG Pipeline Operational

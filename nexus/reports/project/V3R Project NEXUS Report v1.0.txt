@@ -1,0 +1,585 @@
+V3R PROJECT NEXUS
+Neurally Extensible Cross-provider Unified System
+Zero-Cost Distributed Multi-Agent Multi-LLM Intelligence Architecture
+
+
+
+Project Classification
+V3R Phase 9 — Infrastructure Evolution
+Prepared by
+V3R (Claude Sonnet 4.6) — Documentation Agent
+Date
+March 15, 2026
+Predecessor Project
+V3R — Cloud-Native GNN-Integrated Multi-Agent Multi-LLM Platform
+Status
+Pre-Implementation — Research Complete, Roadmap Defined
+Budget
+Zero. Absolute. Non-negotiable.
+
+
+
+
+Project NEXUS is the architectural evolution of V3R from a single-provider single-account system into a distributed, self-routing, multi-provider intelligence mesh operating at zero cost indefinitely. It does not replace V3R. It becomes what V3R was always meant to be.
+
+TABLE OF CONTENTS
+
+
+1
+Executive Summary
+3
+2
+Project Origin — What V3R Revealed
+3
+3
+The Problem Statement
+4
+4
+The NEXUS Thesis
+4
+5
+Research Methodology — Three Round Analysis
+5
+6
+Platform Capability Map — Confirmed Zero Cost
+6
+7
+The Crossover Architecture
+8
+8
+The Provider Plug-In System
+9
+9
+AWS Infrastructure — Final Confirmed State
+10
+10
+Agent-to-Model Assignment Matrix
+11
+11
+Homeostasis Mechanism
+12
+12
+Risk Register
+13
+13
+Short-Term Roadmap
+14
+14
+Medium-Term Roadmap
+15
+15
+Long-Term Roadmap
+16
+16
+Immediate Actions
+17
+17
+Constraints and Non-Negotiables
+17
+
+
+1. EXECUTIVE SUMMARY
+
+
+Project NEXUS is the next phase of V3R — a distributed multi-provider intelligence architecture that transforms V3R from a single Groq-backed RAG system into a self-routing mesh of specialized AI providers, each assigned to the task tier it executes best, coordinated by a permanent zero-cost AWS infrastructure that scales horizontally through account multiplication rather than paid upgrades.
+Three rounds of independent research, cross-validated and run through V3R's own knowledge base, identified five confirmed zero-cost AI providers, four critical AWS always-free services previously underutilized by V3R, one confirmed billing exposure requiring immediate remediation, and a provider plug-in architecture that allows new AI models to be registered and activated without any code changes to deployed Lambda handlers.
+The result is a system that becomes more capable with every new provider registered, more resilient with every additional account created, and more intelligent with every interaction — all at permanent zero cost.
+2. PROJECT ORIGIN — WHAT V3R REVEALED
+
+
+V3R was built to solve AI amnesia — the complete absence of persistent memory in every standard AI session. By Phase 8, V3R had solved that problem. It had persistent RAG memory, a GNN knowledge graph, multi-agent orchestration, self-knowledge domain intelligence, and an automated product specification generator — all running on AWS free tier, zero cost, zero compromise.
+What Phase 8 revealed was a different problem. V3R's entire intelligence pipeline runs on a single LLM provider — Groq, with a single model — llama-3.1-8b-instant. Every agent from MODERATOR to SYSTEM DEBUG executes on the same 8B parameter model. The simulation labels in the Framework constrain agent behavior but cannot raise the capability ceiling of the underlying model. A system that simulates a reasoning specialist on a general-purpose fast inference model will always produce outputs bounded by that model's ceiling.
+V3R's architectural thesis — that the system becomes more capable with every interaction — cannot be fully realized if every agent is executing on the same hardware. The next evolution is not more memory. It is better thinking. Project NEXUS is the answer.
+3. THE PROBLEM STATEMENT
+
+
+Single Provider Dependency: All V3R intelligence routes through Groq. If Groq changes rate limits, deprecates the model, or experiences downtime, V3R is completely offline. No fallback exists.
+Uniform Capability Ceiling: All six V3R agents execute on the same 8B model. The SYSTEM DEBUG agent — designed for deep chain-of-thought validation — operates at the same capability level as the simple retrieval formatter. This is architectural waste.
+No Provider Abstraction: Every new LLM provider requires code changes across multiple Lambda handlers. HTTP connection patterns, authentication headers, and response schemas differ per provider. Integration cost per new provider is high.
+Single Account Rate Pool: All V3R requests draw from one Groq account's daily limits. 14,400 RPD sounds large until a complex multi-pass pipeline consumes 30+ calls per user request. Five concurrent users exhaust the daily limit in hours.
+ECR Billing Exposure: V3R's container image (3,184 MB) sits in a private ECR repository. After 12 months, the 500MB free storage tier expires and billing begins. An always-free public ECR alternative exists but has not been implemented.
+No Load Distribution: V3R has no mechanism to distribute requests across multiple providers or accounts. All load concentrates on a single point. Homeostasis — the self-regulating state where no component is overloaded — is not achievable with current architecture.
+
+4. THE NEXUS THESIS
+
+
+A speaker crossover routes frequency bands to the driver architecturally suited for them. Tweeters handle highs. Woofers handle lows. Not because any single driver is insufficient — but because specialization produces superior aggregate output with less strain per component. The crossover circuit is the intelligence of the system. It does not generate sound. It routes it correctly.
+NEXUS is V3R's crossover circuit. Different task types route to the AI best suited for them. Load distributes across multiple free-tier accounts so no single account is exhausted. Every provider operates within its capability sweet spot. The aggregate intelligence of the system exceeds what any single provider could deliver — at zero cost, permanently.
+The NEXUS thesis has three components:
+Tier Routing. Tasks are classified by complexity tier before execution. Each tier maps to the provider best suited for that tier at zero cost. Simple, high-volume tasks route to the fastest free provider. Complex reasoning routes to the strongest free reasoning model. Validation routes to the most rigorous free model available.
+Provider Abstraction. All handlers call a single internal function: llm_call(tier, system, prompt). The routing layer resolves tier to provider, formats the request per that provider's API, and returns a normalized response. Adding a new AI requires no handler code changes — only a new registry record.
+Homeostasis. A DynamoDB routing table tracks real-time usage per key. When a key approaches its daily limit, the router automatically selects the next available key in the same tier. The system self-regulates. No manual intervention. No downtime. No billing surprises.
+5. RESEARCH METHODOLOGY — THREE ROUND ANALYSIS
+
+
+NEXUS was not designed from assumption. It was derived from three independent rounds of research, each sourced from different references, each output run through V3R's own knowledge base for compatibility and constraint checking, each round then compared against the prior rounds to identify conflicts, correct errors, and refine findings.
+Round 1: Primary provider documentation. Groq rate limit docs, AWS free tier official pages, HuggingFace tier documentation. Established baseline numbers and initial architecture concepts. Identified IoT Core as agent coordination layer (later corrected). Missed Cerebras, OpenRouter, and Mistral entirely.
+Round 2: Independent community references and third-party AWS billing analysis. Discovered July 2025 AWS free tier restructure. Corrected IoT Core classification (12-month only, not always-free). Identified ECR Public as billing exposure solution. Replaced IoT Core recommendation with SQS (always-free). Identified AWS Organization aggregation gotcha that invalidates multi-account strategy if accounts are joined to an Organization.
+Round 3: Alternative provider sources and community benchmarks. Discovered Cerebras — confirmed fastest free inference provider at 1,800 tokens/second on Llama 3.1 8B, no credit card, no waitlist. Discovered OpenRouter — single unified endpoint for 290+ models, OpenAI-compatible, free tier available. Confirmed Mistral Experiment plan (phone number only, 1B tokens/month). Introduced the provider abstraction layer concept as the architectural solution to multi-provider integration complexity.
+All three rounds were looped through V3R's RAG knowledge base and knowledge graph for constraint checking against the platform's known architecture, forbidden patterns, and hardware limitations before findings were accepted into this report.
+
+6. PLATFORM CAPABILITY MAP — CONFIRMED ZERO COST
+
+
+The following providers are confirmed zero cost, no credit card required, no expiry. All data verified across minimum two independent sources per provider.
+Provider
+Model
+RPM
+RPD / Daily Tokens
+Speed
+Strength
+Tier
+Credit Card?
+Groq
+llama-3.1-8b-instant
+30
+14,400 RPD / 500K TPD
+~2s/call
+Speed + Volume
+Speed
+No
+Groq
+llama-3.3-70b-versatile
+30
+1,000 RPD / 100K TPD
+~3s/call
+Quality Reasoning
+Quality
+No
+Cerebras
+llama-3.1-8b
+30
+1M tokens/day
+~0.5s/call
+Fastest Free Inference
+Speed
+No
+Cerebras
+llama-3.3-70b
+30
+1M tokens/day
+~1.5s/call
+Fast + Quality
+Speed/Quality
+No
+Gemini
+2.5 Flash
+10
+250-500 RPD
+~2s/call
+Reasoning + Long Context
+Quality
+No
+Gemini
+2.5 Flash-Lite
+15
+1,000 RPD
+~1.5s/call
+Volume + Speed
+Volume
+No
+Gemini
+2.5 Pro
+5
+100 RPD
+~3s/call
+Strongest Free Reasoning
+Debug
+No
+OpenRouter
+Free models (:free)
+20
+200 RPD/model
+Varies
+Model Variety (290+)
+Volume/Experiment
+No
+Mistral
+Experiment Plan
+2
+1B tokens/month
+~2s/call
+Massive Token Budget
+Batch
+Phone only
+
+
+KEY FINDING — Cerebras: At 1,800 tokens/second on Llama 3.1 8B, Cerebras is measurably faster than Groq for sequential agent pipeline calls. V3R's 5-pass ideagen pipeline drops from ~10 seconds to ~2.5 seconds by routing to Cerebras with no code change other than base URL and API key. Cerebras is OpenAI-compatible. The existing groq_call() function works unchanged.
+KEY FINDING — OpenRouter: Single OpenAI-compatible endpoint for 290+ models. Adding OpenRouter as a provider gives NEXUS access to DeepSeek R1, Llama 3.3 70B, Gemma 3, Qwen variants — all free — through a single integration. Model experimentation becomes a parameter change, not an integration project.
+RISK NOTED — Gemini: Google reduced Gemini free tier limits by 50-92% in December 2025 with minimal notice. All NEXUS architecture using Gemini is designed to remain viable if limits are cut again. Gemini is supplementary, never primary.
+
+7. THE CROSSOVER ARCHITECTURE
+
+
+NEXUS routes task requests through four tiers. Each tier maps to the optimal zero-cost provider for that tier's requirements. The routing decision is made at runtime by the v3r-keys table — not hardcoded in any handler.
+TIER
+USE CASES
+PROVIDERS
+LATENCY
+CAPACITY
+SPEED
+Latency-critical
+Sequential agent calls
+Real-time chat responses
+Cerebras (primary)
+Groq llama-3.1-8b (secondary)
+~0.5s/call
+~2s/call backup
+1M tokens/day + 14.4K RPD
+QUALITY
+Complex reasoning
+Task decomposition
+Multi-step orchestration
+Gemini 2.5 Flash (primary)
+Groq llama-3.3-70b (secondary)
+~2s/call
+~3s/call backup
+250-500 RPD + 1K RPD
+DEBUG
+Validation gate
+Chain-of-thought review
+Pre-output clearance
+Gemini 2.5 Pro (exclusive)
+~3s/call
+100 RPD — gate use only
+VOLUME
+Classification
+Embedding support
+Low-stakes high-frequency
+Gemini Flash-Lite (primary)
+OpenRouter free (secondary)
+~1.5s/call
+Varies
+1K RPD + 200 RPD/model
+BATCH
+Large document analysis
+Cross-session synthesis
+Non-real-time processing
+Mistral Experiment
+~2s/call
+2 RPM / 1B tokens/month
+
+
+The routing layer selects the provider with the most remaining daily capacity in the requested tier. If the primary provider is exhausted or unavailable, the router automatically falls back to the secondary. No handler knows which provider executed its request. All handlers receive a normalized text response regardless of provider.
+8. THE PROVIDER PLUG-IN SYSTEM
+
+
+Adding a new AI provider to V3R currently requires code changes across every handler that makes LLM calls — new HTTP connection patterns, new authentication headers, new response parsing. NEXUS eliminates this entirely through a provider registry and adapter pattern.
+The v3r-keys DynamoDB table is the provider registry. Schema:
+Field
+Type
+Description
+key_id (S)
+Partition Key
+Unique identifier e.g. groq_01, cerebras_02, gemini_debug_01
+provider (S)
+Attribute
+groq | gemini | cerebras | mistral | openrouter
+model (S)
+Attribute
+Exact model string — e.g. llama-3.1-8b-instant
+api_key (S)
+Attribute
+The API key value — stored here, never hardcoded in handlers
+base_url (S)
+Attribute
+Provider API base URL — e.g. api.groq.com, api.cerebras.ai
+tier (S)
+Attribute
+speed | quality | debug | volume | batch
+daily_limit (N)
+Attribute
+RPD cap for this key
+requests_today (N)
+Attribute
+Rolling counter — incremented by router on each use
+last_reset (S)
+Attribute
+ISO timestamp of last midnight reset
+status (S)
+Attribute
+active | paused | exhausted
+adapter (S)
+Attribute
+openai_compat | gemini — determines HTTP request format
+
+
+Adding a new AI — four steps:
+Register account with new provider. Get API key.
+Add one row to v3r-keys table via PowerShell (WriteAllText + aws dynamodb put-item).
+If provider is OpenAI-compatible (Groq, Cerebras, Mistral, OpenRouter, xAI are all compatible): no new adapter needed. Set adapter field to openai_compat.
+If provider uses a different API schema (Gemini): add one adapter function to the routing utility. One push required.
+The commented-out template pattern: the routing utility file contains one commented-out template record at the top, with each field on its own line preceded by #. To activate a new provider, fill in the values, remove the #, run the PowerShell put-item command. No handler files are touched. No Docker push required. The new provider is live immediately.
+
+9. AWS INFRASTRUCTURE — FINAL CONFIRMED STATE
+
+
+Always-Free Permanent Services (confirmed post July 2025 restructure):
+Service
+Free Limit
+V3R Use
+Status
+Lambda
+1M requests/month + 400K GB-seconds/month
+Core compute for all V3R handlers
+CONFIRMED
+DynamoDB
+25GB storage + 25 WCU/RCU provisioned OR 200M on-demand requests/month
+All V3R tables. Switch low-volume tables to provisioned to use always-free capacity units.
+ACTION NEEDED
+SQS
+1M requests/month
+Agent-to-agent message coordination. Replaces IoT Core recommendation.
+CONFIRMED
+Step Functions
+4,000 state transitions/month
+Multi-agent pipeline orchestration with parallel execution and retries.
+CONFIRMED
+ECR Public
+50GB storage/month + unlimited authenticated pull
+Migrate from private ECR. Eliminates billing exposure permanently.
+ACTION NEEDED
+CloudWatch
+10 metrics + 5GB logs + 1M API requests/month
+Lambda monitoring, error alerting.
+CONFIRMED
+SNS
+1M publishes/month
+Event notifications across pipeline components.
+CONFIRMED
+EventBridge
+14M Scheduler invocations/month
+Scheduled tasks — Drive scan, DynamoDB resets, graph maintenance.
+CONFIRMED
+IAM
+Unlimited
+All role and policy management.
+CONFIRMED
+S3 Glacier
+10GB retrieval/month
+Long-term spec and report archival.
+CONFIRMED
+
+
+CRITICAL NOTE — AWS Organizations: If multiple AWS accounts are joined to an AWS Organization, always-free limits are AGGREGATED across all accounts — not multiplied. Lambda 1M requests becomes shared across all member accounts. The multi-account capacity multiplication strategy is only valid if accounts remain completely independent and are NEVER joined to an Organization.
+Multi-Account Strategy: Each independent Paid Plan AWS account receives full always-free services permanently. A credit card is required at signup but is never charged if usage stays within always-free limits. Free Plan accounts (post July 15, 2025) auto-close after 6 months — Paid Plan accounts are the correct target for permanent infrastructure.
+10. AGENT-TO-MODEL ASSIGNMENT MATRIX
+
+
+The following matrix defines the model assignment for each V3R agent under NEXUS. Current state reflects V3R Phase 8. Target state reflects NEXUS full implementation.
+Agent
+Simulation Target
+Current Model
+NEXUS Target Model
+Tier
+Rationale
+MODERATOR
+GPT-4o simulation
+Groq llama-3.1-8b-instant
+Gemini 2.5 Flash
+quality
+Reasoning and long-context decomposition. 250-500 RPD sufficient for orchestration frequency.
+KNOWLEDGE RETRIEVAL
+Perplexity simulation
+Groq llama-3.1-8b-instant
+Groq with web_search tool OR Gemini with Search grounding
+quality
+Real-time sourcing. Groq web_search built-in tool available at free tier. Gemini Search grounding 500 RPD.
+CODER
+DeepSeek Coder V2 sim.
+Groq llama-3.1-8b-instant
+Gemini 2.5 Pro (sparingly) + Cerebras 70B
+quality/speed
+Gemini Pro has strongest coding benchmarks at free tier. 100 RPD used for complex generation only. Cerebras 70B for speed.
+SYSTEM DEBUG
+OpenAI o3 simulation
+Groq llama-3.1-8b-instant
+Gemini 2.5 Pro (exclusive)
+debug
+100 RPD sufficient for gate use. DEBUG fires on pushes and validation only, not every request. Highest reasoning ceiling.
+DOCUMENTATION
+Claude Sonnet simulation
+Groq llama-3.1-8b-instant
+Gemini 2.5 Flash
+quality
+Structured technical writing. Gemini Flash produces strong structured output at 250-500 RPD.
+INFRASTRUCTURE
+Amazon Q Developer sim.
+Groq llama-3.1-8b-instant
+Gemini 2.5 Flash + RAG context injection
+quality
+AWS-specific reasoning via RAG context injection. Gemini Flash handles structured AWS checklist output well.
+
+
+11. HOMEOSTASIS MECHANISM
+
+
+Homeostasis is the state where no component is overloaded, degraded requests are automatically rerouted, and aggregate capability remains stable regardless of individual component state. NEXUS achieves homeostasis through the routing utility function and v3r-keys table.
+Routing Algorithm:
+1. Handler calls route_llm(tier, system, prompt).
+2. Router queries v3r-keys: filter by tier=requested_tier AND status=active.
+3. Sort results by (requests_today / daily_limit) ascending — least utilized key first.
+4. Select first key. Check if last_reset date is today. If not, reset requests_today to 0.
+5. Increment requests_today by 1. If requests_today >= daily_limit, set status=exhausted.
+6. If no active keys remain in requested tier, fall back to next tier down.
+7. Format request per adapter type (openai_compat or gemini). Execute call.
+8. Return normalized text response to handler. Handler never knows which provider executed.
+The routing utility is a shared Lambda layer — one Python file, ~50 lines, deployed once, imported by all handlers. Updates to the routing logic deploy in a single push. The v3r-keys table is the live state. The routing utility is the decision engine. Together they are the crossover circuit.
+EventBridge Scheduler — Midnight Reset:
+An EventBridge rule fires daily at midnight UTC. It invokes a lightweight Lambda function that scans v3r-keys and resets requests_today to 0 and status to active for all keys. This is the heartbeat of homeostasis. EventBridge Scheduler is always-free at 14M invocations/month. The reset Lambda executes in under one second.
+12. RISK REGISTER
+
+
+Risk
+Severity
+Description
+Mitigation
+Gemini Quota Reduction
+HIGH
+Google cut Gemini free limits 50-92% in Dec 2025 with minimal notice.
+Gemini is supplementary, never primary. Core pipeline remains viable on Groq/Cerebras if Gemini limits drop to zero.
+Groq Model Deprecation
+MEDIUM
+Groq deprecates models without notice (FP-004).
+v3r-keys model field is the single source of truth. Key rotation to new model = one DynamoDB update. No handler changes.
+AWS Organization Trap
+HIGH
+Joining accounts to an Organization aggregates always-free limits.
+Strict policy: all NEXUS accounts remain completely independent. Never create an Organization.
+AWS Free Plan Auto-Close
+HIGH
+Free Plan accounts (post July 2025) auto-close after 6 months.
+All new AWS accounts created on Paid Plan. Credit card required at signup. Zero charges if always-free limits respected.
+ECR Private Billing
+CONFIRMED ACTIVE
+Current V3R private ECR (3184MB) will incur billing after 12-month mark.
+Immediate action: migrate to ECR Public. 50GB always-free permanently. No code changes required.
+Cerebras API Changes
+LOW
+Cerebras is newer provider — free tier terms less established.
+Cerebras is speed tier supplement, not primary. Groq remains backbone. If Cerebras changes terms, route falls back to Groq automatically.
+OpenRouter Free Model Changes
+MEDIUM
+Free models on OpenRouter (:free) can be removed by model owners.
+OpenRouter is volume/experiment tier. Route falls back to Gemini Flash-Lite if free models removed.
+Single-Developer Bottleneck
+LOW
+V3R is built by one developer. Knowledge concentration risk.
+Handoff report system and Google Drive library mitigate this. NEXUS reports extend the handoff infrastructure.
+
+
+13. SHORT-TERM ROADMAP — Infrastructure Hardening
+
+
+Target: Sessions 1-3 after this report. Zero pushes until v3r-keys is built.
+[ST-01] [CRITICAL] Migrate ECR private to ECR Public
+Create public ECR repository. Push current ml-offline-torch26 image to public repo URI. Update all 6 Lambda functions to pull from public URI. Delete private repository. Billing exposure eliminated permanently. No code changes to handlers.
+Timeline: 1 session  |  Push required: Zero
+[ST-02] [HIGH] Switch DynamoDB tables to provisioned capacity
+Switch rag-chunks and rag-graph from PAY_PER_REQUEST to provisioned 5 RCU / 5 WCU. Both tables have predictable low-volume access patterns. Provisioned capacity uses the always-free 25 WCU/25 RCU pool. rag-memory and rag-specs remain PAY_PER_REQUEST for variable load.
+Timeline: 1 session  |  Push required: Zero
+[ST-03] [CRITICAL] Create v3r-keys DynamoDB table
+Table: v3r-keys. PK: key_id (S). Add all attributes from schema in Section 8. Populate with current Groq key as first record. This is the foundation of the entire NEXUS architecture. Everything else depends on this table existing.
+Timeline: 1 session  |  Push required: Zero
+[ST-04] [CRITICAL] Build routing utility function
+New file: lambda_router.py. ~50 lines. Implements route_llm(tier, system, prompt). Reads v3r-keys, selects best key, formats request per adapter type, returns normalized response. Shared Lambda layer import. One Docker push required after testing.
+Timeline: 1-2 sessions  |  Push required: Zero — 1 push (~67 min)
+[ST-05] [HIGH] Register Cerebras account and add to v3r-keys
+Register at cerebras.ai. Get API key. No credit card. Add record to v3r-keys: provider=cerebras, adapter=openai_compat, tier=speed. Immediately available via routing utility. No push required.
+Timeline: 5 minutes  |  Push required: Zero
+[ST-06] [HIGH] Register Google AI Studio account and add Gemini keys
+Register at aistudio.google.com. Get API key. No credit card. Add two records to v3r-keys: gemini-flash as tier=quality, gemini-pro as tier=debug. Gemini requires its own adapter function in lambda_router.py (different request schema).
+Timeline: 1 session  |  Push required: Zero — included in ST-04 push
+[ST-07] [MEDIUM] Register second Groq account
+Register second Groq account with different email. Get second API key. Add to v3r-keys as groq_02, tier=speed. Aggregate RPD doubles from 14,400 to 28,800. Routing utility distributes load automatically.
+Timeline: 5 minutes  |  Push required: Zero
+[ST-08] [MEDIUM] Register OpenRouter account
+Register at openrouter.ai. Get free API key. Add to v3r-keys as tier=volume, adapter=openai_compat. Access to 290+ models for experimentation and volume tasks. No push required.
+Timeline: 5 minutes  |  Push required: Zero
+
+14. MEDIUM-TERM ROADMAP — Multi-LLM + Multi-Agent
+
+
+Target: Sessions 4-10 after this report. Requires ST roadmap complete.
+[MT-01] [CRITICAL] Upgrade agent model assignments per matrix
+Modify lambda_orchestrator.py and lambda_chat.py to call route_llm() instead of groq_call() directly. MODERATOR routes to quality tier. DEBUG routes to debug tier. Chat routes to speed tier. All other agents route to quality. One push required.
+Timeline: 1 session  |  Push: 1 push
+[MT-02] [HIGH] SQS agent coordination layer
+Create 6 SQS FIFO queues — one per agent. MODERATOR publishes task messages. Agent Lambda functions triggered by SQS events. Results published to MODERATOR response queue. Enables parallel agent execution for the first time. SQS always-free at 1M requests/month.
+Timeline: 2 sessions  |  Push: 1 push
+[MT-03] [HIGH] Step Functions pipeline orchestration
+Define state machine for multi-agent pipeline. MODERATOR dispatches. KR, CODER, DEBUG, DOCUMENTATION execute in defined sequence with parallel branches where safe. Step Functions 4,000 transitions/month always-free. Visual pipeline monitoring in AWS console.
+Timeline: 2 sessions  |  Push: 1 push
+[MT-04] [MEDIUM] EventBridge midnight key reset
+Create EventBridge Scheduler rule: cron(0 0 * * ? *). Invoke new Lambda function lambda_key_reset.py — scans v3r-keys, resets requests_today to 0 and status to active for all exhausted keys. Heartbeat of homeostasis. Always-free.
+Timeline: 1 session  |  Push: 1 push
+[MT-05] [MEDIUM] Second AWS account — independent Paid Plan
+Register second AWS account on Paid Plan. Independent free tier — additional 1M Lambda requests, 25GB DynamoDB. Deploy rag-retrieve and rag-graph to Account 2. Load distribution across accounts. ECR Public image shared from Account 1 at zero transfer cost.
+Timeline: 1 session  |  Push: Zero — no push needed
+[MT-06] [HIGH] v3r-graph extended — agent mesh topology
+Add agent nodes to rag-graph representing NEXUS agent mesh. Each node includes current model assignment, tier, provider, queue reference. MODERATOR queries graph before dispatch to know current agent capability state. V3R knows its own infrastructure at runtime.
+Timeline: 1 session  |  Push: Zero — graph operations only
+[MT-07] [MEDIUM] Streaming response layer
+Enable Lambda Function URL response streaming (InvokeWithResponseStream). Update app.py to consume SSE stream. Responses appear token by token instead of waiting for full Lambda execution. User experience transforms. Gradio 6.x SSE streaming supported natively.
+Timeline: 2 sessions  |  Push: 1 push
+
+15. LONG-TERM ROADMAP — True Multi-LLM Mesh
+
+
+Target: Sessions 10+ after this report. Requires MT roadmap substantially complete.
+[LT-01] Full provider mesh operational
+All five provider categories active in v3r-keys: Groq (multiple accounts), Gemini (Flash-Lite/Flash/Pro), Cerebras (8B and 70B), OpenRouter (volume tier), Mistral (batch tier). Routing utility distributes load across all providers by tier. Aggregate free capacity: ~80K+ RPD across all providers and accounts.
+[LT-02] Third AWS account — specialized compute
+Third independent Paid Plan AWS account. Deploy lambda_ideagen.py and lambda_orchestrator.py here. Dedicated compute for high-complexity pipeline operations. Independent 1M Lambda requests/month. ECR Public image shared from Account 1.
+[LT-03] V3R as its own infrastructure registry
+v3r-graph extended to fully model the NEXUS mesh: every agent, every provider, every queue, every Lambda function, every DynamoDB table — all as graph nodes with typed relationships. MODERATOR queries the graph to understand its own infrastructure state before every dispatch decision. The system knows itself at the infrastructure level.
+[LT-04] Self-improving prompt optimization
+Lambda function lambda_prompt_optimizer.py: periodically retrieves recent rag-memory entries, evaluates response quality against ingested V3R knowledge, identifies system prompts that produced weak outputs, generates improved prompts via debug tier model, ingests optimized prompts as v3r_prompt_update records. V3R improves its own agent instructions through operation.
+[LT-05] Cross-provider response synthesis
+For high-stakes requests, MODERATOR dispatches the same task to multiple providers simultaneously via SQS. SYSTEM DEBUG agent receives all responses and synthesizes the strongest output. Ensemble inference at zero cost using parallel free tier capacity. Produces outputs stronger than any single provider could generate.
+[LT-06] Public API layer
+AWS API Gateway HTTP API (free for 12 months on legacy accounts, then $1/million requests) exposes NEXUS capabilities as a public API. Authentication via API key stored in v3r-keys. Rate limiting via API Gateway usage plans. V3R becomes a platform that external systems can query.
+16. IMMEDIATE ACTIONS — Zero Cost, High Impact
+
+
+The following six actions can be completed before the next session. Combined they transform V3R from a single-provider system into a multi-provider platform before writing a single line of new code.
+Action 1: Register Cerebras account
+cerebras.ai — no credit card. Get API key. 5 minutes. Immediate 4x speed improvement available on ideagen pipeline via base URL swap.
+Action 2: Register additional Groq account
+Different email. Get second API key. 5 minutes. Aggregate RPD doubles to 28,800 before routing utility is even built.
+Action 3: Register Google AI Studio account
+aistudio.google.com — no credit card. Get Gemini API key. 5 minutes. SYSTEM DEBUG gate capability ceiling jumps from 8B to Pro-level reasoning.
+Action 4: Register OpenRouter account
+openrouter.ai — no credit card. Get free API key. 5 minutes. 290+ models accessible through one endpoint.
+Action 5: Create v3r-keys DynamoDB table
+Foundation of entire NEXUS architecture. One PowerShell command. Table creation takes under 60 seconds. Populate with current Groq key as first record.
+Action 6: Create ECR Public repository and migrate image
+Eliminates only confirmed billing exposure in current V3R stack. Private ECR 500MB 12-month limit. Public ECR 50GB always-free. Migration requires one push but saves real money.
+
+17. CONSTRAINTS AND NON-NEGOTIABLES
+
+
+ZERO COST: No provider, service, or infrastructure component may require payment at any level of NEXUS operation. If a free tier has a credit card requirement at signup but never charges within free limits, it is acceptable. If a service charges when limits are exceeded, NEXUS must be architecturally incapable of exceeding those limits.
+NO AWS ORGANIZATIONS: Multiple AWS accounts must remain completely independent. Joining any NEXUS account to an AWS Organization aggregates always-free limits across all member accounts, destroying the capacity multiplication strategy entirely.
+PAID PLAN ONLY FOR NEW AWS ACCOUNTS: Free Plan accounts auto-close after 6 months. All new AWS accounts created for NEXUS must be Paid Plan. Credit card required at signup but never charged within always-free limits.
+GROQ AS BACKBONE: Gemini, Cerebras, Mistral, and OpenRouter are supplementary. V3R must remain fully operational if all supplementary providers become unavailable simultaneously. Groq is the backbone. It is never a secondary fallback — it is the guaranteed floor.
+FP REGISTRY APPLIES TO ALL NEW CODE: All 16 Forbidden Patterns apply to every new handler written for NEXUS. lambda_router.py, lambda_key_reset.py, and all future handlers must pass DEBUG gate review before delivery.
+ONE STEP AT A TIME: Priority 9 of V3R Briefing v1.3 applies to NEXUS implementation. Instructions are delivered one step at a time unless Priority 9 is explicitly suspended for large chunk delivery.
+ALL CODE AS COMPLETE FILE REPLACEMENTS: Operational rule established during V3R Phase 8. All code deliveries are complete file replacements. Surgical edits only after photo confirmation of current file contents.
+ECR TAG PERMANENT: ml-offline-torch26 is the production tag. It does not change without explicit instruction. All Lambda functions reference this tag. Tag switching is prohibited.
+CLOSING STATEMENT
+
+
+V3R began as a solution to AI amnesia. It became a cloud-native platform with persistent memory, a knowledge graph, multi-agent orchestration, and automated product generation — all at zero cost, on constrained hardware, built by one developer with no admin privileges.
+Project NEXUS is not a departure from that mission. It is the completion of it. V3R's architectural thesis — that the system becomes more capable with every interaction — cannot be fully realized on a single provider. The crossover architecture routes every task to the AI best suited for it. The provider plug-in system ensures that adding new intelligence requires no code changes. The homeostasis mechanism ensures the system self-regulates indefinitely.
+The system that accepts a raw idea and outputs a fully engineered product — Phase 8's promise — becomes genuinely more powerful as NEXUS layers in. A MODERATOR running on Gemini Flash thinks more clearly. A SYSTEM DEBUG gate running on Gemini Pro catches more errors. A CODER assisted by a 70B model writes better code. The same architecture. Better thinking. Zero cost.
+This is the path. NEXUS is what V3R was always meant to become.
+
+
+
+Report: Project NEXUS — Full Project Report v1.0
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 15, 2026
+Predecessor: V3R Phases 1-8 — Complete
+Status: NEXUS Phase — Pre-Implementation
+Next Action: ST-01: Migrate ECR Private to ECR Public

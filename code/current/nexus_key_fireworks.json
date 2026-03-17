@@ -1,0 +1,1 @@
+{"TableName":"v3r-keys","Item":{"key_id":{"S":"fireworks"},"api_key":{"S":"fw_87VwTgsgaWawuDzgJsjh3a"},"provider":{"S":"fireworks"},"model":{"S":"accounts/fireworks/models/llama-v3p3-70b-instruct"},"status":{"S":"active"}}}
