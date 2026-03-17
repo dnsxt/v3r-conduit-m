@@ -16,28 +16,31 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install rclone
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y rclone
+        run: sudo apt-get update && sudo apt-get install -y rclone
 
-      - name: Configure rclone gdrive
+      - name: Configure rclone gdrive safely
         run: |
           mkdir -p \~/.config/rclone
-          cat > \~/.config/rclone/rclone.conf << EOF
-          [gdrive]
-          type = drive
-          scope = drive
-          token = ${{ secrets.DRIVE_TOKEN }}
-          EOF
+          # Write secret to temp file with NO extra newline
+          echo -n '${{ secrets.DRIVE_TOKEN }}' > /tmp/drive_token.json
+          # Create remote using the JSON file directly
+          rclone config create gdrive drive \
+            token "$(cat /tmp/drive_token.json)" \
+            scope drive \
+            --config \~/.config/rclone/rclone.conf
+          rm -f /tmp/drive_token.json
 
-      - name: Debug config (optional but helpful)
+      - name: Debug config (must show gdrive remote)
         run: |
-          ls -la \~/.config/rclone/
-          cat \~/.config/rclone/rclone.conf
-          rclone config show
+          rclone config file
+          cat \~/.config/rclone/rclone.conf || echo "Config file missing!"
+          rclone listremotes --config \~/.config/rclone/rclone.conf
+          rclone config show --config \~/.config/rclone/rclone.conf
 
       - name: Mirror full V3R tree
-        run: rclone sync gdrive:V3R . --delete-excluded --fast-list --progress
+        run: rclone sync gdrive:V3R . \
+          --config \~/.config/rclone/rclone.conf \
+          --delete-excluded --fast-list --progress --verbose
 
       - name: Commit and push
         run: |
