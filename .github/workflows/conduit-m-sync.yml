@@ -21,7 +21,9 @@ jobs:
       - name: Configure rclone gdrive
         run: |
           mkdir -p \~/.config/rclone
+          # Decode base64 secret to exact JSON
           echo "${{ secrets.DRIVE_TOKEN }}" | base64 -d > token.json
+          # Write config directly (INI format)
           cat > \~/.config/rclone/rclone.conf << EOF
 [gdrive]
 type = drive
