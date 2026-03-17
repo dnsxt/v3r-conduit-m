@@ -1,9 +1,9 @@
 name: Drive Mirror V3R
 
 on:
-  workflow_dispatch:  # This enables the Run button once on default branch
   schedule:
     - cron: '*/30 * * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,35 +15,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install rclone
+      - name: Setup rclone
+        uses: AnimMouse/setup-rclone@v1
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+
+      - name: Debug
         run: |
-          sudo apt update
-          sudo apt install -y rclone
+          rclone listremotes
+          rclone config show
 
-      - name: Setup rclone config
-        run: |
-          mkdir -p \~/.config/rclone
-          # Your base64-encoded token secret decodes here
-          echo "${{ secrets.DRIVE_TOKEN }}" | base64 -d > /tmp/token.json
-          cat > \~/.config/rclone/rclone.conf << 'EOF'
-[gdrive]
-type = drive
-scope = drive
-token = $(cat /tmp/token.json)
-EOF
-          rm /tmp/token.json
+      - name: Mirror V3R
+        run: rclone sync gdrive:V3R . --delete-excluded --fast-list --progress --verbose
 
-      - name: Debug config
-        run: |
-          rclone config file
-          cat \~/.config/rclone/rclone.conf || echo "Config file not found"
-          rclone listremotes || echo "No remotes found"
-          rclone config show || echo "Config show failed"
-
-      - name: Mirror V3R from Drive
-        run: rclone sync gdrive:V3R . --config \~/.config/rclone/rclone.conf --delete-excluded --fast-list --progress --verbose
-
-      - name: Commit & push changes
+      - name: Commit & push
         run: |
           git config user.name "Auto Mirror"
           git config user.email "auto@mirror"
