@@ -19,7 +19,7 @@ jobs:
       - name: Configure rclone gdrive
         run: |
           mkdir -p \~/.config/rclone
-          cat > \~/.config/rclone/rclone.conf << 'EOF'
+          cat > \~/.config/rclone/rclone.conf << EOF
           [gdrive]
           type = drive
           scope = drive.readonly
