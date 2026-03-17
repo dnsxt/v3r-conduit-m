@@ -1,9 +1,9 @@
 name: Drive Mirror V3R
 
 on:
+  workflow_dispatch:  # This enables the Run button once on default branch
   schedule:
     - cron: '*/30 * * * *'
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -17,12 +17,13 @@ jobs:
 
       - name: Install rclone
         run: |
-          sudo apt-get update
-          sudo apt-get install -y rclone
+          sudo apt update
+          sudo apt install -y rclone
 
       - name: Setup rclone config
         run: |
           mkdir -p \~/.config/rclone
+          # Your base64-encoded token secret decodes here
           echo "${{ secrets.DRIVE_TOKEN }}" | base64 -d > /tmp/token.json
           cat > \~/.config/rclone/rclone.conf << 'EOF'
 [gdrive]
@@ -32,20 +33,20 @@ token = $(cat /tmp/token.json)
 EOF
           rm /tmp/token.json
 
-      - name: Show debug info
+      - name: Debug config
         run: |
           rclone config file
-          cat \~/.config/rclone/rclone.conf || echo "Config missing"
-          rclone listremotes || echo "No remotes parsed"
+          cat \~/.config/rclone/rclone.conf || echo "Config file not found"
+          rclone listremotes || echo "No remotes found"
           rclone config show || echo "Config show failed"
 
-      - name: Sync V3R from Drive
+      - name: Mirror V3R from Drive
         run: rclone sync gdrive:V3R . --config \~/.config/rclone/rclone.conf --delete-excluded --fast-list --progress --verbose
 
-      - name: Commit changes
+      - name: Commit & push changes
         run: |
-          git config user.name "Automated Mirror"
-          git config user.email "actions@github.com"
+          git config user.name "Auto Mirror"
+          git config user.email "auto@mirror"
           git add .
-          git commit -m "Mirror update $(date -u +'%Y-%m-%d %H:%M UTC')" || echo "No changes to commit"
+          git commit -m "V3R mirror $(date -u +'%Y-%m-%d %H:%M UTC')" || echo "No changes"
           git push
