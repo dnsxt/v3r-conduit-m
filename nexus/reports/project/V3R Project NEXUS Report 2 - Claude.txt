@@ -1,0 +1,470 @@
+================================================================================
+PROJECT REPORT 2: PROJECT NEXUS — NEURALLY EXTENSIBLE CROSS-PROVIDER
+UNIFIED SYSTEM
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 15, 2026
+Report Type: Full Project Handoff Document — Session 1
+Report Number: NEXUS-PR-01
+================================================================================
+
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1.  Project Overview
+2.  Parent Project Context
+3.  Operator Context
+4.  Session Summary — March 15, 2026
+5.  Infrastructure — Current State
+6.  DynamoDB — Current State
+7.  Provider Registry
+8.  Routing Table
+9.  Forbidden Patterns Registry — Full Current List
+10. Active Task Queue — Pick Up Here
+11. NEXUS Roadmap
+12. File Locations Reference
+13. Credentials Reference
+================================================================================
+
+
+================================================================================
+SECTION 1: PROJECT OVERVIEW
+================================================================================
+
+Project NEXUS — Neurally Extensible Cross-provider Unified System — is the
+multi-provider LLM routing and failover layer for the V3R platform.
+
+NEXUS solves V3R's single point of failure: all inference currently routes
+through one provider (Groq). If Groq is down, rate-limits, or deprecates
+llama-3.1-8b-instant, the entire V3R platform fails. NEXUS eliminates this
+by building a dynamic routing layer that:
+
+  1. Maintains a registry of multiple LLM providers in DynamoDB
+  2. Routes requests to the optimal provider based on query type
+  3. Fails over automatically to backup providers if primary is unavailable
+  4. Centralizes all API keys in a single DynamoDB table (v3r-keys)
+  5. Allows provider addition/removal without code changes or container rebuilds
+
+NEXUS also addresses the one known billing exposure in V3R: the ECR private
+repository costs approximately $0.27/month above free tier. ST-01 migrates
+the container image to ECR Public which is permanently free.
+
+NEXUS is the infrastructure intelligence layer. When complete, V3R becomes
+resilient, adaptive, and provider-agnostic.
+
+
+================================================================================
+SECTION 2: PARENT PROJECT CONTEXT
+================================================================================
+
+V3R (Phases 1-8) — COMPLETE
+  Cloud-Native GNN-Integrated Multi-Agent Multi-LLM Platform.
+  Six Lambda functions. Full RAG + GNN + orchestration pipeline.
+  Self-knowledge domain intelligence operational.
+  Product generation (Phase 8) operational via lambda_ideagen.py.
+
+Project CORE — COMPLETE
+  V3R self-knowledge ingested. All architecture, agent, phase, constraint,
+  and forbidden pattern knowledge in RAG system.
+
+Project CONDUIT — COMPLETE
+  End-to-end sync pipeline operational. rclone + Apps Script + Drive.
+  Session workflow: run conduit_sync.ps1 at session end.
+
+Project NEXUS — ACTIVE (this project, Session 1)
+  Multi-provider routing layer. ST-01 in progress.
+
+Project APEX — PENDING (blocked on NEXUS)
+  Details in NEXUS project report at V3R/nexus/reports/project/ in Drive.
+
+
+================================================================================
+SECTION 3: OPERATOR CONTEXT
+================================================================================
+
+Developer:      David Schroeder (dnsxt.mbx@gmail.com)
+Machine:        HP Pavilion x360 14-ba0xx
+OS:             Windows 10 Home
+Shell:          PowerShell 5.1
+Admin rights:   Full local machine admin
+AWS Account:    236510207245 (us-east-1)
+HuggingFace:    dnsxt/rag-memory
+Build dir:      C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+HF Space dir:   C:\Users\Source-1\Desktop\rag-deploy\hf-space\
+V3R local:      C:\Users\Source-1\Desktop\V3R\
+
+Credentials:    Retrieve from General Data file at V3R/data/ in Drive.
+Provider keys:  Stored in DynamoDB v3r-keys table (created this session).
+
+
+================================================================================
+SECTION 4: SESSION SUMMARY — MARCH 15, 2026
+================================================================================
+
+ACCOMPLISHED THIS SESSION:
+
+  1. Read NEXUS project report from Drive. Full roadmap understood.
+
+  2. Provider registration — four providers secured:
+     - Groq: existing key, llama-3.1-8b-instant, free tier
+     - Cerebras: new account registered, free tier, no credit card
+     - Mistral: new account registered, experimental free subscription
+     - Fireworks AI: new account registered, $1.00 credit, selected
+       llama-v3p3-70b-instruct as primary model
+
+  3. Together AI evaluated and excluded — requires $5.00 minimum deposit.
+     Violates free-tier constraint. Replaced by Fireworks AI.
+
+  4. v3r-keys DynamoDB table created (PAY_PER_REQUEST).
+     All four provider keys stored.
+
+  5. v3r-routing DynamoDB table created manually via console (PAY_PER_REQUEST).
+     Three routing rules seeded: default, code, reasoning.
+     Each rule has primary + three fallback providers.
+
+  6. ST-01 initiated — ECR Public repository creation in progress.
+     Table and key infrastructure complete. ECR push pending.
+
+ISSUES ENCOUNTERED:
+
+  ISSUE 1: aws dynamodb put-item ResourceNotFoundException on v3r-routing
+    Cause: nexus_routing_table.json WriteAllText command from earlier session
+    instruction did not execute successfully — table was never created.
+    Resolution: Created table manually via DynamoDB console. All three
+    routing items created via console JSON editor.
+
+  ISSUE 2: cd... command not recognized in PowerShell
+    Cause: Operator typed cd... instead of cd.. (three dots vs two).
+    PowerShell uses cd.. for parent directory. cd... is not valid.
+    Resolution: Navigated using cd.. twice.
+
+
+================================================================================
+SECTION 5: INFRASTRUCTURE — CURRENT STATE
+================================================================================
+
+ECR PRIVATE (current — billing exposure):
+  Repository:   rag-ingest-container
+  Tag:          ml-offline-torch26 (~3184 MB)
+  Cost:         ~$0.27/month above free tier
+  Status:       Active — all Lambda functions currently using this URI
+  URI:          236510207245.dkr.ecr.us-east-1.amazonaws.com/
+                rag-ingest-container:ml-offline-torch26
+
+ECR PUBLIC (ST-01 — in progress):
+  Repository:   rag-ingest-container (public)
+  Tag:          ml-offline-torch26
+  Status:       PENDING — repository creation and push required
+  Cost:         Free permanently
+  Action:       Create public repo, login, tag, push (~67 min push time)
+
+LAMBDA FUNCTIONS (6 — all operational, all using private ECR currently):
+  rag-ingest-ultra-test   lambda_ingest_v4.py    82 lines
+  rag-retrieve            lambda_retrieve.py     52 lines
+  rag-chat                lambda_chat.py        106 lines
+  rag-graph               lambda_graph.py        42 lines
+  rag-orchestrator        lambda_orchestrator.py 79 lines
+  rag-ideagen             lambda_ideagen.py      58 lines
+
+DYNAMODB TABLES (6 — 4 existing + 2 new this session):
+  rag-chunks       Existing — knowledge base embeddings (~25 records)
+  rag-memory       Existing — conversation history
+  rag-graph        Existing — knowledge graph (9 nodes)
+  rag-specs        Existing — Phase 8 product specifications
+  v3r-keys         NEW — provider API keys (4 records)
+  v3r-routing      NEW — routing rules (3 records)
+
+HUGGINGFACE SPACE:
+  Space:    dnsxt/rag-memory
+  Status:   Running, public
+  URL:      https://huggingface.co/spaces/dnsxt/rag-memory
+
+
+================================================================================
+SECTION 6: DYNAMODB — CURRENT STATE
+================================================================================
+
+TABLE: v3r-keys
+  PK: key_id (S)
+  Billing: PAY_PER_REQUEST
+  Records: 4
+
+  Items:
+    key_id: groq
+      provider: groq
+      model: llama-3.1-8b-instant
+      status: active
+      api_key: [stored — retrieve from table]
+
+    key_id: cerebras
+      provider: cerebras
+      model: llama3.1-8b
+      status: active
+      api_key: [stored — retrieve from table]
+
+    key_id: mistral
+      provider: mistral
+      model: mistral-small-latest
+      status: active
+      api_key: [stored — retrieve from table]
+
+    key_id: fireworks
+      provider: fireworks
+      model: accounts/fireworks/models/llama-v3p3-70b-instruct
+      status: active
+      api_key: [stored — retrieve from table]
+
+TABLE: v3r-routing
+  PK: route_id (S)
+  Billing: PAY_PER_REQUEST
+  Records: 3
+
+  Items:
+    route_id: default
+      primary: groq
+      fallback_1: cerebras
+      fallback_2: mistral
+      fallback_3: fireworks
+      strategy: failover
+      status: active
+
+    route_id: code
+      primary: cerebras
+      fallback_1: groq
+      fallback_2: mistral
+      fallback_3: fireworks
+      strategy: failover
+      status: active
+
+    route_id: reasoning
+      primary: mistral
+      fallback_1: groq
+      fallback_2: cerebras
+      fallback_3: fireworks
+      strategy: failover
+      status: active
+
+
+================================================================================
+SECTION 7: PROVIDER REGISTRY
+================================================================================
+
+GROQ
+  Status:         Active — existing V3R provider
+  Free tier:      Yes — 30 RPM, 14,400 RPD
+  Model:          llama-3.1-8b-instant
+  API endpoint:   api.groq.com
+  Auth:           Bearer token (existing key in Lambda env vars + v3r-keys)
+  Role in NEXUS:  Primary for default and fallback for code/reasoning routes
+  Credit card:    Not required
+
+CEREBRAS
+  Status:         Active — new account registered March 15, 2026
+  Free tier:      Yes — generous free tier, no credit card required
+  Model:          llama3.1-8b
+  API endpoint:   api.cerebras.ai (OpenAI-compatible)
+  Auth:           Bearer token (key in v3r-keys)
+  Role in NEXUS:  Primary for code route, fallback_1 for default/reasoning
+  Credit card:    Not required
+
+MISTRAL AI
+  Status:         Active — new account registered March 15, 2026
+  Free tier:      Yes — experimental subscription, no credit card
+  Model:          mistral-small-latest
+  API endpoint:   api.mistral.ai
+  Auth:           Bearer token (key in v3r-keys)
+  Role in NEXUS:  Primary for reasoning route, fallback_2 for others
+  Credit card:    Not required
+
+FIREWORKS AI
+  Status:         Active — new account registered March 15, 2026
+  Free tier:      $1.00 credit on registration
+  Model:          accounts/fireworks/models/llama-v3p3-70b-instruct
+  API endpoint:   api.fireworks.ai (OpenAI-compatible)
+  Auth:           Bearer token (key in v3r-keys)
+  Role in NEXUS:  fallback_3 for all routes — largest model, last resort
+  Credit card:    Not required for $1.00 credit usage
+
+TOGETHER AI
+  Status:         EXCLUDED — requires $5.00 minimum deposit
+  Reason:         Violates free-tier constraint
+  Action:         Do not integrate. May revisit if project moves off free tier.
+
+
+================================================================================
+SECTION 8: NEXUS ROUTING LOGIC
+================================================================================
+
+Query type classification (to be implemented in lambda_router.py):
+  default   — general queries, RAG queries, chat
+  code      — queries involving code generation or review
+  reasoning — complex multi-step reasoning, analysis
+
+Failover strategy:
+  1. Attempt primary provider
+  2. If primary fails (timeout, rate limit, error) — try fallback_1
+  3. If fallback_1 fails — try fallback_2
+  4. If fallback_2 fails — try fallback_3
+  5. If all fail — return error with last failure details
+
+Provider failure detection:
+  HTTP 429 (rate limit) — immediate failover
+  HTTP 500/503 — immediate failover
+  Timeout (>30 seconds) — failover
+  Empty choices array — failover
+
+
+================================================================================
+SECTION 9: FORBIDDEN PATTERNS REGISTRY — FULL CURRENT LIST (19 entries)
+================================================================================
+
+FP-001: SentenceTransformer() direct instantiation
+FP-002: urllib.request for external API calls
+FP-003: Windows file paths in Lambda code
+FP-004: Hardcoded Groq model names without KR confirmation
+FP-005: win_amd64 or cp314 wheels in Docker build
+FP-006: Inline JSON strings in PowerShell AWS CLI
+FP-007: Relative paths in AWS CLI file:// references
+FP-008: Missing import os when using os.environ
+FP-009: ECR build without re-login when 12+ hours elapsed
+FP-010: Missing --provenance false --sbom false from docker buildx build
+FP-011: Omitting --platform linux/amd64 from docker buildx build
+FP-012: Assuming Docker pruning frees Windows disk space immediately
+FP-013: Assuming Groq API key is permanently valid
+FP-014: Full app.py replacement without visual audit
+FP-015: Omitting --cli-binary-format raw-in-base64-out from lambda invoke
+FP-016: [Retrieve from V3R Project Report 12 — Phase 8 session]
+FP-017: Never sync credentials to Drive via rclone
+FP-018: Never use rclone sync — always use rclone copy
+FP-019: Using --no-delete flag with rclone copy command
+
+NEXUS ADDITIONS:
+FP-020: Hardcoding provider API keys in Lambda handler code
+  All keys must be retrieved from v3r-keys DynamoDB table at runtime.
+  Never store keys in handler code, environment variables, or config files.
+  Retrieve via: dynamodb.get_item(TableName='v3r-keys',
+  Key={'key_id': {'S': 'provider_name'}})
+
+FP-021: Assuming provider API endpoint format matches Groq
+  Groq: api.groq.com — http.client.HTTPSConnection
+  Cerebras: api.cerebras.ai — OpenAI-compatible
+  Mistral: api.mistral.ai — own SDK or REST
+  Fireworks: api.fireworks.ai — OpenAI-compatible
+  Each provider requires its own connection handler or verified
+  OpenAI-compatible path. Confirm before coding each integration.
+
+
+================================================================================
+SECTION 10: ACTIVE TASK QUEUE — PICK UP HERE
+================================================================================
+
+IMMEDIATE — ST-01: ECR Public Migration (billing fix)
+
+  STATUS: In progress. Tables complete. ECR push pending.
+
+  STEP 1 — Create ECR Public repository:
+    aws ecr-public create-repository --region us-east-1
+    with repositoryName: rag-ingest-container
+    Note the repositoryUri from response.
+
+  STEP 2 — Login to ECR Public:
+    aws ecr-public get-login-password --region us-east-1 |
+    docker login --username AWS --password-stdin public.ecr.aws
+
+  STEP 3 — Tag existing image:
+    docker tag [private URI]:ml-offline-torch26 [public URI]:ml-offline-torch26
+
+  STEP 4 — Push to ECR Public (~67 minutes):
+    docker push [public URI]:ml-offline-torch26
+
+  STEP 5 — Update all 6 Lambda functions to use public URI:
+    Lambda console -> each function -> Image tab -> Deploy new image
+    Enter public URI manually. Save. Wait for Active status.
+    Repeat for all 6 functions.
+
+  STEP 6 — Verify all functions operational after migration:
+    Test rag-chat with standard query.
+    Test rag-ingest-ultra-test with small text payload.
+    Confirm both return 200.
+
+  STEP 7 — Delete ECR private repository (stops billing):
+    aws ecr delete-repository --repository-name rag-ingest-container
+    --region us-east-1 --force
+    WARNING: Only execute after all 6 Lambda functions confirmed
+    operational on public URI.
+
+THEN — ST-02: lambda_router.py creation
+  New Lambda function. Reads routing rules from v3r-routing.
+  Reads provider keys from v3r-keys.
+  Implements failover logic across all four providers.
+  Full implementation pending ST-01 completion.
+
+THEN — ST-03 through ST-08: Per NEXUS project report in Drive.
+
+
+================================================================================
+SECTION 11: NEXUS ROADMAP (SUMMARY)
+================================================================================
+
+ST-01  IN PROGRESS  ECR Public migration — billing fix
+ST-02  PENDING      lambda_router.py — multi-provider routing handler
+ST-03  PENDING      Update all handlers to call lambda_router
+ST-04  PENDING      Provider health monitoring
+ST-05  PENDING      Dynamic routing weight adjustment
+ST-06  PENDING      HF Space update for provider status display
+ST-07  PENDING      NEXUS self-knowledge ingestion into RAG
+ST-08  PENDING      NEXUS verification and handoff to APEX
+
+
+================================================================================
+SECTION 12: FILE LOCATIONS REFERENCE
+================================================================================
+
+LOCAL:
+  ecr-build:         C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+  hf-space:          C:\Users\Source-1\Desktop\rag-deploy\hf-space\
+  NEXUS reports:     C:\Users\Source-1\Desktop\V3R\nexus\reports\
+  conduit sync:      C:\Users\Source-1\Desktop\V3R\conduit\conduit_sync.ps1
+
+DRIVE:
+  NEXUS project:     V3R/nexus/reports/project/
+  NEXUS coding:      V3R/nexus/reports/coding/
+  NEXUS handoffs:    V3R/nexus/reports/handoffs/
+  Code current:      V3R/code/current/
+  Framework:         V3R/frameworks/current/
+  Data:              V3R/data/
+
+
+================================================================================
+SECTION 13: CREDENTIALS REFERENCE
+================================================================================
+
+AWS Account ID:    236510207245
+AWS Region:        us-east-1
+IAM Role:          rag-ingest-ultra-test-role-hi7s90re
+ECR Private URI:   236510207245.dkr.ecr.us-east-1.amazonaws.com/
+                   rag-ingest-container:ml-offline-torch26
+ECR Public URI:    public.ecr.aws/[alias]/rag-ingest-container:ml-offline-torch26
+                   (alias assigned on ECR Public repo creation — note it)
+Provider keys:     All stored in DynamoDB v3r-keys table
+HuggingFace:       dnsxt/rag-memory
+All other creds:   General Data file at V3R/data/ in Drive
+
+NOTE: Groq key is still active in Lambda env vars for current handlers.
+It is also stored in v3r-keys. Both are correct — env var remains as
+fallback until lambda_router.py is deployed and handlers updated.
+
+
+================================================================================
+END OF REPORT
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 15, 2026
+Project: NEXUS
+Report: NEXUS-PR-01
+Session: 1 of N
+Phases complete: V3R 1-8, CORE, CONDUIT
+Active task: ST-01 — ECR Public migration
+DynamoDB tables: 6 (4 existing + v3r-keys + v3r-routing)
+Providers registered: 4 (Groq, Cerebras, Mistral, Fireworks AI)
+Next action: Complete ST-01 ECR push then begin ST-02 lambda_router.py
+================================================================================

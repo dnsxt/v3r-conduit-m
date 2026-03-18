@@ -1,0 +1,1 @@
+{"TableName":"v3r-keys","Item":{"key_id":{"S":"groq"},"api_key":{"S":"(See sensitive_data.txt)"},"provider":{"S":"groq"},"model":{"S":"llama-3.1-8b-instant"},"status":{"S":"active"}}}

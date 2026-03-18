@@ -1,0 +1,207 @@
+V3R PROJECT NEXUS CODING REPORT 3 - Claude
+03/16/26 11:50:00
+
+PROJECT: V3R — NEXUS Implementation Session 1
+PREPARED BY: V3R (Claude Sonnet 4.6) — Documentation Agent
+DATE: March 16, 2026
+
+═══════════════════════════════════════════════════════════
+1. FILES MODIFIED THIS SESSION
+═══════════════════════════════════════════════════════════
+
+FILE 1: lambda_router.py (NEW)
+Path: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\lambda_router.py
+Lines: ~100
+Status: Deployed — Push 2
+
+Purpose: NEXUS routing utility. Shared module imported by all handlers.
+Exposes route_llm(route_id, system_prompt, user_prompt, max_tokens=1024,
+temperature=0.3).
+
+Key functions:
+- get_route(route_id): GetItem on v3r-routing
+- get_key(provider): GetItem on v3r-keys
+- reset_if_new_day(provider, key_record, today): lightweight daily reset
+- increment_usage(provider): UpdateItem requests_today + 1
+- call_openai_compat(key_record, ...): HTTPSConnection POST to
+  /v1/chat/completions
+- route_llm(...): main entry — resolves route, iterates failover chain,
+  returns normalized text
+
+Design decisions:
+- FP-002 compliance: http.client.HTTPSConnection exclusively
+- base_url stored without https:// prefix — host only per HTTPSConnection
+- daily_limit defaults to 9999 if field absent — safe default
+- status=exhausted set on key when daily_limit reached
+- All exceptions caught per provider — chain continues on any failure
+- Unknown route_id falls back to 'default' before hard fail
+
+═══════════════════════════════════════════════════════════
+
+FILE 2: Dockerfile-ml-offline (MODIFIED)
+Path: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\Dockerfile-ml-offline
+Change: Added COPY lambda_router.py ${LAMBDA_TASK_ROOT}
+Change: Sorted all COPY handler lines alphabetically
+Status: Deployed — Push 1 and Push 2
+
+Handler COPY order (alphabetical):
+lambda_chat.py
+lambda_graph.py
+lambda_ideagen.py
+lambda_ingest_v4.py
+lambda_orchestrator.py
+lambda_retrieve.py
+lambda_router.py
+
+═══════════════════════════════════════════════════════════
+
+FILE 3: lambda_chat.py (MODIFIED)
+Path: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\lambda_chat.py
+Status: Deployed — Push 2
+
+Changes from previous version:
+- REMOVED: import http.client
+- REMOVED: GROQ_API_KEY, GROQ_MODEL constants
+- REMOVED: groq_call() function and all direct HTTP call infrastructure
+- ADDED: from lambda_router import route_llm
+- REPLACED: direct Groq HTTP call block with:
+  route_llm('default', system_prompt, full_user,
+            max_tokens=1024, temperature=0.7)
+- PRESERVED: all history, RAG, graph, memory logic intact
+- PRESERVED: v3r_ source detection and persona switching
+- PRESERVED: max_tokens=1024, temperature=0.7 from original
+- FIX APPLIED: history_text construction changed from f-string to string
+  concatenation to avoid PowerShell WriteAllText quote nesting errors
+
+═══════════════════════════════════════════════════════════
+
+FILE 4: lambda_orchestrator.py (MODIFIED)
+Path: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\lambda_orchestrator.py
+Status: Deployed — Push 2
+
+Changes from previous version:
+- REMOVED: import os, import http.client
+- REMOVED: GROQ_API_KEY, GROQ_MODEL constants
+- REMOVED: groq_call() function
+- ADDED: from lambda_router import route_llm
+- REPLACED: all groq_call() invocations with route_llm() per agent:
+  moderator()        → route_llm('orchestration', ..., 1024, 0.3)
+  knowledge_retrieval() → route_llm('retrieval', ..., 1024, 0.3)
+  coder()            → route_llm('code', ..., 2048, 0.3)
+  debug_gate()       → route_llm('reasoning', ..., 2048, 0.3)
+- PRESERVED: max_tokens=2048 for coder and debug_gate from original
+- PRESERVED: all RAG/graph context logic, pipeline structure,
+  section parsing, return shape
+
+═══════════════════════════════════════════════════════════
+
+FILE 5: lambda_ideagen.py (MODIFIED)
+Path: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\lambda_ideagen.py
+Status: Deployed — Push 2
+
+Changes from previous version:
+- REMOVED: import os, import http.client
+- REMOVED: GROQ_API_KEY, GROQ_MODEL constants
+- REMOVED: groq_call() function
+- ADDED: from lambda_router import route_llm
+- REPLACED: all five groq_call() invocations in run_pipeline() with:
+  route_llm('default', ..., max_tokens=1024, temperature=0.3)
+- PRESERVED: all 5 pass prompts, labels, pipeline structure
+- PRESERVED: rag-specs DynamoDB storage, spec_id generation,
+  return shape
+
+═══════════════════════════════════════════════════════════
+2. BUGS ENCOUNTERED AND RESOLVED
+═══════════════════════════════════════════════════════════
+
+BUG-001 — lambda_chat.py WriteAllText syntax error
+Symptom: PowerShell reported missing ')' at line 3431 during WriteAllText
+Root cause: f-string with nested quotes inside single-quoted PowerShell
+string — chr() encoding approach introduced further syntax errors
+Fix: Replaced f-string history_text construction with plain string
+concatenation. No quote nesting required.
+Status: RESOLVED
+
+═══════════════════════════════════════════════════════════
+3. BUGS ACTIVE
+═══════════════════════════════════════════════════════════
+
+BUG-002 — V3R routing error: all providers exhausted
+Symptom: rag-chat returns 200 with routing error in body
+Root cause: base_url field missing from all v3r-keys records.
+KeyError on key_record['base_url'] silently caught by failover loop.
+All four providers fail. Terminal error returned.
+Fix: DynamoDB update-item to add base_url to all four records:
+  groq: api.groq.com
+  cerebras: api.cerebras.ai
+  mistral: api.mistral.ai
+  fireworks: api.fireworks.ai
+Status: IN PROGRESS — commands prepared, not yet executed
+Push required: NO
+
+═══════════════════════════════════════════════════════════
+4. FORBIDDEN PATTERNS REGISTRY — CURRENT STATE
+═══════════════════════════════════════════════════════════
+
+FP-001: No SentenceTransformer() direct instantiation
+FP-002: No urllib.request — use http.client.HTTPSConnection
+FP-003: No Windows paths in Lambda handler code
+FP-004: No hardcoded Groq model without KR deprecation check
+FP-005: No local_files_only=True in SentenceTransformer
+FP-006: No win_amd64 wheels
+FP-007: PowerShell JSON via WriteAllText — no inline JSON
+FP-008: groq_call() retired — use route_llm() exclusively
+FP-009: No import os unless os.environ used in handler
+FP-010: DynamoDB composite key queries use query() not get_item()
+FP-011: All Docker builds use --platform linux/amd64
+FP-012: Docker disk — monitor vhdx size, compact if needed
+FP-013: Lambda invoke --payload requires
+         --cli-binary-format raw-in-base64-out
+FP-014: Lambda COPY paths use ${LAMBDA_TASK_ROOT} with $ prefix
+FP-015: aws lambda invoke --payload file:// requires
+         --cli-binary-format raw-in-base64-out
+FP-016: ${LAMBDA_TASK_ROOT} must include $ — not (LAMBDA_TASK_ROOT)
+FP-017: Never sync credentials to Drive via rclone
+FP-018: Never use --delete flag with rclone
+NEW FP-019: base_url in v3r-keys must be host only — no https:// prefix.
+            http.client.HTTPSConnection takes host string only.
+NEW FP-020: PowerShell WriteAllText f-strings with nested quotes will
+            cause syntax errors. Use string concatenation instead.
+
+Total: 20 entries
+
+═══════════════════════════════════════════════════════════
+5. PUSH LOG
+═══════════════════════════════════════════════════════════
+
+Push 1 — 03/16/26 ~06:46 AM
+Batched: Dockerfile-ml-offline, lambda_router.py
+Result: SUCCESS — ~67 min
+Violation: handler files not batched — push economy failure logged
+
+Push 2 — 03/16/26 ~09:00 AM
+Batched: Dockerfile-ml-offline, lambda_router.py, lambda_chat.py,
+         lambda_orchestrator.py, lambda_ideagen.py
+Result: SUCCESS — ~67 min
+
+═══════════════════════════════════════════════════════════
+6. CURRENT CODEBASE STATE
+═══════════════════════════════════════════════════════════
+
+lambda_chat.py        — NEXUS migrated. route_llm active.
+lambda_graph.py       — No LLM calls. No migration needed.
+lambda_ideagen.py     — NEXUS migrated. route_llm active.
+lambda_ingest_v4.py   — No LLM calls. No migration needed.
+lambda_orchestrator.py — NEXUS migrated. route_llm active.
+lambda_retrieve.py    — No LLM calls. No migration needed.
+lambda_router.py      — NEW. Core NEXUS routing module.
+Dockerfile-ml-offline — Updated. All 7 handlers in alphabetical order.
+app.py                — No changes this session.
+
+═══════════════════════════════════════════════════════════
+Report: V3R Coding Report 13 — Claude
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 16, 2026
+Active Bug: BUG-002 base_url missing from v3r-keys — fix in progress
+Next Action: Execute base_url update-item commands, retest rag-chat
+═══════════════════════════════════════════════════════════

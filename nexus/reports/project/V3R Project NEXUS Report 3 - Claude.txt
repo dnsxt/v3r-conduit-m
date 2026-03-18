@@ -1,0 +1,169 @@
+V3R PROJECT NEXUS REPORT 3 - Claude
+03/16/26 11:50:00
+
+PROJECT: V3R — Cloud-Native GNN-Integrated Multi-Agent Multi-LLM Platform
+PHASE: NEXUS Implementation — Active
+PREPARED BY: V3R (Claude Sonnet 4.6) — Documentation Agent
+PREDECESSOR: Project Report 3 — Phase 8 Complete
+DATE: March 16, 2026
+
+═══════════════════════════════════════════════════════════
+1. SESSION OVERVIEW
+═══════════════════════════════════════════════════════════
+
+This session marks the first implementation session of Project NEXUS —
+V3R's evolution from a single-provider Groq-only system into a distributed
+multi-provider intelligence mesh with automatic failover, usage tracking,
+and tier-based routing. Three infrastructure projects were active this
+session: CONDUIT (completed prior), NEXUS infrastructure (active), and
+NEXUS handler migration (active).
+
+═══════════════════════════════════════════════════════════
+2. COMPLETED THIS SESSION
+═══════════════════════════════════════════════════════════
+
+2.1 CONDUIT — CONFIRMED COMPLETE
+All CD-01 through CD-08 tasks confirmed complete prior to this session.
+rclone operational. conduit_sync.ps1 operational. Apps Script converter
+operational (debug mode required for one file timeout — under
+investigation). Session sync confirmed working. CONDUIT protocol
+established: run conduit_sync.ps1 and Apps Script converter before any
+session requiring Drive file review.
+
+2.2 v3r-keys TABLE — CONFIRMED COMPLETE
+DynamoDB table v3r-keys created and populated with four provider records:
+- groq: model=llama-3.1-8b-instant, status=active
+- cerebras: model=llama3.1-8b, status=active
+- mistral: model=mistral-small-latest, status=active
+- fireworks: model=accounts/fireworks/models/llama-v3p3-70b-instruct,
+  status=active
+NOTE: base_url field missing from all four records at time of report.
+Fix in progress — see Section 4.
+
+2.3 v3r-routing TABLE — CONFIRMED COMPLETE
+DynamoDB table v3r-routing created and populated with all 8 route items:
+- default: primary=groq, fb1=cerebras, fb2=fireworks, fb3=mistral
+- code: primary=cerebras, fb1=groq, fb2=mistral, fb3=fireworks
+- reasoning: primary=mistral, fb1=groq, fb2=cerebras, fb3=fireworks
+- orchestration: primary=groq, fb1=cerebras, fb2=fireworks, fb3=mistral
+- retrieval: primary=groq, fb1=cerebras, fb2=fireworks, fb3=mistral
+- documentation: primary=groq, fb1=cerebras, fb2=fireworks, fb3=mistral
+- infrastructure: primary=groq, fb1=cerebras, fb2=fireworks, fb3=mistral
+- batch: primary=mistral, fb1=groq, fb2=cerebras, fb3=fireworks
+All records: strategy=failover, status=active.
+One correction applied: default route had fallback_2/fallback_3 inverted
+(mistral before fireworks). Corrected via put-item overwrite.
+
+2.4 lambda_router.py — DELIVERED, DEPLOYED
+New file. ~100 lines. Implements route_llm(route_id, system_prompt,
+user_prompt, max_tokens=1024, temperature=0.3). Reads v3r-routing for
+provider order, reads v3r-keys for key selection, executes via
+call_openai_compat(), increments usage counter, handles failover chain.
+Included in Push 1 of this session.
+
+2.5 DOCKERFILE-ML-OFFLINE — UPDATED
+lambda_router.py added to COPY block. All handlers sorted alphabetically:
+lambda_chat, lambda_graph, lambda_ideagen, lambda_ingest_v4,
+lambda_orchestrator, lambda_retrieve, lambda_router.
+Included in Push 1 of this session.
+
+2.6 HANDLER MIGRATION — DELIVERED, PUSH PENDING
+Three handlers updated to replace direct Groq HTTP calls with route_llm():
+- lambda_chat.py: route_llm('default', ..., max_tokens=1024, temp=0.7)
+- lambda_orchestrator.py: per-agent routing —
+  moderator→orchestration, kr→retrieval, coder→code, debug→reasoning
+- lambda_ideagen.py: all 5 passes → route_llm('default', ...,
+  max_tokens=1024, temp=0.3)
+All three files written to disk. Push 2 complete. All six Lambda functions
+updated via update-function-code.
+
+2.7 IAM VERIFICATION — CONFIRMED CLEAR
+Role: rag-ingest-ultra-test-role-hi7s90re
+Policies confirmed: AmazonDynamoDBFullAccess, AWSLambda_FullAccess,
+AWSLambdaBasicExecutionRole (x2). All required permissions present.
+
+═══════════════════════════════════════════════════════════
+3. PUSH LOG
+═══════════════════════════════════════════════════════════
+
+Push 1 — March 16, 2026, ~06:46 AM
+Contents: Dockerfile-ml-offline (updated), lambda_router.py (new)
+Result: SUCCESS
+Duration: ~67 minutes
+Note: Handler files not batched into this push — push economy violation.
+      Remediated by batching all handler changes into Push 2.
+
+Push 2 — March 16, 2026, ~09:00 AM (estimated)
+Contents: Dockerfile-ml-offline, lambda_router.py, lambda_chat.py,
+          lambda_orchestrator.py, lambda_ideagen.py
+Result: SUCCESS
+Duration: ~67 minutes
+All six Lambda functions updated via update-function-code after push.
+
+═══════════════════════════════════════════════════════════
+4. ACTIVE ISSUES
+═══════════════════════════════════════════════════════════
+
+ISSUE-001 [CRITICAL] — base_url missing from v3r-keys records
+All four provider records in v3r-keys are missing the base_url field.
+lambda_router.py calls key_record['base_url'] — KeyError silently caught
+by failover loop — all providers fail — routing error returned.
+Root cause: base_url not included when records were originally populated.
+Fix: DynamoDB update-item commands prepared to add base_url to all four
+records. No push required. Status: IN PROGRESS as of 11:44 AM.
+Correct values:
+- groq: api.groq.com
+- cerebras: api.cerebras.ai
+- mistral: api.mistral.ai
+- fireworks: api.fireworks.ai
+
+ISSUE-002 [LOW] — Apps Script converter timeout
+One file caused Apps Script converter to time out during post-CONDUIT
+sync. File identity unknown. Debug mode running as of this session.
+No operational impact — all code files confirmed present in Drive.
+
+═══════════════════════════════════════════════════════════
+5. PUSH ECONOMY VIOLATION — LOGGED
+═══════════════════════════════════════════════════════════
+
+Push 1 should have included lambda_router.py AND all three updated
+handlers in a single build. Handler updates were ready at the time Push 1
+was issued. This resulted in an unnecessary second push cycle (~67 min).
+Violation acknowledged. Push economy assessment will be enforced on all
+future build decisions — no build command issued until all known pending
+changes are confirmed on disk and batched.
+
+═══════════════════════════════════════════════════════════
+6. SYSTEM STATE AS OF THIS REPORT
+═══════════════════════════════════════════════════════════
+
+Lambda Functions (6): All updated to Push 2 image.
+DynamoDB Tables (6): rag-chunks, rag-memory, rag-graph, rag-specs,
+                     v3r-keys, v3r-routing
+ECR Image: ml-offline-torch26 — Push 2 active
+Forbidden Patterns Registry: 18 entries (FP-001 through FP-018)
+Handlers using route_llm(): lambda_chat, lambda_orchestrator,
+                             lambda_ideagen
+Handlers not yet migrated: lambda_ingest_v4, lambda_retrieve,
+                            lambda_graph (no LLM calls — no migration
+                            needed for retrieve and graph)
+
+═══════════════════════════════════════════════════════════
+7. NEXT ACTIONS
+═══════════════════════════════════════════════════════════
+
+IMMEDIATE:
+- Complete base_url update-item commands on all four v3r-keys records
+- Re-run rag-chat test to confirm routing end-to-end
+- Run rag-orchestrator test
+- Run rag-ideagen test
+
+SHORT TERM (NEXUS ST roadmap):
+- ST-01: ECR Private → ECR Public migration (confirmed billing exposure)
+- ST-02: DynamoDB provisioned capacity switch for rag-chunks, rag-graph
+- Add daily_limit field to all v3r-keys records
+
+MEDIUM TERM:
+- MT-01: EventBridge midnight key reset Lambda
+- MT-02: SQS agent coordination layer
+- MT-03: Step Functions pipeline orchestration

@@ -1,0 +1,250 @@
+================================================================================
+CODING REPORT 2 — PROJECT NEXUS SESSION MARCH 15, 2026
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Report Number: NEXUS-CR-02
+Project: NEXUS — Neurally Extensible Cross-provider Unified System
+Session Date: March 15, 2026
+Session Number: 1
+================================================================================
+
+CODING ACTIVITY SUMMARY
+--------------------------------------------------------------------------------
+Files created:          0 (no handler code written yet)
+Files modified:         0
+DynamoDB tables created: 2 (v3r-keys, v3r-routing)
+DynamoDB items created:  7 (4 keys + 3 routing rules)
+Pushes executed:         0
+New FP entries:          2 (FP-020, FP-021)
+Providers registered:    4
+ST-01 status:            In progress — tables complete, ECR push pending
+
+
+================================================================================
+INFRASTRUCTURE OPERATIONS THIS SESSION
+================================================================================
+
+OPERATION 1: v3r-keys table creation
+  Method: AWS CLI (put-item commands)
+  Status: SUCCESS
+  Table: v3r-keys
+  PK: key_id (S)
+  Billing: PAY_PER_REQUEST
+  Records created: 4
+    groq — llama-3.1-8b-instant — active
+    cerebras — llama3.1-8b — active
+    mistral — mistral-small-latest — active
+    fireworks — accounts/fireworks/models/llama-v3p3-70b-instruct — active
+
+OPERATION 2: v3r-routing table creation
+  Method: DynamoDB console (manual — CLI put-item failed)
+  Status: SUCCESS
+  Table: v3r-routing
+  PK: route_id (S)
+  Billing: PAY_PER_REQUEST
+  Records created: 3
+    default  — primary: groq,     fb1: cerebras, fb2: mistral,   fb3: fireworks
+    code     — primary: cerebras, fb1: groq,     fb2: mistral,   fb3: fireworks
+    reasoning — primary: mistral,  fb1: groq,     fb2: cerebras,  fb3: fireworks
+
+OPERATION 3: Provider registration
+  Groq:        Existing account and key — confirmed active
+  Cerebras:    New account registered — free tier — no credit card
+  Mistral:     New account registered — experimental free subscription
+  Together AI: EXCLUDED — requires $5.00 minimum deposit
+  Fireworks AI: New account registered — $1.00 registration credit
+                Model selected: accounts/fireworks/models/llama-v3p3-70b-instruct
+                Selection rationale: Highest capability model within free credit,
+                OpenAI-compatible API, low cost per token, complements Groq's
+                smaller model with a larger 70B parameter option
+
+
+================================================================================
+POWERSHELL COMMANDS USED THIS SESSION
+================================================================================
+
+Table creation (v3r-keys — succeeded via CLI):
+  [System.IO.File]::WriteAllText("...\nexus_keys_table.json", '{"TableName":"v3r-keys","KeySchema":[{"AttributeName":"key_id","KeyType":"HASH"}],"AttributeDefinitions":[{"AttributeName":"key_id","AttributeType":"S"}],"BillingMode":"PAY_PER_REQUEST"}')
+  aws dynamodb create-table --region us-east-1 --cli-input-json file://...\nexus_keys_table.json
+
+Key storage (4 providers):
+  [System.IO.File]::WriteAllText("...\nexus_key_[provider].json", '{"TableName":"v3r-keys","Item":{...}}')
+  aws dynamodb put-item --region us-east-1 --cli-input-json file://...\nexus_key_[provider].json
+
+Table verification:
+  aws dynamodb scan --table-name v3r-keys --region us-east-1 --query "Items[*].key_id.S"
+  aws dynamodb describe-table --table-name v3r-routing --region us-east-1 --query "Table.TableStatus"
+
+v3r-routing table creation failed via CLI (ResourceNotFoundException).
+Resolution: Created manually via DynamoDB console.
+Items added via console JSON editor.
+
+
+================================================================================
+ISSUES ENCOUNTERED AND RESOLVED
+================================================================================
+
+ISSUE 1: v3r-routing put-item ResourceNotFoundException
+  Error: "An error occurred (ResourceNotFoundException) when calling the
+  PutItem operation: Requested resource not found"
+  Root cause: The nexus_routing_table.json WriteAllText command had not
+  executed successfully before put-item was attempted. The table did not
+  exist when put-item ran.
+  Resolution: Created table manually via DynamoDB console. Set PK to
+  route_id (String), On-demand billing. Created all three items via
+  console JSON editor.
+  Lesson: Always verify table ACTIVE status before running put-item.
+  Use: aws dynamodb describe-table --table-name [name] --region us-east-1
+  --query "Table.TableStatus" and confirm "ACTIVE" before any put-item.
+
+ISSUE 2: Together AI payment requirement
+  Issue: Together AI requires $5.00 minimum deposit to access API.
+  Decision: Excluded from NEXUS provider registry. Violates free-tier
+  constraint. Replaced by Fireworks AI which provides $1.00 free credit
+  with no deposit requirement.
+  Impact: Zero — four providers still registered, routing layer unaffected.
+
+
+================================================================================
+NEW FORBIDDEN PATTERNS ADDED THIS SESSION
+================================================================================
+
+FP-020: Hardcoding provider API keys in Lambda handler code
+  All provider API keys must be retrieved from DynamoDB v3r-keys table
+  at Lambda runtime. Never store keys in handler code, environment
+  variables, Dockerfile, or any config file pushed to Drive.
+  Correct pattern:
+    dynamodb.get_item(
+      TableName='v3r-keys',
+      Key={'key_id': {'S': 'provider_name'}}
+    )['Item']['api_key']['S']
+  Why: Keys rotate. Central storage means one update propagates everywhere.
+  Hardcoded keys require container rebuild to update — 67 minute push cycle.
+
+FP-021: Assuming provider API endpoint format matches Groq
+  Each provider has its own API endpoint and auth pattern:
+    Groq:      api.groq.com — http.client.HTTPSConnection
+               POST /openai/v1/chat/completions
+    Cerebras:  api.cerebras.ai — OpenAI-compatible
+               POST /v1/chat/completions
+    Mistral:   api.mistral.ai — own REST API
+               POST /v1/chat/completions
+    Fireworks: api.fireworks.ai — OpenAI-compatible
+               POST /inference/v1/chat/completions
+  Always verify endpoint path and auth header format before coding each
+  provider integration. Do not assume /openai/v1/chat/completions works
+  for all providers.
+
+
+================================================================================
+PROVIDER API REFERENCE (for lambda_router.py implementation)
+================================================================================
+
+GROQ:
+  Endpoint:  api.groq.com
+  Path:      /openai/v1/chat/completions
+  Auth:      Authorization: Bearer [key]
+  Format:    {"model": "llama-3.1-8b-instant", "messages": [...]}
+  Method:    http.client.HTTPSConnection (confirmed working in V3R)
+
+CEREBRAS:
+  Endpoint:  api.cerebras.ai
+  Path:      /v1/chat/completions
+  Auth:      Authorization: Bearer [key]
+  Format:    OpenAI-compatible
+  Method:    http.client.HTTPSConnection (to be confirmed in ST-02)
+
+MISTRAL:
+  Endpoint:  api.mistral.ai
+  Path:      /v1/chat/completions
+  Auth:      Authorization: Bearer [key]
+  Format:    {"model": "mistral-small-latest", "messages": [...]}
+  Method:    http.client.HTTPSConnection (to be confirmed in ST-02)
+
+FIREWORKS:
+  Endpoint:  api.fireworks.ai
+  Path:      /inference/v1/chat/completions
+  Auth:      Authorization: Bearer [key]
+  Format:    {"model": "accounts/fireworks/models/llama-v3p3-70b-instruct",
+              "messages": [...]}
+  Method:    http.client.HTTPSConnection (to be confirmed in ST-02)
+
+NOTE: All provider integrations must use http.client.HTTPSConnection
+per FP-002. urllib.request is permanently forbidden.
+
+
+================================================================================
+NEXT SESSION — ST-01 COMPLETION AND ST-02 START
+================================================================================
+
+ST-01 REMAINING STEPS:
+
+  1. Create ECR Public repository:
+     aws ecr-public create-repository --region us-east-1 with
+     file:// payload containing repositoryName: rag-ingest-container
+     Note exact repositoryUri from response.
+
+  2. Login to ECR Public:
+     aws ecr-public get-login-password --region us-east-1 |
+     docker login --username AWS --password-stdin public.ecr.aws
+
+  3. Tag existing image for public repository:
+     docker tag [private URI]:ml-offline-torch26 [public URI]:ml-offline-torch26
+
+  4. Push to ECR Public — ~67 minutes:
+     docker push [public URI]:ml-offline-torch26
+
+  5. Update all 6 Lambda functions to public URI via Lambda console.
+
+  6. Verify all 6 functions operational.
+
+  7. Delete ECR private repository ONLY after all functions verified:
+     aws ecr delete-repository --repository-name rag-ingest-container
+     --region us-east-1 --force
+
+ST-02 — lambda_router.py:
+  New Lambda function. ~80 lines.
+  Reads v3r-routing table for route config.
+  Reads v3r-keys table for provider keys at runtime.
+  Implements failover logic: primary → fallback_1 → fallback_2 → fallback_3.
+  Detects failure by HTTP status code or empty choices array.
+  Returns unified response format regardless of which provider answered.
+  No new container rebuild required if handler added to existing image.
+  Will require container rebuild to add to image.
+  Push economy: batch with any other pending handler changes.
+
+
+================================================================================
+PUSH ECONOMY ASSESSMENT — CURRENT SESSION
+================================================================================
+
+No push required this session. All operations were DynamoDB and account
+registration. No handler code was written or modified.
+
+Next push: Required for ST-01 (ECR tag + push to public registry) and
+for ST-02 (lambda_router.py added to container image). These are two
+separate push operations — the ECR public migration is a re-tag and push
+of the existing image, the ST-02 push is a new container build.
+
+Batch strategy: Complete ST-02 handler development before any other
+handler edits so all pending changes are batched into the ST-02 build.
+
+
+================================================================================
+DEBUG GATE SUMMARY
+================================================================================
+
+No code delivered this session requiring Debug Agent review.
+All operations were infrastructure (DynamoDB table creation and seeding).
+FP-020 and FP-021 added to registry for application in ST-02 development.
+
+
+================================================================================
+END OF CODING REPORT — NEXUS-CR-01
+================================================================================
+Session Date:     March 15, 2026
+Tables Created:   v3r-keys (4 items), v3r-routing (3 items)
+Providers:        Groq, Cerebras, Mistral, Fireworks AI (4 total)
+Code Written:     None (infrastructure session)
+Next Session:     Complete ST-01 ECR push, begin ST-02 lambda_router.py
+================================================================================
