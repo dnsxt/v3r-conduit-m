@@ -30,11 +30,12 @@ RUN rm -rf /wheels
 # Copy local model files
 COPY models/all-MiniLM-L6-v2 ${LAMBDA_TASK_ROOT}/models/all-MiniLM-L6-v2
 
-# Copy handlers
+# Copy handlers (alphabetical)
 COPY lambda_chat.py ${LAMBDA_TASK_ROOT}
 COPY lambda_graph.py ${LAMBDA_TASK_ROOT}
 COPY lambda_ideagen.py ${LAMBDA_TASK_ROOT}
 COPY lambda_ingest_v4.py ${LAMBDA_TASK_ROOT}
+COPY lambda_key_reset.py ${LAMBDA_TASK_ROOT}
 COPY lambda_orchestrator.py ${LAMBDA_TASK_ROOT}
 COPY lambda_retrieve.py ${LAMBDA_TASK_ROOT}
 COPY lambda_router.py ${LAMBDA_TASK_ROOT}

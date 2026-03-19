@@ -1,661 +1,169 @@
-================================================================================
-PROJECT REPORT 4: CLOUD-NATIVE GNN-INTEGRATED MULTI-AGENT MULTI-LLM INDUSTRIAL
-SCIENCE AND INTELLIGENCE ENGINEERING PLATFORM — V3R
-================================================================================
-Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
-Date: March 17, 2026
-Report Type: Full Project Handoff Document — Exhaustive Technical and Status Report
-Report Number: 4
-================================================================================
-
-TABLE OF CONTENTS
---------------------------------------------------------------------------------
-1.  Project Overview and Vision
-2.  Session Summary — March 17, 2026
-3.  Project CONDUIT — Complete
-4.  Project NEXUS — Active
-5.  NEXUS ST-01 — Complete: Lambda Router and Multi-Provider Routing
-6.  NEXUS ST-02 — Active: DynamoDB Provisioned Capacity
-7.  AWS Infrastructure — Current State
-8.  File Inventory — Current State
-9.  DynamoDB — Current State
-10. v3r-routing Table — Current State
-11. v3r-keys Table — Current State
-12. V3R Agent Framework — Current Configuration
-13. Forbidden Patterns Registry — Current State
-14. Operational Notes and Lessons Learned
-15. Credentials Reference
-16. Next Steps — NEXUS ST-02 Continuation
-17. Future Roadmap
-================================================================================
-
-
-================================================================================
-SECTION 1: PROJECT OVERVIEW AND VISION
-================================================================================
-
-V3R is a Cloud-Native GNN-integrated Multi-Agent Multi-LLM Industrial Science
-and Intelligence Engineering Platform. It is not a chatbot. It is not a tool.
-It is the foundational architecture for an AI system that accepts raw ideas as
-input and outputs fully engineered products.
-
-The core problem V3R solves is AI amnesia — the complete absence of persistent
-memory in every current AI system. V3R's persistent memory layer eliminates
-this permanently. Knowledge ingested today is retrieved tomorrow. Conversations
-accumulate into a growing intelligence base. Engineering decisions are
-remembered across sessions.
-
-As of this report, V3R is self-aware, operationally complete through Phase 8,
-synchronized to Google Drive via CONDUIT, and actively mid-deployment of
-Project NEXUS — a multi-provider LLM routing layer that eliminates single-
-provider dependency across all V3R Lambda functions.
-
-V3R is being built entirely on free-tier AWS infrastructure by a single
-developer on constrained personal hardware with no admin privileges.
-
-
-================================================================================
-SECTION 2: SESSION SUMMARY — MARCH 17, 2026
-================================================================================
-
-This session performed full state verification, routing table analysis,
-multi-function testing, and began NEXUS ST-02.
-
-ACCOMPLISHED THIS SESSION:
-
-  1. Full handoff ingestion — CONDUIT Handoff Report 1 read and processed.
-     Operations log (latest_Operations.txt) read in full.
-     Google Drive My Drive structure verified via Drive tool.
-
-  2. v3r-routing table scanned and fully analyzed via photo (5 images).
-     8 routes confirmed active: default, orchestration, retrieval, code,
-     reasoning, infrastructure, documentation, batch.
-     All routes required by current handlers are present.
-
-  3. rag-orchestrator tested and verified OPERATIONAL.
-     Full 4-agent pipeline executed: MODERATOR -> KNOWLEDGE RETRIEVAL ->
-     CODER -> SYSTEM DEBUG. Debug gate returned CLEARED FOR DELIVERY.
-     V3R self-knowledge retrieved correctly from RAG during decomposition.
-
-  4. rag-ideagen tested and verified OPERATIONAL.
-     5-pass product specification pipeline executed successfully.
-     spec_id UUID generated and stored in rag-specs table.
-
-  5. GROQ_API_KEY env vars confirmed cleared from rag-chat, rag-orchestrator,
-     and rag-ideagen. All LLM calls now route exclusively through route_llm()
-     and v3r-keys DynamoDB table.
-
-  6. Timestamp Priority 12 violation identified and corrected.
-     Timestamps now use actual current time per response via time tool.
-
-  7. NEXUS ST-02 initiated — rag-chunks provisioned capacity update issued.
-
-ISSUES IDENTIFIED:
-
-  ISSUE 1: Timestamp static at session start value (03:14:26) across all
-  prior responses this session.
-  RESOLUTION: Corrected. Time tool called per response from this point forward.
-
-  ISSUE 2: FP-016 gap in registry — CONDUIT added FP-017 and FP-018, skipping
-  FP-016.
-  STATUS: Held pending David's research into prior assignment. Not a blocker.
-
-
-================================================================================
-SECTION 3: PROJECT CONDUIT — COMPLETE
-================================================================================
-
-Project CONDUIT — Continuous Operational Network for Data Unity, Integration,
-and Tracking — is fully operational as of March 15-16, 2026.
-
-WHAT CONDUIT DELIVERS:
-  - One PowerShell command (conduit_sync.ps1) syncs all code, reports,
-    frameworks, and data to Google Drive My Drive at session end.
-  - Three-layer version rotation: current/, last/, previous/ in V3R/code/.
-  - Apps Script converter creates Google Doc pairs for all .txt, .py, .json,
-    .ps1, and Dockerfile files in the V3R/ hierarchy.
-  - Daily 1-2 AM trigger runs converter automatically.
-  - Drive tool can now read all V3R code files in future sessions.
-
-COMPLETED STEPS:
-  CD-01: Drive folder structure created. Local V3R mirror created.
-  CD-02: rclone installed and configured. gdrive: remote operational.
-  CD-03: v3r_filter.txt created. Excludes wheels/, models/, __pycache__.
-  CD-04: rotate_versions.ps1 created and tested. 9 files captured.
-  CD-05: conduit_sync.ps1 created. 9-stage master sync script.
-  CD-06: Apps Script extended. Daily trigger set. Converter tested.
-  CD-07: Initial full sync executed. All files in Drive.
-  CD-08: Drive tool verification passed. lambda_chat.py readable in new session.
-
-KEY FILES:
-  rclone:             C:\Users\Source-1\Desktop\rclone\rclone.exe
-  filter file:        C:\Users\Source-1\Desktop\rclone\v3r_filter.txt
-  conduit_sync.ps1:   C:\Users\Source-1\Desktop\V3R\conduit\conduit_sync.ps1
-  rotate_versions.ps1: C:\Users\Source-1\Desktop\V3R\conduit\rotate_versions.ps1
-  sync log:           C:\Users\Source-1\Desktop\V3R\conduit\logs\session_sync_log.txt
-
-CONDUIT FORBIDDEN PATTERNS ADDED:
-  FP-017: Never sync credentials to Drive via rclone or any method.
-  FP-018: Never use --delete flag or rclone sync. Use rclone copy only.
-
-
-================================================================================
-SECTION 4: PROJECT NEXUS — ACTIVE
-================================================================================
-
-Project NEXUS — Neurally Extensible Cross-provider Unified System — is the
-multi-provider LLM routing layer for V3R. NEXUS eliminates single-provider
-dependency by routing all LLM calls through a failover chain: groq ->
-cerebras -> mistral/fireworks depending on route tier.
-
-NEXUS ARCHITECTURE:
-  - lambda_router.py: Shared routing utility imported by all Lambda handlers.
-    Exposes single function: route_llm(route_id, system, user, max_tokens,
-    temperature). Resolves route via v3r-routing table. Selects best available
-    key via v3r-keys table. Returns normalized text — handlers never know
-    which provider executed.
-  - v3r-routing DynamoDB table: 8 routes, each with primary + 3 fallbacks.
-  - v3r-keys DynamoDB table: 4 providers with api_key, base_url, model,
-    daily_limit, requests_today, last_reset, status.
-  - EventBridge rule: Midnight daily reset of requests_today counters
-    (implementation status: per roadmap, not yet confirmed complete this
-    session).
-
-NEXUS STEP STATUS:
-  ST-01: COMPLETE — lambda_router.py deployed. All handlers migrated.
-         v3r-routing and v3r-keys tables populated. All functions tested.
-  ST-02: ACTIVE — DynamoDB provisioned capacity for rag-chunks and rag-graph.
-  ST-03 onward: PENDING.
-
-
-================================================================================
-SECTION 5: NEXUS ST-01 — COMPLETE
-================================================================================
-
-WHAT WAS BUILT:
-  lambda_router.py — 140+ lines. Shared routing utility.
-  Functions: get_route(), get_key(), reset_if_new_day(), increment_usage(),
-  call_openai_compat(), route_llm().
-
-  All handlers updated to import and use route_llm():
-    lambda_chat.py      — routes to 'default' (speed tier)
-    lambda_orchestrator.py — routes to 'orchestration', 'retrieval',
-                             'code', 'reasoning' per agent
-    lambda_ideagen.py   — routes all 5 passes to 'default'
-
-  v3r-keys base_url corrected for all 4 providers post-deployment:
-    groq:      api.groq.com
-    cerebras:  api.cerebras.ai
-    mistral:   api.mistral.ai
-    fireworks: api.fireworks.ai
-
-VERIFICATION:
-  rag-chat:         VERIFIED — statusCode 200, rag_used: true, memory_turns: 3
-  rag-orchestrator: VERIFIED — statusCode 200, full pipeline, CLEARED FOR DELIVERY
-  rag-ideagen:      VERIFIED — statusCode 200, spec_id generated, 5 passes complete
-
-GROQ_API_KEY ENV VAR: Removed from all Lambda functions. DynamoDB is now the
-sole credential store for LLM provider keys.
-
-
-================================================================================
-SECTION 6: NEXUS ST-02 — ACTIVE
-================================================================================
-
-GOAL: Switch rag-chunks and rag-graph from PAY_PER_REQUEST to provisioned
-capacity at 5 RCU / 5 WCU each. rag-memory and rag-specs remain on
-PAY_PER_REQUEST.
-
-RATIONALE: rag-chunks and rag-graph are read on every Lambda invocation.
-Provisioned capacity at free-tier levels (25 WCU / 25 RCU always-free pool)
-eliminates per-request billing exposure on the highest-traffic tables.
-10 WCU + 10 RCU total consumed from the 25/25 free pool.
-
-INFRASTRUCTURE PRE-FLIGHT:
-  IAM: AmazonDynamoDBFullAccess confirmed on role. update-table permitted.
-  Handler code: No changes required. Billing mode change is transparent.
-  Push: Not required.
-  Free tier: Confirmed compliant. 5+5 per table x 2 tables = 10/10 of 25/25.
-
-STATUS: rag-chunks update-table command issued. Awaiting confirmation.
-        rag-graph update not yet issued.
-
-
-================================================================================
-SECTION 7: AWS INFRASTRUCTURE — CURRENT STATE
-================================================================================
-
-Account ID:    236510207245
-Region:        us-east-1
-IAM Role:      rag-ingest-ultra-test-role-hi7s90re
-               Policies: AmazonDynamoDBFullAccess + AWSLambda_FullAccess +
-               2x AWSLambdaBasicExecutionRole (auto-attached)
-
-ECR:
-  Repository:  rag-ingest-container
-  Tag:         ml-offline-torch26 (PERMANENT — never change)
-  Size:        ~3184 MB
-  Last push:   March 16, 2026 (NEXUS ST-01 — 7 handlers)
-  Build time:  24 seconds (all cached layers, handler files only changed)
-
-LAMBDA FUNCTIONS (7 handlers, all image ml-offline-torch26):
-
-  rag-ingest-ultra-test
-    Handler:    lambda_ingest_v4.lambda_handler
-    Memory:     2048 MB | Timeout: 600s
-    URL:        https://rgmkamtm7s6tlughi3ynp4c2540uassr.lambda-url.us-east-1.on.aws/
-    Env vars:   None (GROQ_API_KEY removed)
-    Status:     OPERATIONAL
-
-  rag-retrieve
-    Handler:    lambda_retrieve.lambda_handler
-    Memory:     2048 MB | Timeout: 600s
-    URL:        None — internal invocation only
-    Env vars:   None
-    Status:     OPERATIONAL
-
-  rag-chat
-    Handler:    lambda_chat.lambda_handler
-    Memory:     2048 MB | Timeout: 600s
-    URL:        https://2wnm4voyjtvb27hzkgmtdxycby0uyixf.lambda-url.us-east-1.on.aws/
-    Env vars:   None (GROQ_API_KEY removed March 17, 2026)
-    Logging:    JSON format, DEBUG level
-    Status:     OPERATIONAL — NEXUS routing verified
-
-  rag-graph
-    Handler:    lambda_graph.lambda_handler
-    Memory:     512 MB | Timeout: 60s
-    URL:        None — CLI invocation via --cli-binary-format raw-in-base64-out
-    Env vars:   None
-    Status:     OPERATIONAL
-
-  rag-orchestrator
-    Handler:    lambda_orchestrator.lambda_handler
-    Memory:     512 MB | Timeout: 60s
-    URL:        None — CLI invocation
-    Env vars:   None (GROQ_API_KEY removed March 17, 2026)
-    Status:     OPERATIONAL — full 4-agent pipeline verified
-
-  rag-ideagen
-    Handler:    lambda_ideagen.lambda_handler
-    Memory:     1024 MB | Timeout: 300s
-    URL:        None — CLI invocation
-    Env vars:   None (GROQ_API_KEY removed March 17, 2026)
-    Status:     OPERATIONAL — 5-pass spec pipeline verified
-
-HUGGINGFACE SPACE:
-  Space:       dnsxt/rag-memory
-  URL:         https://huggingface.co/spaces/dnsxt/rag-memory
-  Status:      Running, public
-  Secrets:     CHAT_LAMBDA_URL and INGEST_LAMBDA_URL set
-  app.py:      163 lines — includes Product Generator tab (Phase 8)
-  Local clone: C:\Users\Source-1\Desktop\rag-deploy\hf-space\
-
-
-================================================================================
-SECTION 8: FILE INVENTORY — CURRENT STATE
-================================================================================
-
-Build directory: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
-
-  lambda_ingest_v4.py      82L   OPERATIONAL   Last changed: Phase 6
-  lambda_retrieve.py       52L   OPERATIONAL   Last changed: Phase 1
-  lambda_chat.py          ~90L   OPERATIONAL   Last changed: NEXUS ST-01
-  lambda_graph.py          42L   OPERATIONAL   Last changed: Phase 4
-  lambda_orchestrator.py  ~85L   OPERATIONAL   Last changed: NEXUS ST-01
-  lambda_ideagen.py       ~75L   OPERATIONAL   Last changed: NEXUS ST-01
-  lambda_router.py       ~140L   OPERATIONAL   Created: NEXUS ST-01
-  Dockerfile-ml-offline    43L   CURRENT       Last changed: Phase 8
-  orchestrator_config.json        PRESENT
-
-HF Space directory: C:\Users\Source-1\Desktop\rag-deploy\hf-space\
-  app.py                  163L   OPERATIONAL   Last changed: Phase 8
-
-Wheels directory: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\wheels\
-  STATUS: PERMANENT — never delete
-
-NOTE: lambda_router.py is now tracked in rotate_versions.ps1 $trackedFiles.
-Confirmed present in file per CONDUIT handoff report Section 10.
-
-
-================================================================================
-SECTION 9: DYNAMODB — CURRENT STATE
-================================================================================
-
-TABLE: rag-chunks
-  PK: chunk_id (S)
-  Record count: ~25 (post Phase 7 + Phase 8 ingestion)
-  Billing mode: PROVISIONED 5 RCU / 5 WCU (ST-02 — update issued)
-  Status: All records L2 normalized
-
-TABLE: rag-memory
-  PK: session_id (S) | SK: timestamp (N)
-  Billing mode: PAY_PER_REQUEST (permanent)
-  Status: Active — conversation history by session
-
-TABLE: rag-graph
-  PK: node_id (S)
-  Record count: 9 nodes
-  Billing mode: PROVISIONED 5 RCU / 5 WCU (ST-02 — pending)
-  Status: Active — NetworkX DiGraph rebuilt per invocation
-
-TABLE: rag-specs
-  PK: spec_id (S)
-  Billing mode: PAY_PER_REQUEST (permanent)
-  Status: Active — Phase 8 product specifications
-
-TABLE: v3r-routing
-  PK: route_id (S)
-  Record count: 8 routes
-  Billing mode: PAY_PER_REQUEST
-  Status: OPERATIONAL — all routes active
-
-TABLE: v3r-keys
-  PK: key_id (S)
-  Record count: 4 providers
-  Billing mode: PAY_PER_REQUEST
-  Status: OPERATIONAL — all providers active, base_url corrected
-
-
-================================================================================
-SECTION 10: v3r-ROUTING TABLE — CURRENT STATE
-================================================================================
-
-Confirmed via DynamoDB scan (March 16, 2026 — photo verified):
-
-  route_id: default
-    primary: groq | fallback_1: cerebras | fallback_2: fireworks | fallback_3: mistral
-    strategy: failover | status: active
-
-  route_id: orchestration
-    primary: groq | fallback_1: cerebras | fallback_2: fireworks | fallback_3: mistral
-    strategy: failover | status: active
-
-  route_id: retrieval
-    primary: groq | fallback_1: cerebras | fallback_2: fireworks | fallback_3: mistral
-    strategy: failover | status: active
-
-  route_id: code
-    primary: cerebras | fallback_1: groq | fallback_2: mistral | fallback_3: fireworks
-    strategy: failover | status: active
-
-  route_id: reasoning
-    primary: mistral | fallback_1: cerebras | fallback_2: fireworks | fallback_3: mistral
-    strategy: failover | status: active
-
-  route_id: infrastructure
-    primary: groq | fallback_1: cerebras | fallback_2: fireworks | fallback_3: mistral
-    strategy: failover | status: active
-
-  route_id: documentation
-    primary: groq | fallback_1: cerebras | fallback_2: fireworks | fallback_3: —
-    strategy: failover | status: active
-
-  route_id: batch
-    primary: mistral | fallback_1: groq | fallback_2: cerebras | fallback_3: fireworks
-    strategy: failover | status: active
-
-
-================================================================================
-SECTION 11: v3r-KEYS TABLE — CURRENT STATE
-================================================================================
-
-Confirmed via DynamoDB scan (operations log — March 16, 2026):
-
-  key_id: groq
-    model: llama-3.1-8b-instant
-    base_url: api.groq.com
-    status: active | requests_today: 0 | last_reset: 2026-03-16
-
-  key_id: cerebras
-    model: llama3.1-8b
-    base_url: api.cerebras.ai
-    status: active | requests_today: 0 | last_reset: 2026-03-16
-
-  key_id: mistral
-    model: mistral-small-latest
-    base_url: api.mistral.ai
-    status: active | requests_today: 0 | last_reset: 2026-03-16
-
-  key_id: fireworks
-    model: accounts/fireworks/models/llama-v3p3-70b-instruct
-    base_url: api.fireworks.ai
-    status: active | requests_today: 0 | last_reset: 2026-03-16
-
-NOTE: api_keys redacted from this report. Retrieve from v3r-keys DynamoDB
-table directly or from General Data file in V3R/data/ in Drive.
-
-
-================================================================================
-SECTION 12: V3R AGENT FRAMEWORK — CURRENT CONFIGURATION
-================================================================================
-
-Framework Version: V3R AI Framework v3.1 (Partition 0)
-Briefing Version:  V3R AI Briefing v1.3 (Partition 1)
-
-AGENTS (all operational, NEXUS routing integrated):
-
-  MODERATOR — simulates GPT-4o
-  Routes via: orchestration tier
-  Pre-loads RAG context and graph context before every task decomposition.
-  Absorbed Analyst Agent responsibilities (retired March 10, 2026).
-
-  KNOWLEDGE RETRIEVAL — simulates Perplexity AI
-  Routes via: retrieval tier
-  Real-time verified sourcing. Deprecation awareness. Triggered before any
-  code referencing external APIs or libraries.
-
-  CODER — simulates DeepSeek Coder V2
-  Routes via: code tier (primary: cerebras)
-  Platform-constraint-aware code. Forbidden Patterns Registry consulted.
-  Push Economy Assessment on every output.
-
-  SYSTEM DEBUG — simulates OpenAI o3
-  Routes via: reasoning tier (primary: mistral)
-  Mandatory pre-output gate. Full review for push operations.
-  Output: CLEARED FOR DELIVERY or CORRECTIONS REQUIRED.
-
-  DOCUMENTATION — simulates Claude Sonnet
-  Routes via: documentation tier
-  Inline comments on every handler. Self-explanatory files for cold handoff.
-  Generates session coding reports and project reports.
-
-  INFRASTRUCTURE — simulates Amazon Q Developer
-  Routes via: infrastructure tier
-  Pre-flight authority before every push. IAM, DynamoDB schema, free-tier,
-  ECR tag integrity.
-
-OPERATIONAL RULES (Partition 1 — active):
-  - All code/commands in single-line code blocks
-  - One step at a time (suspendable on request)
-  - Partition modifications require approval prompt
-  - Timestamps update per response (corrected March 17, 2026)
-  - Push Economy Assessment on every code output
-  - No forbidden patterns — ever
-
-
-================================================================================
-SECTION 13: FORBIDDEN PATTERNS REGISTRY — CURRENT STATE (18 entries)
-================================================================================
-
-FP-001: SentenceTransformer() direct instantiation
-  Fix: AutoTokenizer + AutoModel with local_files_only=True
-
-FP-002: urllib.request for external API calls
-  Fix: http.client.HTTPSConnection
-
-FP-003: Windows file paths in Lambda handler code
-  Fix: /var/task/ paths only
-
-FP-004: Hardcoded Groq model names without KR confirmation
-  Models deprecate without notice
-
-FP-005: win_amd64 or cp314 wheels in Docker build
-  Fix: Linux x86_64 manylinux cp312 only
-
-FP-006: Inline JSON strings in PowerShell AWS CLI
-  Fix: WriteAllText to file then file:// absolute path
-
-FP-007: Relative paths in AWS CLI file:// references
-  Fix: Always absolute paths
-
-FP-008: Missing import os when using os.environ
-  Causes NameError at Lambda cold start
-
-FP-009: ECR login skipped when 12+ hours elapsed
-  Causes 403 Forbidden after build completes
-
-FP-010: Missing --provenance false --sbom false from docker buildx
-  Produces OCI attestation manifests that break Lambda deployment
-
-FP-011: Omitting --platform linux/amd64 from docker buildx
-  Docker Desktop defaults to host architecture
-
-FP-012: Docker pruning without diskpart compact vdisk after
-  docker_data.vhdx does not auto-shrink
-
-FP-013: Assuming Groq API key is permanently valid
-  Groq can deactivate keys without notice
-
-FP-014: Full app.py replacement without visual audit
-  Existing file has incompatible signatures and structure
-
-FP-015: Omitting --cli-binary-format raw-in-base64-out from lambda invoke
-  AWS CLI v2 rejects plain JSON payload files with Invalid base64 error
-
-FP-016: HELD — pending research into prior assignment
-
-FP-017: Syncing credentials to Drive via rclone or any method
-  AWS keys, Groq key, HuggingFace token must never appear in Drive files
-  pushed by CONDUIT
-
-FP-018: Using --delete flag or rclone sync in CONDUIT scripts
-  Drive is the archive. Use rclone copy with --no-delete only
-
-
-================================================================================
-SECTION 14: OPERATIONAL NOTES AND LESSONS LEARNED
-================================================================================
-
-NEXUS BASE_URL FORMAT:
-  lambda_router.py uses http.client.HTTPSConnection which requires host only —
-  no https:// prefix. base_url must be stored as plain hostname (api.groq.com)
-  not as full URL. All 4 providers corrected post-deployment via DynamoDB
-  update-item. This is now the documented standard for v3r-keys records.
-
-FIRST TEST ROUTING ERROR:
-  The "all providers exhausted" error on the first rag-chat test was caused by
-  missing base_url fields in v3r-keys, not by provider API failures. After
-  correction, all providers became available. Lesson: verify v3r-keys records
-  completeness before declaring a routing failure a provider issue.
-
-DOCKER DESKTOP DAEMON:
-  Two consecutive build failures with "failed to connect to docker API at
-  npipe://..." occurred before the third attempt succeeded. Root cause: Docker
-  Desktop daemon was starting up. The ECR re-login between the second and
-  third attempt was correct procedure regardless. Always confirm Docker Desktop
-  is fully running before build — icon in system tray should show no loading
-  animation.
-
-PUSH TIME CONFIRMED:
-  The March 16 push completed in 24 seconds — handler-only cached layers.
-  Only steps 12-18 (the 7 handler COPY commands) were non-cached. This is
-  significantly faster than the 67-minute handler-only push documented in
-  Report 11. The difference may be context-transfer size (4.75 MB this push).
-  67 minutes remains the documented worst-case baseline.
-
-TIMESTAMP VIOLATION:
-  Prior responses this session used a static 03:14:26 timestamp. Corrected
-  March 17, 2026. Time tool called per response going forward.
-
-GROQ PATH NOTE:
-  lambda_router.py calls /v1/chat/completions hardcoded. Groq's documented
-  path is /openai/v1/chat/completions. The verified test succeeded — either
-  Groq accepts both paths, or another provider (cerebras/mistral) handled the
-  call. Flag for verification in a future session.
-
-
-================================================================================
-SECTION 15: CREDENTIALS REFERENCE
-================================================================================
-
-  AWS Account ID:       236510207245
-  AWS Region:           us-east-1
-  IAM Role:             rag-ingest-ultra-test-role-hi7s90re
-  ECR Repository:       rag-ingest-container
-  ECR Production Tag:   ml-offline-torch26
-  Groq Model:           llama-3.1-8b-instant
-  Cerebras Model:       llama3.1-8b
-  Mistral Model:        mistral-small-latest
-  Fireworks Model:      accounts/fireworks/models/llama-v3p3-70b-instruct
-  HuggingFace Username: dnsxt
-  HuggingFace Space:    dnsxt/rag-memory
-  Lambda INGEST URL:    https://rgmkamtm7s6tlughi3ynp4c2540uassr.lambda-url.us-east-1.on.aws/
-  Lambda CHAT URL:      https://2wnm4voyjtvb27hzkgmtdxycby0uyixf.lambda-url.us-east-1.on.aws/
-
-  NOTE: API keys redacted. Retrieve from General Data file in V3R/data/
-  in Drive or directly from v3r-keys DynamoDB table.
-
-
-================================================================================
-SECTION 16: NEXT STEPS — NEXUS ST-02 CONTINUATION
-================================================================================
-
-ST-02 is partially complete. rag-chunks update-table issued. Remaining:
-
-  STEP 1 (issued — awaiting confirmation):
-    aws dynamodb update-table --region us-east-1 --table-name rag-chunks
-    --billing-mode PROVISIONED
-    --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
-
-  STEP 2 (pending confirmation of Step 1):
-    aws dynamodb update-table --region us-east-1 --table-name rag-graph
-    --billing-mode PROVISIONED
-    --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
-
-  STEP 3 — Verify both tables:
-    aws dynamodb describe-table --region us-east-1 --table-name rag-chunks
-    --query "Table.BillingModeSummary"
-    aws dynamodb describe-table --region us-east-1 --table-name rag-graph
-    --query "Table.BillingModeSummary"
-
-  Expected: BillingMode: PROVISIONED for both.
-
-AFTER ST-02: Continue to ST-03 per NEXUS project report roadmap.
-
-
-================================================================================
-SECTION 17: FUTURE ROADMAP
-================================================================================
-
-V3R PHASES:
-  P1-P8: ALL COMPLETE
-
-PROJECTS:
-  CONDUIT: COMPLETE
-  NEXUS:   ACTIVE — ST-01 complete, ST-02 in progress
-  Future projects: Per NEXUS report roadmap
-
-NEXUS STEPS REMAINING (ST-03 onward):
-  Per V3R Project NEXUS Report v1.0 in V3R/nexus/reports/project/ in Drive.
-
-V3R is self-aware, fully operational, multi-provider routed, and
-CONDUIT-synchronized. Every session now starts with complete current state
-in Drive. Every LLM call is provider-agnostic. The platform built to
-eliminate AI amnesia is itself no longer dependent on any single provider.
-
-================================================================================
-END OF REPORT
-================================================================================
-Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
-Session Date: March 17, 2026
-Report Number: 13
-Active Projects: NEXUS (ST-02 in progress)
-Lambda Functions: 7 (all operational)
-DynamoDB Tables: 6 active
-LLM Providers: 4 (groq, cerebras, mistral, fireworks)
-Routing Routes: 8 active
-Forbidden Patterns: 18 entries (FP-016 held)
-System Status: FULLY OPERATIONAL
-Save to: V3R/core/reports/project/
-================================================================================
+V3R PROJECT NEXUS REPORT 3 - Claude
+03/16/26 11:50:00
+
+PROJECT: V3R — Cloud-Native GNN-Integrated Multi-Agent Multi-LLM Platform
+PHASE: NEXUS Implementation — Active
+PREPARED BY: V3R (Claude Sonnet 4.6) — Documentation Agent
+PREDECESSOR: Project Report 3 — Phase 8 Complete
+DATE: March 16, 2026
+
+═══════════════════════════════════════════════════════════
+1. SESSION OVERVIEW
+═══════════════════════════════════════════════════════════
+
+This session marks the first implementation session of Project NEXUS —
+V3R's evolution from a single-provider Groq-only system into a distributed
+multi-provider intelligence mesh with automatic failover, usage tracking,
+and tier-based routing. Three infrastructure projects were active this
+session: CONDUIT (completed prior), NEXUS infrastructure (active), and
+NEXUS handler migration (active).
+
+═══════════════════════════════════════════════════════════
+2. COMPLETED THIS SESSION
+═══════════════════════════════════════════════════════════
+
+2.1 CONDUIT — CONFIRMED COMPLETE
+All CD-01 through CD-08 tasks confirmed complete prior to this session.
+rclone operational. conduit_sync.ps1 operational. Apps Script converter
+operational (debug mode required for one file timeout — under
+investigation). Session sync confirmed working. CONDUIT protocol
+established: run conduit_sync.ps1 and Apps Script converter before any
+session requiring Drive file review.
+
+2.2 v3r-keys TABLE — CONFIRMED COMPLETE
+DynamoDB table v3r-keys created and populated with four provider records:
+- groq: model=llama-3.1-8b-instant, status=active
+- cerebras: model=llama3.1-8b, status=active
+- mistral: model=mistral-small-latest, status=active
+- fireworks: model=accounts/fireworks/models/llama-v3p3-70b-instruct,
+  status=active
+NOTE: base_url field missing from all four records at time of report.
+Fix in progress — see Section 4.
+
+2.3 v3r-routing TABLE — CONFIRMED COMPLETE
+DynamoDB table v3r-routing created and populated with all 8 route items:
+- default: primary=groq, fb1=cerebras, fb2=fireworks, fb3=mistral
+- code: primary=cerebras, fb1=groq, fb2=mistral, fb3=fireworks
+- reasoning: primary=mistral, fb1=groq, fb2=cerebras, fb3=fireworks
+- orchestration: primary=groq, fb1=cerebras, fb2=fireworks, fb3=mistral
+- retrieval: primary=groq, fb1=cerebras, fb2=fireworks, fb3=mistral
+- documentation: primary=groq, fb1=cerebras, fb2=fireworks, fb3=mistral
+- infrastructure: primary=groq, fb1=cerebras, fb2=fireworks, fb3=mistral
+- batch: primary=mistral, fb1=groq, fb2=cerebras, fb3=fireworks
+All records: strategy=failover, status=active.
+One correction applied: default route had fallback_2/fallback_3 inverted
+(mistral before fireworks). Corrected via put-item overwrite.
+
+2.4 lambda_router.py — DELIVERED, DEPLOYED
+New file. ~100 lines. Implements route_llm(route_id, system_prompt,
+user_prompt, max_tokens=1024, temperature=0.3). Reads v3r-routing for
+provider order, reads v3r-keys for key selection, executes via
+call_openai_compat(), increments usage counter, handles failover chain.
+Included in Push 1 of this session.
+
+2.5 DOCKERFILE-ML-OFFLINE — UPDATED
+lambda_router.py added to COPY block. All handlers sorted alphabetically:
+lambda_chat, lambda_graph, lambda_ideagen, lambda_ingest_v4,
+lambda_orchestrator, lambda_retrieve, lambda_router.
+Included in Push 1 of this session.
+
+2.6 HANDLER MIGRATION — DELIVERED, PUSH PENDING
+Three handlers updated to replace direct Groq HTTP calls with route_llm():
+- lambda_chat.py: route_llm('default', ..., max_tokens=1024, temp=0.7)
+- lambda_orchestrator.py: per-agent routing —
+  moderator→orchestration, kr→retrieval, coder→code, debug→reasoning
+- lambda_ideagen.py: all 5 passes → route_llm('default', ...,
+  max_tokens=1024, temp=0.3)
+All three files written to disk. Push 2 complete. All six Lambda functions
+updated via update-function-code.
+
+2.7 IAM VERIFICATION — CONFIRMED CLEAR
+Role: rag-ingest-ultra-test-role-hi7s90re
+Policies confirmed: AmazonDynamoDBFullAccess, AWSLambda_FullAccess,
+AWSLambdaBasicExecutionRole (x2). All required permissions present.
+
+═══════════════════════════════════════════════════════════
+3. PUSH LOG
+═══════════════════════════════════════════════════════════
+
+Push 1 — March 16, 2026, ~06:46 AM
+Contents: Dockerfile-ml-offline (updated), lambda_router.py (new)
+Result: SUCCESS
+Duration: ~67 minutes
+Note: Handler files not batched into this push — push economy violation.
+      Remediated by batching all handler changes into Push 2.
+
+Push 2 — March 16, 2026, ~09:00 AM (estimated)
+Contents: Dockerfile-ml-offline, lambda_router.py, lambda_chat.py,
+          lambda_orchestrator.py, lambda_ideagen.py
+Result: SUCCESS
+Duration: ~67 minutes
+All six Lambda functions updated via update-function-code after push.
+
+═══════════════════════════════════════════════════════════
+4. ACTIVE ISSUES
+═══════════════════════════════════════════════════════════
+
+ISSUE-001 [CRITICAL] — base_url missing from v3r-keys records
+All four provider records in v3r-keys are missing the base_url field.
+lambda_router.py calls key_record['base_url'] — KeyError silently caught
+by failover loop — all providers fail — routing error returned.
+Root cause: base_url not included when records were originally populated.
+Fix: DynamoDB update-item commands prepared to add base_url to all four
+records. No push required. Status: IN PROGRESS as of 11:44 AM.
+Correct values:
+- groq: api.groq.com
+- cerebras: api.cerebras.ai
+- mistral: api.mistral.ai
+- fireworks: api.fireworks.ai
+
+ISSUE-002 [LOW] — Apps Script converter timeout
+One file caused Apps Script converter to time out during post-CONDUIT
+sync. File identity unknown. Debug mode running as of this session.
+No operational impact — all code files confirmed present in Drive.
+
+═══════════════════════════════════════════════════════════
+5. PUSH ECONOMY VIOLATION — LOGGED
+═══════════════════════════════════════════════════════════
+
+Push 1 should have included lambda_router.py AND all three updated
+handlers in a single build. Handler updates were ready at the time Push 1
+was issued. This resulted in an unnecessary second push cycle (~67 min).
+Violation acknowledged. Push economy assessment will be enforced on all
+future build decisions — no build command issued until all known pending
+changes are confirmed on disk and batched.
+
+═══════════════════════════════════════════════════════════
+6. SYSTEM STATE AS OF THIS REPORT
+═══════════════════════════════════════════════════════════
+
+Lambda Functions (6): All updated to Push 2 image.
+DynamoDB Tables (6): rag-chunks, rag-memory, rag-graph, rag-specs,
+                     v3r-keys, v3r-routing
+ECR Image: ml-offline-torch26 — Push 2 active
+Forbidden Patterns Registry: 18 entries (FP-001 through FP-018)
+Handlers using route_llm(): lambda_chat, lambda_orchestrator,
+                             lambda_ideagen
+Handlers not yet migrated: lambda_ingest_v4, lambda_retrieve,
+                            lambda_graph (no LLM calls — no migration
+                            needed for retrieve and graph)
+
+═══════════════════════════════════════════════════════════
+7. NEXT ACTIONS
+═══════════════════════════════════════════════════════════
+
+IMMEDIATE:
+- Complete base_url update-item commands on all four v3r-keys records
+- Re-run rag-chat test to confirm routing end-to-end
+- Run rag-orchestrator test
+- Run rag-ideagen test
+
+SHORT TERM (NEXUS ST roadmap):
+- ST-01: ECR Private → ECR Public migration (confirmed billing exposure)
+- ST-02: DynamoDB provisioned capacity switch for rag-chunks, rag-graph
+- Add daily_limit field to all v3r-keys records
+
+MEDIUM TERM:
+- MT-01: EventBridge midnight key reset Lambda
+- MT-02: SQS agent coordination layer
+- MT-03: Step Functions pipeline orchestration

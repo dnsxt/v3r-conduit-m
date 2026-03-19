@@ -1,1 +1,1 @@
-{"FunctionName":"rag-orchestrator","Role":"(See sensitive_data.txt)","Code":{"ImageUri":"(See sensitive_data.txt)"},"PackageType":"Image","Timeout":300,"MemorySize":1024}
+{"FunctionName":"rag-orchestrator","Role":"arn:aws:iam::236510207245:role/rag-ingest-ultra-test-role-hi7s90re","Code":{"ImageUri":"236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26"},"PackageType":"Image","Timeout":300,"MemorySize":1024}
