@@ -1,1 +1,0 @@
-{"TableName":"v3r-routing","Item":{"route_id":{"S":"batch"},"primary":{"S":"mistral"},"fallback_1":{"S":"groq"},"fallback_2":{"S":"cerebras"},"fallback_3":{"S":"fireworks"},"status":{"S":"active"},"strategy":{"S":"failover"}}}

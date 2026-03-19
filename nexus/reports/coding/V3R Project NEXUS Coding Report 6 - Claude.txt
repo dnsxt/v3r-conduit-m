@@ -1,0 +1,228 @@
+V3R PROJECT NEXUS CODING REPORT 6 - Claude
+03/19/26 06:38:00
+
+PROJECT: V3R — NEXUS Implementation Sessions 5-6
+PREPARED BY: V3R (Claude Sonnet 4.6) — Documentation Agent
+DATE: March 19, 2026
+
+═══════════════════════════════════════════════════════════
+1. FILES MODIFIED THIS SESSION
+═══════════════════════════════════════════════════════════
+
+FILE 1: lambda_key_reset.py (NEW)
+Path: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+      lambda_key_reset.py
+Lines: ~35
+Status: Deployed — Push 1 — March 19
+
+Purpose: NEXUS homeostasis heartbeat. Invoked by EventBridge
+Scheduler at midnight UTC daily. Resets all v3r-keys records:
+requests_today=0, status=active, last_reset=today.
+
+Key design decisions:
+- Uses DynamoDB scan() — acceptable for small table (4 items)
+- Reserved word alias #s used for status field in
+  UpdateExpression — consistent with lambda_router.py
+- Prints result summary for CloudWatch visibility
+- No LLM calls, no lambda_router dependency
+- try/except per key — one failure does not block others
+- Returns itemized error list if any key fails to reset
+
+FP compliance: All patterns clear. No forbidden imports.
+No Windows paths. No urllib. CLEAR.
+
+═══════════════════════════════════════════════════════════
+
+FILE 2: Dockerfile-ml-offline (MODIFIED)
+Path: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+      Dockerfile-ml-offline
+Change: Added COPY lambda_key_reset.py ${LAMBDA_TASK_ROOT}
+        in alphabetical position between lambda_ideagen.py
+        and lambda_ingest_v4.py
+Status: Deployed — Push 1
+
+Handler COPY order (current — alphabetical):
+  lambda_chat.py
+  lambda_graph.py
+  lambda_ideagen.py
+  lambda_ingest_v4.py
+  lambda_key_reset.py
+  lambda_orchestrator.py
+  lambda_retrieve.py
+  lambda_router.py
+
+═══════════════════════════════════════════════════════════
+
+FILE 3: lambda_orchestrator.py (MODIFIED — V3.2)
+Path: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+      lambda_orchestrator.py
+Lines: ~155
+Status: Deployed — Push 2 — March 19
+
+Changes from V3.1 (NEXUS-migrated version):
+- ADDED: import boto3.client('sqs')
+- ADDED: QUEUE_BASE, Q_MODERATOR, Q_KR, Q_CODER, Q_DEBUG,
+         Q_DOCUMENTATION, Q_INFRASTRUCTURE constants
+- ADDED: sqs_send() — publishes JSON payload to FIFO queue
+         with MessageGroupId='v3r-pipeline'
+- ADDED: sqs_poll() — long-polls queue (20 sec), deletes
+         message on receipt, returns parsed body or None
+- ADDED: run_pipeline_sqs() — SQS-coordinated pipeline
+         Publishes KR, CODER, DEBUG tasks to agent queues
+         Polls Q_MODERATOR for results
+         Falls back to direct execution on poll timeout
+- MODIFIED: lambda_handler() — dual-mode operation:
+  Mode 1: SQS trigger (event has 'Records' key)
+          Processes agent task from queue record
+          Determines agent type from body['agent'] field
+          Executes appropriate agent function
+          Publishes result back to Q_MODERATOR
+  Mode 2: Direct HTTP invocation (standard pipeline)
+          Checks use_sqs flag in payload
+          Routes to run_pipeline_sqs() or direct execution
+          Default: use_sqs=True
+- PRESERVED: All agent functions unchanged (moderator, kr,
+  coder, debug_gate). All route_llm() calls unchanged.
+  All max_tokens and temperature values unchanged.
+  get_rag_context() and get_graph_context() unchanged.
+  Return shape unchanged.
+
+Architecture note: In current implementation, orchestrator
+acts as both MODERATOR (publisher) and agent executor
+(consumer). SQS provides coordination infrastructure for
+future dedicated per-agent Lambda functions. Fallback to
+direct execution ensures pipeline never fails due to SQS
+timeout.
+
+═══════════════════════════════════════════════════════════
+2. AWS INFRASTRUCTURE CHANGES
+═══════════════════════════════════════════════════════════
+
+DynamoDB capacity switches (no push):
+  rag-chunks: PAY_PER_REQUEST → PROVISIONED 5 RCU/5 WCU
+  rag-graph:  PAY_PER_REQUEST → PROVISIONED 5 RCU/5 WCU
+
+New Lambda function:
+  lambda-key-reset: 1024 MB, 60 sec, x86_64, Image
+  CMD: lambda_key_reset.lambda_handler
+  Role: rag-ingest-ultra-test-role-hi7s90re
+
+New IAM role:
+  v3r-scheduler-role
+  Trust: scheduler.amazonaws.com / sts:AssumeRole
+  Policy: AWSLambdaRole (invoke lambda-key-reset)
+
+New IAM policy on Lambda execution role:
+  AmazonSQSFullAccess attached to
+  rag-ingest-ultra-test-role-hi7s90re
+
+New EventBridge Scheduler rule:
+  v3r-key-reset-midnight
+  Schedule: cron(0 0 * * ? *) UTC
+  Target: lambda-key-reset via v3r-scheduler-role
+  State: ENABLED
+
+New SQS FIFO queues (6):
+  v3r-moderator.fifo
+  v3r-knowledge-retrieval.fifo
+  v3r-coder.fifo
+  v3r-debug.fifo
+  v3r-documentation.fifo
+  v3r-infrastructure.fifo
+  All: ContentBasedDeduplication=true, VisibilityTimeout=300
+
+New SQS event source mappings (3):
+  v3r-knowledge-retrieval.fifo → rag-orchestrator (batch=1)
+  v3r-coder.fifo → rag-orchestrator (batch=1)
+  v3r-debug.fifo → rag-orchestrator (batch=1)
+
+═══════════════════════════════════════════════════════════
+3. BUGS ENCOUNTERED AND RESOLVED
+═══════════════════════════════════════════════════════════
+
+BUG-003 — EventBridge Scheduler role error
+Symptom: ValidationException — execution role must allow
+         EventBridge Scheduler to assume the role
+Root cause: Lambda execution role passed as scheduler role —
+            trust relationship only covers lambda.amazonaws.com
+Fix: Created dedicated v3r-scheduler-role with
+     scheduler.amazonaws.com trust
+Status: RESOLVED
+
+BUG-004 — Docker build 403 Forbidden on ECR Public base image
+Symptom: failed to resolve source metadata for
+         public.ecr.aws/lambda/python:3.12 — 403 Forbidden
+Root cause: ECR Public auth token expired — Docker not
+            authenticated to pull from public.ecr.aws
+Fix: aws ecr-public get-login-password --region us-east-1 |
+     docker login --username AWS --password-stdin public.ecr.aws
+     Run before any buildx command after 12+ hour gap
+Status: RESOLVED — FP-021 established
+
+═══════════════════════════════════════════════════════════
+4. FORBIDDEN PATTERNS REGISTRY — CURRENT STATE
+═══════════════════════════════════════════════════════════
+
+FP-001: No SentenceTransformer() direct instantiation
+FP-002: No urllib.request — use http.client.HTTPSConnection
+FP-003: No Windows paths in Lambda handler code
+FP-004: No hardcoded Groq model without KR check
+FP-005: No local_files_only=True in SentenceTransformer
+FP-006: No win_amd64 wheels
+FP-007: PowerShell JSON via WriteAllText — no inline JSON
+FP-008: groq_call() retired — use route_llm() exclusively
+FP-009: No import os unless os.environ used
+FP-010: DynamoDB composite key queries use query() not get_item()
+FP-011: All Docker builds use --platform linux/amd64
+FP-012: Docker disk — monitor vhdx, compact if needed
+FP-013: Lambda invoke --payload requires
+         --cli-binary-format raw-in-base64-out
+FP-014: Lambda COPY paths use ${LAMBDA_TASK_ROOT} with $
+FP-015: aws lambda invoke --payload file:// requires
+         --cli-binary-format raw-in-base64-out
+FP-016: ${LAMBDA_TASK_ROOT} must include $ prefix
+FP-017: Never sync credentials to Drive via rclone
+FP-018: Never use --delete flag with rclone
+FP-019: base_url in v3r-keys must be host only — no https://
+FP-020: PowerShell WriteAllText — use string concatenation
+         not f-strings to avoid quote nesting errors
+FP-021: Run ecr-public get-login-password before any
+         docker buildx build after 12+ hour gap
+FP-022: All JSON scaffolding files go to ecr-build\scratch\
+         Never write one-time JSON to ecr-build root
+
+Total: 22 entries
+
+═══════════════════════════════════════════════════════════
+5. PUSH LOG — CUMULATIVE NEXUS SESSION TOTAL
+═══════════════════════════════════════════════════════════
+
+Push 1  Mar 16  Dockerfile + lambda_router.py
+Push 2  Mar 16  Dockerfile + lambda_router.py (batched
+                handlers) + lambda_chat + lambda_orchestrator
+                + lambda_ideagen
+Push 3  Mar 19  Dockerfile + lambda_key_reset.py (new)
+Push 4  Mar 19  lambda_orchestrator.py (SQS layer)
+
+═══════════════════════════════════════════════════════════
+6. CURRENT CODEBASE STATE
+═══════════════════════════════════════════════════════════
+
+lambda_chat.py          NEXUS migrated. route_llm active.
+lambda_graph.py         No LLM calls. No migration needed.
+lambda_ideagen.py       NEXUS migrated. route_llm active.
+lambda_ingest_v4.py     No LLM calls. No migration needed.
+lambda_key_reset.py     NEW. Homeostasis reset handler.
+lambda_orchestrator.py  NEXUS migrated + SQS layer V3.2.
+lambda_retrieve.py      No LLM calls. No migration needed.
+lambda_router.py        NEXUS core routing module.
+Dockerfile-ml-offline   8 handlers. Alphabetical. Current.
+app.py                  No changes this session.
+
+═══════════════════════════════════════════════════════════
+Report: V3R Project NEXUS Coding Report 6 — Claude
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 19, 2026
+Next Action: MT-03 Step Functions pipeline orchestration
+Push Economy: No pending handler changes before MT-03
+═══════════════════════════════════════════════════════════

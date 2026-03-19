@@ -1,1 +1,0 @@
-{"TableName":"v3r-keys","Key":{"key_id":{"S":"groq"}},"UpdateExpression":"SET #p = :p","ExpressionAttributeNames":{"#p":"path"},"ExpressionAttributeValues":{":p":{"S":"/openai/v1/chat/completions"}}}

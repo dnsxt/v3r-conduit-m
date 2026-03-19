@@ -1,1 +1,0 @@
-{"TableName":"v3r-keys","Key":{"key_id":{"S":"cerebras"}},"UpdateExpression":"SET base_url = :u","ExpressionAttributeValues":{":u":{"S":"api.cerebras.ai"}}}

@@ -1,0 +1,43 @@
+FROM public.ecr.aws/lambda/python:3.12
+
+# Build tools
+RUN dnf update -y && dnf install -y gcc gcc-c++ make cmake pkgconf git && dnf clean all
+
+# Upgrade pip
+RUN pip install --upgrade --no-cache-dir pip setuptools wheel
+
+# Copy wheels
+COPY wheels/ /wheels/
+
+# Install pillow first (fixes torchvision dep conflict)
+RUN pip install --no-index --find-links /wheels pillow==12.1.1
+
+# Then torch + torchvision
+RUN pip install --no-index --find-links /wheels torch torchvision
+
+# Then sentence-transformers
+RUN pip install --no-index --find-links /wheels sentence-transformers==2.3.0
+
+# Then networkx (Phase 4 -- GNN graph support)
+RUN pip install --no-index --find-links /wheels networkx decorator
+
+# Then pypdf (Phase 6 -- PDF ingest support -- pure Python, no Tesseract required)
+RUN pip install --no-index --find-links /wheels pypdf
+
+# Clean up
+RUN rm -rf /wheels
+
+# Copy local model files
+COPY models/all-MiniLM-L6-v2 ${LAMBDA_TASK_ROOT}/models/all-MiniLM-L6-v2
+
+# Copy handlers (alphabetical)
+COPY lambda_chat.py ${LAMBDA_TASK_ROOT}
+COPY lambda_graph.py ${LAMBDA_TASK_ROOT}
+COPY lambda_ideagen.py ${LAMBDA_TASK_ROOT}
+COPY lambda_ingest_v4.py ${LAMBDA_TASK_ROOT}
+COPY lambda_key_reset.py ${LAMBDA_TASK_ROOT}
+COPY lambda_orchestrator.py ${LAMBDA_TASK_ROOT}
+COPY lambda_retrieve.py ${LAMBDA_TASK_ROOT}
+COPY lambda_router.py ${LAMBDA_TASK_ROOT}
+
+CMD ["lambda_ingest_v4.lambda_handler"]

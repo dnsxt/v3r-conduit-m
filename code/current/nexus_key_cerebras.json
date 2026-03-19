@@ -1,1 +1,0 @@
-{"TableName":"v3r-keys","Item":{"key_id":{"S":"cerebras"},"api_key":{"S":"csk-dx8d5tp2crjc89k2pj9m564pykhwvdd32wd2vcfywd83kk29"},"provider":{"S":"cerebras"},"model":{"S":"llama3.1-8b"},"status":{"S":"active"}}}

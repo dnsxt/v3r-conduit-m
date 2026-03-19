@@ -1,1 +1,0 @@
-{"FunctionName":"lambda-key-reset","PackageType":"Image","Code":{"ImageUri":"236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26"},"ImageConfig":{"Command":["lambda_key_reset.lambda_handler"]},"Role":"arn:aws:iam::236510207245:role/service-role/rag-ingest-ultra-test-role-hi7s90re","MemorySize":1024,"Timeout":60,"Architectures":["x86_64"]}

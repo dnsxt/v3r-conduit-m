@@ -1,0 +1,197 @@
+V3R PROJECT NEXUS REPORT 6 - Claude
+03/19/26 06:38:00
+
+PROJECT: V3R — Cloud-Native GNN-Integrated Multi-Agent Multi-LLM Platform
+PHASE: NEXUS Implementation — Active
+PREPARED BY: V3R (Claude Sonnet 4.6) — Documentation Agent
+PREDECESSOR: Project NEXUS Report 5
+DATE: March 19, 2026
+
+═══════════════════════════════════════════════════════════
+1. SESSION OVERVIEW
+═══════════════════════════════════════════════════════════
+
+This session covered two full implementation sessions across
+March 18-19, 2026. Major completions: MT-04 (EventBridge
+midnight key reset), MT-02 (SQS agent coordination layer),
+infrastructure hardening (DynamoDB provisioned capacity,
+ECR Public auth protocol established), and ecr-build
+directory cleanup. All items executed without a rebuild
+failure. Two pushes completed successfully.
+
+═══════════════════════════════════════════════════════════
+2. COMPLETED THIS SESSION
+═══════════════════════════════════════════════════════════
+
+2.1 ST-02 COMPLETE — DynamoDB Provisioned Capacity
+rag-chunks and rag-graph switched from PAY_PER_REQUEST to
+provisioned 5 RCU / 5 WCU. Uses always-free 25 WCU/25 RCU
+pool. rag-memory, rag-specs, v3r-keys, v3r-routing remain
+PAY_PER_REQUEST due to variable and burst access patterns.
+No push required. No handler changes.
+
+2.2 MT-04 COMPLETE — EventBridge Midnight Key Reset
+lambda_key_reset.py created (~35 lines). Scans v3r-keys,
+resets requests_today=0 and status=active for all providers,
+sets last_reset to today. Deployed as new Lambda function
+lambda-key-reset (1024 MB, 60 sec timeout). EventBridge
+Scheduler rule v3r-key-reset-midnight created: cron(0 0
+* * ? *) UTC, Mode=OFF, ENABLED. Dedicated IAM role
+v3r-scheduler-role created with scheduler.amazonaws.com
+trust and AWSLambdaRole policy. Lambda invoke permission
+granted to EventBridge. Heartbeat of NEXUS homeostasis
+is now live and automated.
+
+2.3 MT-02 COMPLETE — SQS Agent Coordination Layer
+6 SQS FIFO queues created with ContentBasedDeduplication
+and VisibilityTimeout=300:
+  v3r-moderator.fifo
+  v3r-knowledge-retrieval.fifo
+  v3r-coder.fifo
+  v3r-debug.fifo
+  v3r-documentation.fifo
+  v3r-infrastructure.fifo
+All queues: strategy=failover, status=active.
+AmazonSQSFullAccess attached to Lambda execution role.
+lambda_orchestrator.py updated with full SQS coordination
+layer — publishes agent tasks to queues, polls for results,
+falls back to direct execution on poll timeout.
+3 SQS event source mappings created on rag-orchestrator:
+  v3r-knowledge-retrieval.fifo → rag-orchestrator
+  v3r-coder.fifo → rag-orchestrator
+  v3r-debug.fifo → rag-orchestrator
+Both SQS and direct execution paths tested and confirmed
+operational. DEBUG gate correctly returned CORRECTIONS
+REQUIRED on test output — validation working correctly.
+
+2.4 PUSH LOG — THIS SESSION
+Push 1 — March 19, 2026 ~05:50 AM
+Contents: lambda_key_reset.py (new), Dockerfile-ml-offline
+          (updated — lambda_key_reset.py added alphabetically)
+Result: SUCCESS — 67 min
+Note: ECR Public auth required before build —
+      aws ecr-public get-login-password needed.
+      FP-021 established.
+
+Push 2 — March 19, 2026 ~06:15 AM
+Contents: lambda_orchestrator.py (SQS layer added)
+Result: SUCCESS — confirmed after ECR Public re-auth
+
+2.5 ALL 7 LAMBDA FUNCTIONS UPDATED
+All 7 functions updated to current image after each push:
+rag-chat, rag-retrieve, rag-graph, rag-orchestrator,
+rag-ideagen, rag-ingest-ultra-test, lambda-key-reset.
+
+2.6 ECR-BUILD DIRECTORY CLEANUP
+All one-time JSON scaffolding files deleted from ecr-build.
+FP-022 established: all future JSON scaffolding files go to
+C:\Users\Source-1\Desktop\rag-deploy\ecr-build\scratch\
+to prevent build directory accumulation.
+
+═══════════════════════════════════════════════════════════
+3. CURRENT SYSTEM STATE
+═══════════════════════════════════════════════════════════
+
+LAMBDA FUNCTIONS (7):
+  rag-chat          2048 MB / 10 min  OPERATIONAL
+  rag-retrieve      2048 MB / 10 min  OPERATIONAL
+  rag-graph         512 MB  / 1 min   OPERATIONAL
+  rag-orchestrator  1024 MB / 5 min   OPERATIONAL — SQS active
+  rag-ideagen       1024 MB / 5 min   OPERATIONAL
+  rag-ingest-ultra  2048 MB / 10 min  OPERATIONAL
+  lambda-key-reset  1024 MB / 60 sec  OPERATIONAL — scheduled
+
+DYNAMODB TABLES (6):
+  rag-chunks        Provisioned 5/5   25 items
+  rag-graph         Provisioned 5/5   7 nodes
+  rag-memory        On-demand         Active today
+  rag-specs         On-demand         1 spec
+  v3r-keys          On-demand         4 providers
+  v3r-routing       On-demand         8 routes
+
+SQS QUEUES (6):
+  v3r-moderator.fifo              ACTIVE
+  v3r-knowledge-retrieval.fifo    ACTIVE — triggers rag-orchestrator
+  v3r-coder.fifo                  ACTIVE — triggers rag-orchestrator
+  v3r-debug.fifo                  ACTIVE — triggers rag-orchestrator
+  v3r-documentation.fifo          ACTIVE
+  v3r-infrastructure.fifo         ACTIVE
+
+ECR:
+  Private: ml-offline-torch26     ACTIVE — all functions using
+  Public:  ml-offline-torch26     READY — migration pending
+  21 untagged images:             CONFIRMED DELETED this session
+
+IAM ROLE: rag-ingest-ultra-test-role-hi7s90re
+  AmazonDynamoDBFullAccess        ✓
+  AWSLambda_FullAccess            ✓
+  AmazonSQSFullAccess             ✓ (added this session)
+  AWSLambdaBasicExecutionRole x2  ✓
+  ECR Public permissions:         ✗ PENDING — Priority 4
+
+EVENTBRIDGE:
+  v3r-key-reset-midnight          ENABLED — cron(0 0 * * ? *) UTC
+
+═══════════════════════════════════════════════════════════
+4. NEXUS ROADMAP STATUS
+═══════════════════════════════════════════════════════════
+
+SHORT-TERM (ST) ROADMAP:
+  ST-01  ECR Public migration        ⚠️ PARTIAL — image ready,
+                                        Lambda functions pending
+                                        IAM policy missing
+  ST-02  DynamoDB provisioned        ✓ COMPLETE
+  ST-03  v3r-keys table              ✓ COMPLETE
+  ST-04  lambda_router.py            ✓ COMPLETE
+  ST-05  Cerebras registered         ✓ COMPLETE
+  ST-06  Google AI Studio            ✗ NOT STARTED
+  ST-07  Second Groq account         ✗ NOT STARTED
+  ST-08  OpenRouter account          ✗ NOT STARTED
+
+MEDIUM-TERM (MT) ROADMAP:
+  MT-01  Agent model upgrades        ✗ NOT STARTED
+  MT-02  SQS coordination layer      ✓ COMPLETE
+  MT-03  Step Functions              ✗ NOT STARTED — NEXT
+  MT-04  EventBridge midnight reset  ✓ COMPLETE
+  MT-05  Second AWS account          ✗ NOT STARTED
+  MT-06  v3r-graph agent mesh        ✗ NOT STARTED
+  MT-07  Streaming response layer    ✗ NOT STARTED
+
+═══════════════════════════════════════════════════════════
+5. OPEN ISSUES
+═══════════════════════════════════════════════════════════
+
+ISSUE-001 — Groq 0 requests / Cerebras catching all traffic
+  default route primary=groq but Cerebras receiving all calls.
+  Groq path failing silently. API key may need verification.
+  Impact: Groq backup not confirming. Investigation pending.
+
+ISSUE-002 — ST-01 ECR Public migration incomplete
+  IAM role missing ecr-public permissions. Lambda functions
+  still pulling from private ECR. Billing exposure continues
+  until private repo deleted. Fix defined in prior reports.
+
+ISSUE-003 — ST-06/07/08 provider registrations pending
+  Google AI Studio, second Groq account, OpenRouter not yet
+  registered. Agent model upgrades (MT-01) blocked on these.
+
+═══════════════════════════════════════════════════════════
+6. NEXT ACTIONS
+═══════════════════════════════════════════════════════════
+
+IMMEDIATE:
+  1. MT-03 — Step Functions pipeline orchestration
+  2. ST-01 — Complete ECR Public migration (IAM + Lambda update)
+  3. ST-06/07/08 — Provider registrations (5 min each)
+
+NEXT SESSION STARTUP — CONDUIT PROTOCOL:
+  Run conduit_sync.ps1 then Apps Script converter before
+  any Drive file review is required.
+
+═══════════════════════════════════════════════════════════
+Report: V3R Project NEXUS Report 6 — Claude
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 19, 2026
+Predecessor: Project NEXUS Report 5
+Next Action: MT-03 Step Functions pipeline orchestration
+═══════════════════════════════════════════════════════════

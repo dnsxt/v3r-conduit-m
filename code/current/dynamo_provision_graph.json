@@ -1,1 +1,0 @@
-{"TableName":"rag-graph","BillingMode":"PROVISIONED","ProvisionedThroughput":{"ReadCapacityUnits":5,"WriteCapacityUnits":5}}
