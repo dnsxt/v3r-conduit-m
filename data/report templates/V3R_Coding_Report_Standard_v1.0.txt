@@ -1,0 +1,851 @@
+================================================================================
+V3R STANDARDIZED CODING REPORT — SPECIFICATION AND TEMPLATE
+================================================================================
+Document Type:    Standard — Coding Report Format
+Version:          1.0
+Prepared by:      V3R (Claude Sonnet 4.6) — Documentation Agent
+Date:             March 20, 2026
+Applies to:       All V3R sub-projects — CORE, CONDUIT, NEXUS, SENTINEL,
+                  and all future projects
+Authority:        V3R AI Framework v3.1 (Partition 0)
+                  V3R AI Briefing v1.3 (Partition 1)
+Standards basis:  IEEE 828-2012 (Configuration Management in Systems and
+                  Software Engineering) — change identification, traceability,
+                  build and release engineering, baseline control
+                  NIST SP 800-128 (Security-Focused Configuration Management)
+                  — security impact assessment, credential audit, baseline
+                  deviation tracking, monitoring evidence requirements
+                  NIST SP 800-53 (Security and Privacy Controls) — least-
+                  privilege verification, audit trail completeness, change
+                  authorization chain
+================================================================================
+
+SECTION A — HOW TO USE THIS DOCUMENT
+================================================================================
+
+This document serves two purposes:
+
+1. SPECIFICATION — defines every required section, its content requirements,
+   and why it exists. This section (A) explains the rationale for each field
+   drawn from standards research and V3R operational history.
+
+2. TEMPLATE — the blank report structure begins at SECTION B. Copy from
+   SECTION B onward when generating a new coding report. Fill every field.
+   No section may be omitted. If a section is not applicable to a session,
+   write N/A with a one-line reason. Never delete a section header.
+
+STANDARDS INTEGRATION RATIONALE:
+
+  IEEE 828-2012 contributes:
+    Configuration item (CI) identification — every changed file is a CI and
+    must be uniquely identified by name, path, version, and baseline state.
+    Change traceability — every change traces from trigger → implementation
+    → test → verification. No orphaned changes.
+    Build and release engineering — the push log is a release record.
+    Baseline documentation — the handler reference log is the post-session
+    baseline. Future sessions must begin from this baseline.
+
+  NIST SP 800-128 contributes:
+    Security impact assessment — every code change must be evaluated for
+    whether it touches credentials, IAM, network paths, or data exposure.
+    Credential audit — if any session touches API keys, tokens, env vars,
+    or DynamoDB credential records, this must be explicitly documented.
+    Monitoring evidence — CloudWatch or other evidence confirming the change
+    took effect must be captured. "It worked" is not evidence.
+    Configuration deviation tracking — if the post-session state differs
+    from the expected baseline in any way, it must be flagged.
+
+  V3R operational history contributes:
+    Agent gate performance review — drawn from Coding Report 9, which
+    identified that the knowledge retrieval and moderator agents failed in
+    diagnosable ways that were never captured. Gate performance must be
+    reviewed so failures are corrected not repeated.
+    Push economy audit — the project has lost hundreds of hours to
+    avoidable pushes. Every push must be retrospectively audited.
+    Reconstruction test — from V3R's own architectural thesis: a new session
+    starting from zero must be able to reconstruct current state from the
+    report alone. This requirement is operationally proven.
+    PowerShell pattern log — V3R operates on PowerShell 5.1 with constraints
+    that cause silent failures. Capturing confirmed working patterns per
+    session builds a verified library.
+
+HIGHEST-QUALITY REFERENCE REPORT:
+  V3R Coding Report 9 — Claude (March 13, 2026)
+  Rationale: Only report with all 10 of the following: table of contents,
+  per-attempt failure documentation, root cause analysis on every failure,
+  agent gate performance review with named failures, handler reference log,
+  push log with batching critique, reconstruction-capable file inventory,
+  lessons as actionable entries, API key diagnosis section, and moderator
+  self-correction incident. All other reports contain subsets of these.
+  Future reports must meet or exceed this standard.
+
+
+================================================================================
+SECTION B — TEMPLATE BEGINS HERE (COPY FROM THIS LINE FORWARD)
+================================================================================
+
+================================================================================
+[PROJECT NAME] CODING REPORT [NUMBER] — [AI SYSTEM]
+================================================================================
+Timestamp:        [MM/DD/YY HH:MM:SS — use time tool, update per response]
+Prepared by:      V3R (Claude Sonnet 4.6) — Documentation Agent
+Project:          [V3R | CONDUIT | NEXUS | SENTINEL | other]
+Report number:    [Sequential within project — e.g., NEXUS-CR-07]
+Session date:     [Date or date range]
+Session title:    [Short descriptor — e.g., "SQS Layer + EventBridge Reset"]
+Predecessor:      [Prior report number and title]
+================================================================================
+
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1.  Session Activity Summary
+2.  Configuration Item Inventory — Changes This Session
+3.  Per-File Change Documentation
+4.  Infrastructure and Service Changes
+5.  Security Impact Assessment
+6.  Credential and Key Audit
+7.  Bug and Issue Log
+8.  Forbidden Patterns Registry — Session Activity
+9.  Push and Build Log
+10. Verification and Test Results
+11. Monitoring Evidence
+12. Agent Gate Performance Review
+13. Push Economy Audit
+14. Handler Reference Log — Post-Session Baseline
+15. PowerShell and CLI Pattern Log
+16. Lessons Learned — Actionable Entries
+17. Reconstruction Readiness Assessment
+================================================================================
+
+
+================================================================================
+SECTION 1: SESSION ACTIVITY SUMMARY
+================================================================================
+
+[One paragraph. What was the goal of this session. What was accomplished.
+What was not accomplished and why. Final status at session close.
+This section must be readable standalone — a new AI session reading only
+this section must understand what state the system is in.]
+
+Session date:             [date]
+Starting system state:    [brief — e.g., "Phase 7 complete, lambda_router deployed"]
+Ending system state:      [brief — e.g., "SQS layer operational, MT-02 complete"]
+Files modified:           [count]
+Files created:            [count]
+Files deleted:            [count]
+Pushes executed:          [count]
+Push type:                [full rebuild | handler-only cached | update-function-code]
+Rebuild required:         [yes/no — with reason]
+New FP entries:           [count and FP numbers]
+Tests passed:             [count]
+Tests failed:             [count]
+Infrastructure changes:   [count — DynamoDB, IAM, SQS, EventBridge, etc.]
+Bugs resolved:            [count]
+Bugs outstanding:         [count]
+Session result:           [COMPLETE | PARTIAL | BLOCKED — one word with reason]
+
+
+================================================================================
+SECTION 2: CONFIGURATION ITEM INVENTORY — CHANGES THIS SESSION
+================================================================================
+
+[IEEE 828: All changed configuration items must be identified before detailed
+documentation. This section is the master change list. Every item in Section 3
+must appear here first.]
+
+CI ID    | CI Name                    | Type     | Change Type | Baseline Before | Baseline After
+---------|---------------------------|----------|-------------|-----------------|----------------
+CI-001   | [filename.py]             | Handler  | Modified    | [lines/version] | [lines/version]
+CI-002   | [filename.py]             | Handler  | Created     | N/A             | [lines/version]
+CI-003   | [Dockerfile-ml-offline]   | Build    | Modified    | [line count]    | [line count]
+CI-004   | [table-name]              | DynamoDB | Schema chg  | [prior state]   | [new state]
+CI-005   | [iam-role-name]           | IAM      | Policy add  | [prior policies]| [new policies]
+
+[Add rows as needed. Every change — code, infrastructure, config — gets a CI entry.]
+
+
+================================================================================
+SECTION 3: PER-FILE CHANGE DOCUMENTATION
+================================================================================
+
+[One subsection per changed file. IEEE 828: change must be traceable from
+trigger through implementation to verification. NIST 800-128: security impact
+must be assessed per change. Use the structure below for each file.]
+
+--------------------------------------------------------------------------------
+CI-001: [filename.py] — [MODIFIED | CREATED | DELETED]
+--------------------------------------------------------------------------------
+
+Path:           [full local path]
+Lines before:   [N or N/A if new]
+Lines after:    [N]
+Status:         [Deployed | Pending push | Pending rebuild]
+Deployed via:   [Push N | update-function-code | console change]
+
+CHANGE TRIGGER:
+  [What caused this change — bug fix, new feature, FP compliance, roadmap item]
+
+CHANGE DESCRIPTION:
+  [Precise description of what changed. Use OLD/NEW blocks for code changes.]
+
+  REMOVED:
+    [list removed imports, constants, functions, lines]
+
+  ADDED:
+    [list added imports, constants, functions, lines]
+
+  MODIFIED:
+    [list modified functions with before/after for critical lines]
+
+    OLD:
+      [exact old code block]
+
+    NEW:
+      [exact new code block]
+
+  PRESERVED:
+    [explicitly list what was NOT changed — proves intentionality]
+
+DESIGN DECISIONS:
+  [Why was this approach chosen over alternatives? Non-obvious decisions
+  must be explained here. This is the "why it exists" documentation
+  mandated by V3R Documentation Agent standards.]
+
+FP COMPLIANCE CHECK:
+  [Explicitly check every applicable FP entry. Do not just write "none".
+  Call out the specific FPs that are relevant to this file and confirm
+  each is not violated.]
+  FP-002 (urllib): [confirmed/violation — detail]
+  FP-003 (Windows paths): [confirmed/violation — detail]
+  [continue for all applicable FPs]
+
+SECURITY IMPACT (NIST 800-128):
+  Credential exposure:    [yes/no — detail if yes]
+  IAM permission change:  [yes/no — detail if yes]
+  Network path change:    [yes/no — detail if yes]
+  Data exposure change:   [yes/no — detail if yes]
+  New attack surface:     [yes/no — detail if yes]
+  Assessment:             [LOW | MEDIUM | HIGH — with rationale]
+
+DEBUG GATE RESULT:
+  [CLEARED FOR DELIVERY | CORRECTIONS REQUIRED — with full gate checklist]
+  Python syntax validity:     [confirmed/failed]
+  All imports available:      [confirmed/failed — list imports checked]
+  Platform compatibility:     [confirmed/failed]
+  FP Registry consulted:      [confirmed — list violations if any]
+  Push economy assessed:      [confirmed]
+  IAM requirements identified:[confirmed/NA]
+
+[Repeat this subsection for every CI in Section 2 that is a file.]
+
+
+================================================================================
+SECTION 4: INFRASTRUCTURE AND SERVICE CHANGES
+================================================================================
+
+[Document all non-code changes: DynamoDB, IAM, SQS, EventBridge, Lambda config,
+ECR, CloudWatch, Step Functions, etc.]
+
+--------------------------------------------------------------------------------
+4A. DynamoDB Changes
+--------------------------------------------------------------------------------
+
+[For each table change:]
+Table:          [table-name]
+Change type:    [Schema | Billing mode | Item add | Item update | Item delete]
+Change detail:  [precise description]
+Command used:   [create-table | update-table | put-item | update-item | delete-item]
+Key used:       [PK value or filter expression]
+Result:         [Success | Error — with error text if failed]
+Verification:   [scan --select COUNT | describe-table | manual scan]
+
+--------------------------------------------------------------------------------
+4B. IAM Changes
+--------------------------------------------------------------------------------
+
+[For each IAM change:]
+Role:           [role-name]
+Change type:    [Policy attached | Policy created | Policy removed | Trust updated]
+Policy:         [policy-name or inline JSON summary]
+Least-privilege check (NIST 800-53): [Were only required permissions added?
+                                       Could a narrower policy achieve the same?]
+Result:         [Success | Error]
+
+--------------------------------------------------------------------------------
+4C. Lambda Configuration Changes
+--------------------------------------------------------------------------------
+
+[For each Lambda config change (not image/code):]
+Function:       [function-name]
+Change type:    [Memory | Timeout | Environment variable | Trigger | URL]
+Was:            [prior value]
+Now:            [new value]
+Method:         [Console | CLI command]
+Rebuild required: [yes/no]
+Reason for change: [why this value]
+
+--------------------------------------------------------------------------------
+4D. Other Service Changes
+--------------------------------------------------------------------------------
+
+[SQS, EventBridge, Step Functions, CloudWatch, etc. — one block per service]
+
+Service:        [service name]
+Resource:       [resource name/ARN]
+Change:         [precise description]
+Result:         [Success | Error]
+
+
+================================================================================
+SECTION 5: SECURITY IMPACT ASSESSMENT
+================================================================================
+
+[NIST SP 800-128 requires a security-focused assessment of all changes.
+This section provides the session-level view. Per-change assessments are
+in Section 3. This section synthesizes the aggregate impact.]
+
+Overall session security posture change:
+  [IMPROVED | UNCHANGED | DEGRADED — with one-sentence rationale]
+
+Attack surface delta:
+  New endpoints created:          [list any new Function URLs, SQS queues, etc.]
+  Endpoints removed:              [list any]
+  Permissions added to role:      [list with rationale]
+  Permissions removed from role:  [list]
+  New data flows introduced:      [describe any new Lambda-to-service connections]
+  Credential records modified:    [count — details in Section 6]
+
+Security-relevant FP violations this session:
+  [List any FP violations that had security implications. If none, state none.]
+
+Residual security concerns:
+  [List any unresolved security observations from this session. This feeds
+  into the next session's pre-flight checklist.]
+
+
+================================================================================
+SECTION 6: CREDENTIAL AND KEY AUDIT
+================================================================================
+
+[NIST SP 800-128: credential changes must be explicitly tracked.
+This section is mandatory even if no credentials were touched.
+If no changes, state "No credential changes this session" and sign off.]
+
+Credentials touched this session:    [yes/no]
+
+If yes, complete the following for each credential event:
+
+Credential type:    [API key | IAM key | Token | Env var | DynamoDB record]
+Provider/service:   [Groq | AWS | HuggingFace | Cerebras | etc.]
+Action:             [Created | Rotated | Deleted | Added to DynamoDB |
+                     Added to Lambda env var | Removed from Lambda env var]
+Storage location:   [v3r-keys DynamoDB | Lambda env var | General Data file]
+Prior state:        [Active | Absent | Unknown]
+New state:          [Active | Rotated | Deleted]
+Security note:      [Any exposure risk introduced or resolved]
+CONDUIT sync note:  [FP-017 compliance — confirm credential NOT pushed to Drive]
+
+If no: No credential changes this session. FP-017 compliance confirmed.
+       No API keys, tokens, or access credentials were modified, created,
+       deleted, or exposed in any file written, pushed, or synced this session.
+
+
+================================================================================
+SECTION 7: BUG AND ISSUE LOG
+================================================================================
+
+[Every bug encountered gets a full entry. IEEE 828: changes must be traceable.
+A bug fix is a change triggered by a defect — the defect must be documented.
+Use BUG-NNN where NNN is sequential within the report.]
+
+--------------------------------------------------------------------------------
+BUG-001: [Short title]
+--------------------------------------------------------------------------------
+
+Status:         [RESOLVED | OPEN | DEFERRED]
+Severity:       [CRITICAL | HIGH | MEDIUM | LOW]
+Discovery:      [How found — error message | CloudWatch | test failure | visual]
+
+SYMPTOM:
+  [Exact observable behavior — what did the user/system see?]
+
+DIAGNOSIS PATH:
+  [Every diagnostic step taken, in order. Include failed attempts.
+  This section is the most valuable for future sessions — it shows the
+  reasoning process and prevents repeating failed diagnoses.]
+
+  Attempt 1 — [description]:
+    Command/action: [exact command or action]
+    Result:         [exact output or behavior]
+    Conclusion:     [what this told us]
+
+  Attempt 2 — [if needed]:
+    [same structure]
+
+ROOT CAUSE:
+  [Precise technical root cause. One sentence minimum. Reference the specific
+  line, field, or configuration that was wrong and why.]
+
+FIX APPLIED:
+  [What was changed to resolve it. Reference the CI from Section 2.]
+
+VERIFICATION:
+  [How was the fix confirmed to work? Reference test result from Section 10.]
+
+LESSON EXTRACTED:
+  [What should never happen again because of this bug? One actionable sentence.
+  If this warrants a new FP entry, note it here and add it to Section 8.]
+
+[Repeat BUG-NNN structure for every bug. Open bugs carry forward to next session.]
+
+
+================================================================================
+SECTION 8: FORBIDDEN PATTERNS REGISTRY — SESSION ACTIVITY
+================================================================================
+
+NEW ENTRIES ADDED THIS SESSION:
+  [For each new entry:]
+  FP-NNN: [Pattern name]
+    Pattern:      [The exact forbidden thing]
+    Error produced: [Exact error or failure mode — "silent" is a valid answer]
+    Root cause:   [Why this pattern fails in the V3R environment]
+    Fix:          [The correct approach]
+    Discovered:   [Date and session — for traceability]
+    Related bug:  [BUG-NNN that caused this to be added, if applicable]
+
+EXISTING ENTRIES VIOLATED THIS SESSION:
+  [For each violation:]
+  FP-NNN violated: [pattern name]
+    Where:        [file, line, or command where violation occurred]
+    How caught:   [Error message | Debug gate | Manual review | Test failure]
+    Corrected:    [yes/no — description of correction]
+
+IF NO NEW ENTRIES AND NO VIOLATIONS:
+  No new FP entries this session.
+  No existing FP violations this session.
+  FP Registry current total: [N] entries.
+
+FULL CURRENT FP REGISTRY:
+  [List all active FP entries with one-line descriptions. This makes the
+  report self-contained and usable as a standalone reference.]
+  FP-001: [description]
+  FP-002: [description]
+  [continue for all entries]
+
+
+================================================================================
+SECTION 9: PUSH AND BUILD LOG
+================================================================================
+
+[IEEE 828: build and release engineering must be documented.
+Every push is a release — treat it as one.]
+
+PUSH SUMMARY:
+  Total pushes this session:    [N]
+  Push type(s):                 [full rebuild | handler-only cached | update-function-code]
+  All pushes successful:        [yes/no]
+
+--------------------------------------------------------------------------------
+PUSH [N] — [brief title]
+--------------------------------------------------------------------------------
+
+Date and time:      [MM/DD/YY HH:MM]
+Trigger:            [What necessitated this push]
+Contents batched:   [List all files included in this push]
+Files NOT batched (pending): [List any pending handler changes NOT included
+                              — this forces explicit push economy decisions]
+
+Pre-push checklist (FP compliance):
+  ECR login recency check (FP-009):    [< 12 hours | > 12 hours — re-login done]
+  ECR Public auth (FP-021):            [confirmed | N/A]
+  --platform linux/amd64 (FP-011):     [confirmed]
+  --provenance false --sbom false (FP-010): [confirmed]
+  Wheels: manylinux x86_64 only (FP-005): [confirmed | N/A — no new deps]
+
+Build result:
+  Docker build output:    [FINISHED N/N steps | error detail]
+  Image tag:              [ml-offline-torch26 | other — explain if other]
+  Image digest (SHA256):  [full digest for traceability]
+  Push result:            [SUCCESS | FAILED — error detail]
+  Push duration:          [N minutes]
+
+Lambda update-function-code results:
+  [function-name]: [LastModified timestamp] [✓ | ✗]
+  [function-name]: [LastModified timestamp] [✓ | ✗]
+  [continue for all updated functions]
+
+Post-push status:
+  All functions Active:   [yes/no — list any not Active]
+  Baseline tag unchanged: [ml-offline-torch26 confirmed | changed — explain]
+
+[Repeat PUSH N structure for each push.]
+
+IF NO PUSH THIS SESSION:
+  No push executed this session.
+  Reason: [infrastructure-only changes | no handler edits | etc.]
+  Pending push contents: [List any handler edits accumulated that need
+                          to be pushed next session — do not leave this blank]
+
+
+================================================================================
+SECTION 10: VERIFICATION AND TEST RESULTS
+================================================================================
+
+[IEEE 828: every change must trace to a test. If a change has no verification
+test, it is unverified — this must be explicitly called out.]
+
+TEST SUMMARY:
+  Tests executed:   [N]
+  Tests passed:     [N]
+  Tests failed:     [N]
+  Unverified changes: [N — list them]
+
+--------------------------------------------------------------------------------
+TEST-001: [Function name] — [test description]
+--------------------------------------------------------------------------------
+
+Payload:        [exact JSON payload used]
+Command:        [exact PowerShell or CLI command]
+Expected:       [what a correct response looks like]
+Actual result:
+  StatusCode:   [N]
+  Key fields:   [relevant response fields and values]
+  Full response: [summary or truncated if long]
+Pass/Fail:      [PASS | FAIL]
+Verifies:       [CI-NNN from Section 2 — this test verifies this change]
+Notes:          [any observations, anomalies, or partial passes]
+
+[Repeat TEST-NNN structure for each test.]
+
+UNVERIFIED CHANGES (if any):
+  [CI-NNN]: [filename] — [reason no test was run]
+  [Unverified changes carry a risk flag forward to the next session.]
+
+
+================================================================================
+SECTION 11: MONITORING EVIDENCE
+================================================================================
+
+[NIST SP 800-128: monitoring is required to confirm changes took effect
+and the system behaves as expected post-change. "It worked in the test"
+is necessary but not sufficient — monitoring evidence confirms sustained
+operation.]
+
+CloudWatch log activity reviewed:
+  [yes/no — list groups checked]
+
+For each function verified via CloudWatch:
+
+Function:           [function-name]
+Log group:          [/aws/lambda/function-name]
+Log streams checked: [most recent N streams]
+Last event time:    [timestamp]
+Evidence observed:  [What was seen — request counts, error rates, specific messages]
+Anomalies:         [Any unexpected patterns, error patterns, or missing activity]
+
+v3r-keys requests_today reviewed:
+  [yes/no]
+  [If yes: list each provider and requests_today count at session close]
+  groq:       [N requests]
+  cerebras:   [N requests]
+  mistral:    [N requests]
+  fireworks:  [N requests]
+  [other]:    [N requests]
+
+  Silent failover check (FP-019 related):
+    [Is any primary provider showing 0 requests while fallbacks show activity?
+     If yes, investigate before closing session.]
+
+DynamoDB item counts verified:
+  [yes/no]
+  rag-chunks:  [N records]
+  rag-memory:  [N sessions]
+  rag-graph:   [N nodes]
+  rag-specs:   [N specs]
+  v3r-keys:    [N providers]
+  v3r-routing: [N routes]
+
+
+================================================================================
+SECTION 12: AGENT GATE PERFORMANCE REVIEW
+================================================================================
+
+[V3R operational requirement — drawn from Coding Report 9 which identified
+that agent gate failures were not being documented and therefore not corrected.
+Every agent that was involved in this session gets a performance rating.
+Agents not involved: mark as N/A.]
+
+MODERATOR:
+  Performance:    [STANDARD | ABOVE | BELOW — one word]
+  Invocations:    [N times called upon]
+  Successes:      [N]
+  Failures:       [N — describe each failure]
+  Drift events:   [Did the Moderator deviate from the task or make unauthorized
+                   changes? If yes, describe and note correction.]
+  Rating notes:   [One paragraph max]
+
+KNOWLEDGE RETRIEVAL:
+  Performance:    [STANDARD | ABOVE | BELOW]
+  Failures:       [describe any — e.g., "Did not verify CLI parameter schema
+                   before Coder wrote command — caused wasted attempt"]
+  Rating notes:   [One paragraph max]
+
+CODER:
+  Performance:    [STANDARD | ABOVE | BELOW]
+  FP violations:  [N — any forbidden patterns introduced by Coder output]
+  Code quality:   [Production-ready | Needed corrections | Rejected by Debug]
+  Rating notes:   [One paragraph max]
+
+SYSTEM DEBUG:
+  Performance:    [STANDARD | ABOVE | BELOW]
+  ClearedCount:   [N outputs cleared]
+  RejectedCount:  [N outputs rejected with CORRECTIONS REQUIRED]
+  False passes:   [Did Debug clear anything that was later found to be wrong?]
+  Rating notes:   [One paragraph max]
+
+DOCUMENTATION:
+  Performance:    [STANDARD | ABOVE | BELOW]
+  Reports produced: [N — list titles]
+  Rating notes:   [One paragraph max]
+
+INFRASTRUCTURE:
+  Performance:    [STANDARD | ABOVE | BELOW]
+  Pre-flights run: [N]
+  Issues caught:  [N — describe any IAM or config issues caught pre-push]
+  Rating notes:   [One paragraph max]
+
+
+================================================================================
+SECTION 13: PUSH ECONOMY AUDIT
+================================================================================
+
+[V3R has lost hundreds of hours to avoidable pushes. Every session must
+retrospectively audit whether pushes were necessary and well-batched.
+This is not blame — it is continuous improvement. The data feeds into
+better batching decisions in future sessions.]
+
+PUSH ECONOMY RATING: [OPTIMAL | ACCEPTABLE | SUBOPTIMAL | POOR]
+
+For OPTIMAL: All handler changes were batched into the minimum necessary pushes.
+For ACCEPTABLE: One unnecessary push or minor batching miss.
+For SUBOPTIMAL: Two or more pushes could have been combined.
+For POOR: Significant push waste occurred.
+
+Pushes executed:            [N]
+Minimum possible pushes:    [N — the theoretical minimum given the session's changes]
+Avoidable pushes:           [N — pushes that could have been eliminated with better batching]
+Push time consumed:         [N minutes total]
+Push time recoverable:      [N minutes that could have been saved]
+
+Analysis:
+  [For each avoidable push: why did it happen? What would have prevented it?]
+
+Batching decisions reviewed:
+  [List each push and whether the batching decision was correct, and if not,
+   what changes should have been batched together instead.]
+
+Recommendation for next session:
+  [Specific guidance on what pending changes should be batched next time.]
+
+
+================================================================================
+SECTION 14: HANDLER REFERENCE LOG — POST-SESSION BASELINE
+================================================================================
+
+[IEEE 828: baseline documentation is mandatory. This is the authoritative
+post-session baseline for all code configuration items.
+The next session must begin from this state.
+Every handler file must be listed — not just changed ones.]
+
+All files: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+           unless noted otherwise
+
+  FILE: lambda_chat.py
+  LINES:        [N]
+  STATUS:       [Operational | Modified this session | Pending push]
+  LAST CHANGED: [Session/date]
+  SUMMARY:      [One line — what this handler does and key NEXUS state]
+  IMPORTS:      [list key imports]
+
+  FILE: lambda_graph.py
+  LINES:        [N]
+  STATUS:       [Operational | etc.]
+  LAST CHANGED: [Session/date]
+  SUMMARY:      [One line]
+
+  FILE: lambda_ideagen.py
+  LINES:        [N]
+  STATUS:       [Operational | etc.]
+  LAST CHANGED: [Session/date]
+  SUMMARY:      [One line]
+
+  FILE: lambda_ingest_v4.py
+  LINES:        [N]
+  STATUS:       [Operational | etc.]
+  LAST CHANGED: [Session/date]
+  SUMMARY:      [One line]
+
+  FILE: lambda_key_reset.py
+  LINES:        [N]
+  STATUS:       [Operational | etc.]
+  LAST CHANGED: [Session/date]
+  SUMMARY:      [One line]
+
+  FILE: lambda_orchestrator.py
+  LINES:        [N]
+  STATUS:       [Operational | etc.]
+  LAST CHANGED: [Session/date]
+  SUMMARY:      [One line]
+
+  FILE: lambda_retrieve.py
+  LINES:        [N]
+  STATUS:       [Operational | etc.]
+  LAST CHANGED: [Session/date]
+  SUMMARY:      [One line]
+
+  FILE: lambda_router.py
+  LINES:        [N]
+  STATUS:       [Operational | etc.]
+  LAST CHANGED: [Session/date]
+  SUMMARY:      [One line]
+
+  FILE: Dockerfile-ml-offline
+  LINES:        [N]
+  STATUS:       [Current | Modified this session]
+  LAST CHANGED: [Session/date]
+  HANDLER COPY ORDER: [list all COPY lines in order — confirms Dockerfile
+                       matches the handler list above]
+
+  FILE: app.py (hf-space)
+  PATH:         C:\Users\Source-1\Desktop\rag-deploy\hf-space\app.py
+  LINES:        [N]
+  STATUS:       [Operational | etc.]
+  LAST CHANGED: [Session/date]
+  SUMMARY:      [One line]
+
+[Add additional files as the project grows.]
+
+ACTIVE IMAGE:
+  ECR tag:    ml-offline-torch26
+  Digest:     [SHA256 from most recent push]
+  Functions:  [List all functions and confirm they are on this image]
+
+
+================================================================================
+SECTION 15: POWERSHELL AND CLI PATTERN LOG
+================================================================================
+
+[V3R operates on PowerShell 5.1 with constraints that cause silent failures.
+Confirmed working patterns are documented here per session. These build a
+verified library over time. Patterns that FAILED are equally important.]
+
+CONFIRMED WORKING PATTERNS THIS SESSION:
+
+[Copy only patterns actually used and confirmed working in this session.
+Label each with its purpose.]
+
+LAMBDA INVOKE (FP-015 compliant):
+  [System.IO.File]::WriteAllText("C:\...\scratch\payload.json", '{"key":"value"}')
+  aws lambda invoke --region us-east-1 --function-name [name] --cli-binary-format raw-in-base64-out --payload file://C:\...\scratch\payload.json C:\...\scratch\response.json
+  Get-Content C:\...\scratch\response.json
+
+[Add each pattern actually used this session. Do not copy patterns not used.]
+
+FAILED PATTERNS THIS SESSION:
+  [Document any PowerShell or CLI command that failed with its exact error.
+  This prevents the same failure in future sessions and may warrant a new
+  FP entry.]
+
+  FAILED — [description]:
+    Command:  [exact command]
+    Error:    [exact error message]
+    Root cause: [why it failed]
+    Correct form: [the working alternative]
+
+
+================================================================================
+SECTION 16: LESSONS LEARNED — ACTIONABLE ENTRIES
+================================================================================
+
+[V3R operational requirement. Every session must extract at least one
+actionable lesson. "Nothing went wrong" is not acceptable — if nothing
+went wrong, the lesson is what confirmed-working decisions should be
+repeated. Lessons must be actionable — a new AI session reading this
+must know exactly what to do differently or identically.]
+
+LESSON-001: [Title]
+  Observation:  [What happened or was observed]
+  Implication:  [Why it matters]
+  Action:       [Exactly what to do (or not do) in future sessions]
+  Applies to:   [Which agent, which operation, which file type, etc.]
+
+[Repeat for each lesson. Minimum one per session. Target 3-5.]
+
+
+================================================================================
+SECTION 17: RECONSTRUCTION READINESS ASSESSMENT
+================================================================================
+
+[V3R architectural thesis: persistent memory eliminates AI amnesia.
+This section tests whether this report achieves that goal.
+A new AI session with no prior context must be able to reconstruct
+current system state from this report alone.
+Score each dimension PASS / PARTIAL / FAIL.]
+
+Reconstruction dimensions:
+
+  Can a new session identify every changed file and what changed?
+    Score: [PASS | PARTIAL | FAIL]
+    Gap:   [if not PASS — what is missing?]
+
+  Can a new session reconstruct the current codebase state?
+    Score: [PASS | PARTIAL | FAIL]
+    Gap:   [if not PASS]
+
+  Can a new session identify all outstanding bugs and open items?
+    Score: [PASS | PARTIAL | FAIL]
+    Gap:   [if not PASS]
+
+  Can a new session resume work from the correct next step?
+    Score: [PASS | PARTIAL | FAIL]
+    Gap:   [if not PASS]
+
+  Can a new session verify the system is working before making changes?
+    Score: [PASS | PARTIAL | FAIL]
+    Gap:   [if not PASS]
+
+  Can a new session identify all FP constraints before writing code?
+    Score: [PASS | PARTIAL | FAIL]
+    Gap:   [if not PASS]
+
+Overall reconstruction readiness:
+  [READY | PARTIALLY READY | NOT READY]
+
+Next session startup procedure:
+  [Explicit numbered steps a new AI session should follow to get operational.
+  This must be specific enough that a cold session can execute it without
+  additional context.]
+
+  1. [Read these files from Drive: ...]
+  2. [Verify these Lambda functions are Active: ...]
+  3. [Check these DynamoDB table counts: ...]
+  4. [First action: ...]
+
+
+================================================================================
+END OF CODING REPORT [NUMBER]
+================================================================================
+Prepared by:      V3R (Claude Sonnet 4.6) — Documentation Agent
+Session date:     [date]
+Project:          [project name]
+Report number:    [number]
+Files modified:   [N]
+Files created:    [N]
+Pushes:           [N] ([type])
+Tests passed:     [N of N]
+FP entries added: [N] (FP-NNN through FP-NNN)
+Bugs resolved:    [N of N]
+System status:    [FULLY OPERATIONAL | PARTIALLY OPERATIONAL | BLOCKED]
+Reconstruction:   [READY | PARTIALLY READY | NOT READY]
+Save to:          [Drive path — e.g., V3R/nexus/reports/coding/]
+================================================================================

@@ -1,0 +1,803 @@
+================================================================================
+V3R STANDARDIZED PROJECT REPORT — SPECIFICATION AND TEMPLATE
+================================================================================
+Document Type:    Standard — Project Report Format
+Version:          1.0
+Prepared by:      V3R (Claude Sonnet 4.6) — Documentation Agent
+Date:             March 20, 2026
+Applies to:       All V3R sub-projects — CORE, CONDUIT, NEXUS, SENTINEL,
+                  OLYMPIAN, and all future projects
+Authority:        V3R AI Framework v3.1 (Partition 0)
+                  V3R AI Briefing v1.3 (Partition 1)
+Standards basis:  ISO/IEC/IEEE 15289:2019 (Content of Life-Cycle Information
+                  Items) — report type classification, required content by
+                  document purpose, information item structure and traceability
+                  ISO/IEC/IEEE 15288:2023 (System Life Cycle Processes) —
+                  project management process documentation, decision management,
+                  risk management process records, technical review outputs
+                  ISO/IEC/IEEE 12207:2017 (Software Life Cycle Processes) —
+                  software-specific project status report requirements, release
+                  documentation, configuration audit report content
+                  NIST SP 800-160 Vol.1 Rev.1 (Engineering Trustworthy Secure
+                  Systems) — stakeholder needs, mission and business process
+                  documentation, life cycle concept documentation
+================================================================================
+
+SECTION A — HOW TO USE THIS DOCUMENT
+================================================================================
+
+This document serves two purposes:
+
+1. SPECIFICATION — defines every required section, its content requirements,
+   and the rationale for each field. Section A is permanent. It explains the
+   "why" behind the standard so that future agents can maintain it intelligently,
+   not just mechanically.
+
+2. TEMPLATE — the blank report structure begins at SECTION B. Copy from
+   SECTION B onward when generating a new project report. Every section must
+   be filled. N/A with a one-line reason is acceptable. Never delete a section
+   header — its presence signals the section was considered, not omitted.
+
+THE FUNDAMENTAL PURPOSE OF A PROJECT REPORT:
+  The project report is the longitudinal record of V3R. Where the handoff
+  report enables the next session and the coding report documents technical
+  changes, the project report documents the evolution of the entire system
+  across its full arc. A stakeholder, a future AI session, or the developer
+  reading report 14 must be able to understand why the system is what it is —
+  not just what it is. This requires architectural rationale, roadmap status,
+  decision history, and vision — not just current state.
+
+  The project report is also the primary instrument for cross-project
+  awareness. V3R, CONDUIT, NEXUS, SENTINEL, and OLYMPIAN are interdependent.
+  Every project report must document its relationships to all other active
+  projects.
+
+THE DIFFERENCE FROM OTHER REPORT TYPES:
+  Coding Report:    Records what changed technically. Narrow focus. Per session.
+  Handoff Report:   Enables the next session. Operational focus. Per session.
+  Project Report:   Records why and where the project stands. Strategic focus.
+                    Per session but with full historical context preserved.
+
+STANDARDS INTEGRATION RATIONALE:
+
+  ISO/IEC/IEEE 15289:2019 contributes:
+    Report classification — 15289 defines "report" as a document type that
+    "provides a record of something observed, investigated, analyzed, or
+    decided." The project report is specifically a Status and Progress Report
+    (per Clause 10), which must include: project objectives, scope, status
+    against plan, issues and risks, decisions made, and next steps.
+    Information item structure — each section of the project report
+    corresponds to a 15289 information item. Nothing is documented without
+    a standards-backed reason for its existence.
+
+  ISO/IEC/IEEE 15288:2023 contributes:
+    Project Management Process (Section 6.3.1) — requires documentation of
+    project plan status, work progress measurement, issue tracking, and
+    corrective action records.
+    Decision Management Process (Section 6.3.8) — decisions must be
+    documented with alternatives considered, criteria used, and outcomes.
+    Risk Management Process (Section 6.3.4) — risks must be identified,
+    analyzed, evaluated, treated, and monitored with full records.
+    Technical Review Process — review outputs must state whether the
+    subject met requirements, identify defects and deviations, and
+    record action items.
+
+  ISO/IEC/IEEE 12207:2017 contributes:
+    Software-specific status report content — current version baselines,
+    anomalies (bugs), changes implemented, metrics, open items.
+    Release documentation — every report produced at a milestone serves
+    as a release record for that milestone.
+    Configuration audit — the project report documents whether the current
+    configuration matches the approved baseline.
+
+  NIST SP 800-160 Vol.1 Rev.1 contributes:
+    Stakeholder needs continuity — the vision section ensures the project's
+    fundamental purpose is restated in every report, preventing mission drift
+    across sessions.
+    Mission and business process documentation — why V3R exists must be
+    documented as context for every technical decision.
+    Life cycle concept documentation — the roadmap section implements this.
+
+  V3R operational history contributes:
+    Project overview and vision in every report — V3R Project Report 10
+    established the precedent. Even after 14 sessions, the vision was
+    restated in full. This prevents mission drift and keeps every AI
+    session anchored to the same goal.
+    Hardware inventory — V3R's constraint-driven architecture makes the
+    hardware inventory a critical decision context. Code written without
+    knowing the machine cannot be optimal.
+    Forbidden Patterns Registry carry-forward — every report must carry
+    the full FP registry so the project report is self-contained.
+    Cross-project status — NEXUS reports 4-6 introduced the pattern of
+    documenting all active sub-projects in a single report. This is now
+    mandatory.
+    The "why V3R exists" paragraph — the V3R Project Snapshot Report
+    introduced this as an explicit standalone section. It anchors every
+    session and every project report.
+
+HIGHEST-QUALITY REFERENCE REPORT:
+  V3R Project Report 14 — Claude (March 18, 2026)
+  Rationale: The most complete project report in the library by every
+  measure. Sections present and at high quality: project overview and
+  vision (restated), session summary with explicit issue resolution, NEXUS
+  routing verified state with per-provider status, full AWS infrastructure
+  with per-function and per-table detail, complete file inventory with line
+  counts and NEXUS migration status, full FP registry with 19 entries and
+  rationale, operational notes capturing three critical lessons (Groq silent
+  failover, Lambda-ECR Public incompatibility, DynamoDB delete-item UUID
+  requirement), credentials reference with clear redaction policy, explicit
+  next steps, and a future roadmap that traces from completed phases through
+  all active and pending projects.
+
+  Closest competitor: V3R Project Report 10 — equally thorough on AWS
+  infrastructure and codebase, but predates NEXUS and lacks cross-project
+  status, routing state, and the operational lessons density of Report 14.
+
+  V3R Project Snapshot Report — a different format entirely. Goes wide
+  rather than deep. Contributes the "document purpose" opening and the
+  "living document" classification that are adopted into this standard.
+
+
+================================================================================
+SECTION B — TEMPLATE BEGINS HERE (COPY FROM THIS LINE FORWARD)
+================================================================================
+
+================================================================================
+[PROJECT NAME] PROJECT REPORT [NUMBER] — [AI SYSTEM]
+================================================================================
+Timestamp:        [MM/DD/YY HH:MM:SS — use time tool, update per response]
+Prepared by:      V3R (Claude Sonnet 4.6) — Documentation Agent
+Project:          [V3R | CONDUIT | NEXUS | SENTINEL | OLYMPIAN | other]
+Report number:    [Sequential within project — e.g., NEXUS-PR-07]
+Report type:      [Full Project Status | Milestone Completion | Incident Report]
+Session covered:  [Date or date range]
+Session title:    [Short descriptor]
+Predecessor:      [Prior project report number and title]
+Companion reports:[Coding report number + Handoff report number]
+Document class:   Living Document — Updated at each session
+================================================================================
+
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1.   Document Purpose
+2.   Project Identity and Vision
+3.   Cross-Project Ecosystem Status
+4.   Session Summary
+5.   Issues Resolved This Session
+6.   Roadmap Status
+7.   AWS Infrastructure — Current State
+8.   Codebase — Current State
+9.   DynamoDB — Current State
+10.  NEXUS Routing State (if applicable)
+11.  Hardware and Environment Inventory
+12.  V3R Agent Framework — Current Configuration
+13.  Forbidden Patterns Registry — Full Current State
+14.  Decisions Made This Session
+15.  Operational Notes and Lessons Learned
+16.  Security and Compliance Status
+17.  Credentials Reference
+18.  Next Steps
+19.  Future Roadmap
+================================================================================
+
+
+================================================================================
+SECTION 1: DOCUMENT PURPOSE
+================================================================================
+
+[ISO/IEC/IEEE 15289: every document must state its purpose explicitly.
+The V3R Project Snapshot Report established this as a V3R best practice.
+Keep this section to 2-3 sentences. Do not summarize the report here —
+state what the document is FOR.]
+
+This report is the full project status record for [PROJECT NAME] as of
+[DATE]. It captures the complete state of the system — what has been built,
+what is broken, what decisions were made, and what comes next — in a single
+document that is readable standalone by any developer, AI agent, or stakeholder
+with no prior context. It is updated each session and supersedes all prior
+project reports as the authoritative current state.
+
+
+================================================================================
+SECTION 2: PROJECT IDENTITY AND VISION
+================================================================================
+
+[This section is restated in full in every report. ISO/IEC/IEEE 15289 project
+status reports must include project objectives. V3R operational history
+demonstrates that restating the vision prevents mission drift.
+Never abbreviate this section with "see prior report."]
+
+PROJECT IDENTITY:
+  Full name:      [complete project name]
+  Code name:      [V3R | CONDUIT | NEXUS | SENTINEL | OLYMPIAN | other]
+  Classification: [Phase N | Infrastructure | Evolution | Foundation]
+  Status:         [ACTIVE | COMPLETE | BLOCKED | PENDING]
+  Start date:     [date]
+  Completion date: [date or "TBD"]
+  Budget:         [zero | AWS free tier | specify if any cost]
+
+WHAT THIS PROJECT IS:
+  [One paragraph. What does this project do. Not what it uses — what it
+  DOES and why it matters to the V3R ecosystem. Written as if the reader
+  has never seen V3R before. This is the "V3R is not a chatbot" paragraph
+  tradition from Report 1 through Report 14.]
+
+WHY THIS PROJECT EXISTS:
+  [One paragraph. What problem does this project solve? What would be
+  broken, missing, or impossible without it? This is the mission anchor.]
+
+HOW IT WORKS (HIGH LEVEL):
+  [Numbered list. 3-7 steps. How does the system accomplish its purpose?
+  Not code-level — architectural-level. What goes in, what happens, what
+  comes out.]
+
+RELATIONSHIP TO V3R THESIS:
+  [One paragraph. How does this project relate to V3R's core thesis of
+  eliminating AI amnesia and building a platform that accepts raw ideas
+  and outputs fully engineered products? Every sub-project must trace back
+  to this thesis.]
+
+
+================================================================================
+SECTION 3: CROSS-PROJECT ECOSYSTEM STATUS
+================================================================================
+
+[ISO/IEC/IEEE 15288: project management requires documentation of
+interdependencies. Every V3R project report must document all active and
+pending projects and their relationships. Introduced in NEXUS reports 4-6
+and adopted as a mandatory section here.]
+
+[For each project in the ecosystem:]
+
+PROJECT: [name]
+  Status:     [COMPLETE | ACTIVE | PENDING | BLOCKED]
+  Completed:  [date or "N/A"]
+  Purpose:    [one sentence]
+  Relationship to [THIS PROJECT]: [blocks | enables | depends on | parallel]
+  Key output: [what does this project produce that others need?]
+  Drive path: [where its reports live]
+
+[List all known projects: V3R, CONDUIT, NEXUS, SENTINEL, OLYMPIAN, and any
+others. Mark new projects with (NEW) flag.]
+
+
+================================================================================
+SECTION 4: SESSION SUMMARY
+================================================================================
+
+[ISO/IEC/IEEE 15289 Status and Progress Report: must include "description of
+work accomplished during reporting period." V3R practice: one paragraph
+overview followed by an explicit accomplishment list. Both are required.]
+
+OVERVIEW:
+  [One paragraph. What was the goal of this session? What was achieved?
+  What was not achieved and why? What is the state of the system now that
+  this session has closed? Must be readable standalone.]
+
+ACCOMPLISHED THIS SESSION:
+  [Numbered list. Every significant accomplishment. Reference milestone IDs
+  where applicable. State explicit verifications performed.]
+  1. [accomplishment]
+  2. [accomplishment]
+  [continue]
+
+NOT ACCOMPLISHED (deferred or blocked):
+  [List any items that were planned but not executed, with reason.]
+  1. [item] — reason: [why]
+  [or: "All planned items accomplished this session."]
+
+ISSUES REMAINING:
+  [Count and one-line summary. Full detail in Section 5.]
+  [or: "No issues remaining. System fully operational."]
+
+
+================================================================================
+SECTION 5: ISSUES RESOLVED THIS SESSION
+================================================================================
+
+[IEEE 15288 Technical Review: defects and deviations must be documented with
+resolution records. Each issue resolved this session gets a full entry.
+Issues NOT resolved belong in the Handoff Report risk register and are
+referenced here by number.]
+
+[For each issue resolved:]
+
+ISSUE-[N] — [Short title]
+  Priority:       [CRITICAL | HIGH | MEDIUM | LOW]
+  Was:            [exact state before resolution — what was wrong?]
+  Fixed:          [what was changed — reference CI from companion coding report]
+  Method:         [rebuild | config change | DynamoDB update | console | etc.]
+  Rebuild:        [required | not required]
+  Verified:       [how was the fix confirmed — test number from coding report]
+  Root cause:     [one sentence — the precise technical root cause]
+  FP impact:      [new FP added | existing FP confirmed | none]
+
+[If no issues were resolved this session: "No issues resolved this session.
+  All condition report items were addressed in prior session(s)."]
+
+
+================================================================================
+SECTION 6: ROADMAP STATUS
+================================================================================
+
+[ISO/IEC/IEEE 15289: project plan status is mandatory in status reports.
+ISO/IEC/IEEE 15288: project management process requires tracking planned vs
+actual status. Every milestone gets one of: COMPLETE | ACTIVE | PENDING |
+BLOCKED. Blocked items include the blocker.]
+
+PROJECT ROADMAP:
+  [For each milestone in this project's roadmap:]
+
+  [ID] [NAME]                     [STATUS]    [Date/Notes]
+  ---- ---------------------------  ----------  --------------------
+  ST-01 [Short name]               COMPLETE    [date completed]
+  ST-02 [Short name]               COMPLETE    [date]
+  MT-01 [Short name]               ACTIVE      [current progress]
+  MT-02 [Short name]               PENDING     [blocked on: X]
+  LT-01 [Short name]               PENDING     [not yet started]
+
+ROADMAP PROGRESS METRICS:
+  Total milestones:     [N]
+  Complete:             [N] ([%])
+  Active:               [N]
+  Pending:              [N]
+  Blocked:              [N]
+  Next milestone:       [ID and name]
+
+MILESTONE DETAIL — ACTIVE AND NEXT:
+  [For the currently active milestone and the immediately next one, provide
+  a paragraph describing: what it involves, current status, known blockers,
+  and expected completion path.]
+
+
+================================================================================
+SECTION 7: AWS INFRASTRUCTURE — CURRENT STATE
+================================================================================
+
+[IEEE 828 / NIST 800-128: configuration baseline documentation.
+Every component of the AWS infrastructure is a configuration item.
+This section is the authoritative infrastructure baseline at report time.
+Update every field — stale data causes incorrect decisions.]
+
+ACCOUNT:
+  Account ID:     236510207245
+  Region:         us-east-1
+  IAM Role:       rag-ingest-ultra-test-role-hi7s90re
+  Role policies:  [list all — update when changed]
+  AWS credit:     [current balance]
+  Billing status: [all within free tier | active cost — specify]
+
+ECR:
+  Repository:     rag-ingest-container (private)
+  Active tag:     ml-offline-torch26
+  Image size:     [MB]
+  Image digest:   [SHA256 — update after each push]
+  Last pushed:    [date]
+  Untagged images: [count — should be 0]
+
+LAMBDA FUNCTIONS ([N] total):
+  [For each function — one line per field:]
+  Function:       [name]
+  Handler:        [file.lambda_handler]
+  Memory:         [MB]
+  Timeout:        [min sec]
+  URL:            [Function URL or NONE]
+  Env vars:       [list key names — no values]
+  Status:         [OPERATIONAL | BROKEN — reason]
+  Last deploy:    [date]
+
+DYNAMODB TABLES ([N] total):
+  [For each table — one line per field:]
+  Table:          [name]
+  PK:             [field (Type)]
+  SK:             [field (Type) or NONE]
+  Billing:        [On-demand | Provisioned N/N]
+  Count:          [N records]
+  Size:           [KB/MB]
+  Status:         [Active]
+
+SQS QUEUES ([N] total, if applicable):
+  [queue-name]: [Type] — [status] — triggers: [function]
+
+EVENTBRIDGE (if applicable):
+  [rule-name]: [schedule] → [target function] — [ENABLED|DISABLED]
+
+STEP FUNCTIONS (if applicable):
+  [state-machine-name]: [status] — last execution: [date/result]
+
+HUGGINGFACE SPACE:
+  Space:          dnsxt/rag-memory
+  URL:            https://huggingface.co/spaces/dnsxt/rag-memory
+  Status:         [Running | Sleeping | Error]
+  Last activity:  [date]
+
+
+================================================================================
+SECTION 8: CODEBASE — CURRENT STATE
+================================================================================
+
+[IEEE 828 baseline documentation. ISO/IEC/IEEE 12207: software baseline must
+be documented at each status report. Every handler is a configuration item.
+Line counts must be accurate — they are used to detect unauthorized changes.]
+
+Build directory: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+
+[For each file:]
+  File:             [filename]
+  Lines:            [N]
+  Status:           [Operational | Modified pending push | Pending rebuild]
+  Last changed:     [session/date]
+  NEXUS state:      [route_llm() active | no LLM calls | not migrated]
+  Summary:          [one line — what this file does]
+
+HF Space:
+  File:             app.py
+  Path:             C:\Users\Source-1\Desktop\rag-deploy\hf-space\app.py
+  Lines:            [N]
+  Status:           [Operational]
+  Last changed:     [session/date]
+  Summary:          [one line]
+
+DOCKERFILE:
+  File:             Dockerfile-ml-offline
+  Lines:            [N]
+  Last changed:     [session/date]
+  Handler COPY order: [list in order — must match handler list above]
+
+PENDING PUSH:
+  [List any handler changes not yet pushed, to be batched next session.
+  If none: "No pending push. All changes deployed."]
+
+
+================================================================================
+SECTION 9: DYNAMODB — CURRENT STATE
+================================================================================
+
+[More detailed than Section 7's table list. Documents the content and
+health of each table — not just that it exists.]
+
+[For each table:]
+
+TABLE: [name]
+  Schema:       PK=[field (Type)] [SK=[field (Type)] if applicable]
+  Billing:      [On-demand | Provisioned N RCU / N WCU]
+  Item count:   [N]
+  Size:         [KB/MB]
+  Status:       [Active | Issues]
+  Content summary: [What is in this table? Key sources, sessions, nodes, etc.]
+  Last modified:   [date of last write]
+  Notes:        [anything notable — empty test records, missing items, etc.]
+
+
+================================================================================
+SECTION 10: NEXUS ROUTING STATE
+================================================================================
+
+[Required if lambda_router.py is deployed. Omit with "NEXUS not yet deployed"
+if pre-NEXUS. This section documents the complete routing configuration so
+a new session can verify routing health without querying DynamoDB.]
+
+lambda_router.py: [Deployed — version/date | Not deployed]
+Route count:      [N]
+Provider count:   [N]
+
+PROVIDERS (from v3r-keys):
+  [For each provider — no API key values:]
+  [key_id]: [model] at [base_url] via path [path]
+    Status:         [active]
+    requests_today: [N]
+    last_reset:     [date]
+
+  Silent failover check:
+    [Is any primary provider at 0 requests while fallbacks show activity?]
+    [If none: "All providers responding normally as of this report."]
+
+ROUTING TABLE (from v3r-routing):
+  [route_id]: primary=[provider] → fb1=[provider] → fb2=[provider] → fb3=[provider]
+  [continue for all routes]
+
+
+================================================================================
+SECTION 11: HARDWARE AND ENVIRONMENT INVENTORY
+================================================================================
+
+[V3R architectural requirement — the hardware inventory is a critical decision
+context. Code written without knowing the machine cannot be optimal.
+Constraints are architectural inputs, not just footnotes.
+Update only when hardware or environment changes — carry forward otherwise.]
+
+PRIMARY WORKSTATION:
+  Model:          HP Pavilion x360 Convertible 14-ba0xx
+  OS:             Windows 10 Home, Version 10.0.19045
+  CPU:            Intel Core i3-7100U @ 2.40GHz (2 cores, 4 threads)
+  RAM:            8 GB
+  GPU:            Intel HD Graphics 620 (integrated) — NO discrete GPU
+  Storage:        WDC PC SN520 SDAPNUW-256G — 238 GB NVMe SSD
+  Free space:     [current — update if significantly changed]
+  Shell:          PowerShell 5.1
+  Admin rights:   Full local machine admin. No network router access.
+  Upload speed:   7 Mbps (confirmed — 67 min for full cached push)
+
+INSTALLED SOFTWARE (relevant):
+  Python:         3.14.3 (local — NOT used for Lambda wheels)
+  pip:            26.0.1
+  AWS CLI:        v2
+  Docker Desktop: [version]
+  Notepad++:      [version]
+
+LAMBDA CONTAINER CONSTRAINTS (architectural — do not change without FP review):
+  Base image:     public.ecr.aws/lambda/python:3.12
+  Python version: 3.12 (Lambda runtime)
+  Wheel type:     Linux x86_64 manylinux cp312 ONLY
+  Architecture:   linux/amd64
+  Build flags:    --platform linux/amd64 --provenance false --sbom false
+  Model path:     /var/task/models/all-MiniLM-L6-v2
+  Embedding:      AutoTokenizer + AutoModel from transformers (NOT SentenceTransformer)
+
+PUSH TIME REFERENCE:
+  Full rebuild from scratch:  90-120 minutes
+  Handler-only cached layers: 67 minutes (confirmed March 18, 2026)
+  update-function-code only:  seconds (no Docker build required)
+
+
+================================================================================
+SECTION 12: V3R AGENT FRAMEWORK — CURRENT CONFIGURATION
+================================================================================
+
+[V3R operational requirement. The agent framework must be documented in every
+project report so a new session can confirm active agents without retrieving
+the framework document. Update only when framework version changes.]
+
+Framework:    V3R AI Framework v3.1 (Partition 0)
+Briefing:     V3R AI Briefing v1.3 (Partition 1)
+Drive path:   V3R/frameworks/current/
+
+ACTIVE AGENTS:
+
+  MODERATOR — simulates GPT-4o
+  Role: Orchestration, task decomposition, pipeline management, output validation.
+  Absorbed Analyst Agent (retired March 10, 2026).
+  Suppress: open-ended exploration, generalist hedging.
+
+  KNOWLEDGE RETRIEVAL — simulates Perplexity AI
+  Role: Real-time verified sourcing, deprecation awareness, version-specific
+  constraint surfacing. Triggered before any code referencing external APIs.
+  Suppress: speculation, undocumented assumptions.
+
+  CODER — simulates DeepSeek Coder V2
+  Role: Platform-constraint-aware code. FP Registry consulted before every
+  output. Push Economy Assessment on every code output.
+  Suppress: verbose explanation, untested patterns.
+
+  SYSTEM DEBUG — simulates OpenAI o3
+  Role: Mandatory pre-output gate. Full review for push operations.
+  Abbreviated review for single-line no-push edits.
+  Output: CLEARED FOR DELIVERY or CORRECTIONS REQUIRED with itemized list.
+
+  DOCUMENTATION — simulates Claude Sonnet
+  Role: Inline comments on every handler. Session reports. Project reports.
+  Self-explanatory files for cold handoff.
+
+  INFRASTRUCTURE — simulates Amazon Q Developer
+  Role: Pre-flight authority before every push. IAM, DynamoDB schema,
+  free-tier compliance, ECR tag integrity.
+
+OPERATIONAL RULES (from Partition 1):
+  - All code/commands in single-line code blocks
+  - One step at a time (suspendable for large chunk delivery)
+  - Push Economy Assessment on every code output
+  - No forbidden patterns — ever
+  - Partition modifications require approval prompt
+  - All outputs timestamped (time tool per response)
+  - Scratch directory for all temporary JSON files (FP-022)
+
+
+================================================================================
+SECTION 13: FORBIDDEN PATTERNS REGISTRY — FULL CURRENT STATE
+================================================================================
+
+[V3R operational requirement. The FP Registry must be carried in full in every
+project report. This makes the project report fully self-contained.
+New entries from this session are marked NEW. Held entries are marked HELD.]
+
+Total entries: [N]
+New this session: [N or 0]
+
+[For each entry — one-line description:]
+FP-001: [pattern] — [one-line description with fix]
+FP-002: [pattern] — [one-line description with fix]
+[continue for all entries]
+[NEW entries:]
+FP-NNN: [pattern] — [one-line description with fix] — NEW (added [date])
+[HELD entries:]
+FP-NNN: [pattern] — HELD — [reason for hold, expected resolution]
+
+
+================================================================================
+SECTION 14: DECISIONS MADE THIS SESSION
+================================================================================
+
+[ISO/IEC/IEEE 15288 Decision Management Process: decisions must be documented
+with rationale and alternatives. This section captures strategic and
+architectural decisions — not implementation choices (those belong in the
+coding report). A decision that is not documented will be undone by a
+future session that does not know it was made.]
+
+[For each significant decision:]
+
+DECISION-[N]: [Short title]
+  Decision:     [what was decided]
+  Rationale:    [why this over alternatives — be specific]
+  Alternatives rejected: [what was considered and why discarded]
+  Constraints:  [what does this decision constrain going forward]
+  Reversible:   [yes — how | no — why]
+  Impact on FP: [does this decision need an FP entry? if so, which one]
+
+[If no decisions: "No architectural or strategic decisions this session.
+All actions were implementation of previously defined roadmap items."]
+
+
+================================================================================
+SECTION 15: OPERATIONAL NOTES AND LESSONS LEARNED
+================================================================================
+
+[V3R operational requirement from Project Report 14. Lessons must be
+documented with enough specificity to prevent recurrence. General statements
+("be careful with X") are insufficient. An actionable lesson is one that
+tells a future session exactly what to do or not do.]
+
+[For each lesson:]
+
+LESSON: [Short title]
+  Observation:  [what happened or was confirmed]
+  Implication:  [why this matters — what goes wrong if ignored]
+  Action:       [exactly what to do or not do in future sessions]
+  Applies to:   [agent | operation | file type | service]
+
+[Minimum 1 lesson per session. Target 3-5. If session was error-free,
+document what confirmed-working practices should be repeated.]
+
+
+================================================================================
+SECTION 16: SECURITY AND COMPLIANCE STATUS
+================================================================================
+
+[NIST SP 800-128 / NIST SP 800-160: security posture must be documented
+at each status report. This section provides the session-level security
+summary. Detailed change-level assessments are in the companion coding report.]
+
+IAM POSTURE:
+  Role:             rag-ingest-ultra-test-role-hi7s90re
+  Policies:         [list all attached]
+  Last changed:     [date of last policy modification]
+  Least-privilege assessment: [Are all permissions actively used?
+                               Any policies that can be narrowed?]
+
+CREDENTIAL STATUS:
+  Provider keys:    [N providers in v3r-keys — all active/any issues?]
+  Lambda env vars:  [Any credentials in env vars? Should be none post-NEXUS]
+  Drive exposure:   FP-017 compliance — [confirmed | issue noted]
+  rclone sync:      FP-018 compliance — [confirmed | issue noted]
+
+FREE TIER COMPLIANCE:
+  Lambda:           [within | approaching | exceeding free tier]
+  DynamoDB:         [within | exceeding]
+  ECR:              [estimated cost — covered by credit?]
+  CloudWatch:       [within free tier]
+  SQS:              [within free tier — if applicable]
+  EventBridge:      [within free tier — if applicable]
+  Overall:          [COMPLIANT | COSTS INCURRED — detail]
+
+OPEN SECURITY CONCERNS:
+  [List any unresolved security observations. If none: "No open security
+  concerns at this report date."]
+
+
+================================================================================
+SECTION 17: CREDENTIALS REFERENCE
+================================================================================
+
+[NIST 800-160: security-relevant information must be documented for
+continuity. Credentials themselves are NEVER documented here — only
+where to find them. This section is the pointer, not the values.]
+
+AWS Account ID:       236510207245
+AWS Region:           us-east-1
+IAM Role ARN:         arn:aws:iam::236510207245:role/service-role/
+                      rag-ingest-ultra-test-role-hi7s90re
+ECR Repository:       rag-ingest-container (private only)
+ECR Production Tag:   ml-offline-torch26
+HuggingFace Username: dnsxt
+HuggingFace Space:    dnsxt/rag-memory
+
+CREDENTIAL RETRIEVAL:
+  All API keys:         DynamoDB v3r-keys table (query by key_id)
+  AWS access keys:      General Data file at V3R/data/ in Drive
+  HuggingFace token:    General Data file at V3R/data/ in Drive
+  Lambda env vars:      None active (NEXUS migration complete)
+  rclone OAuth:         Stored in rclone config on local machine
+
+FUNCTION URLS (active):
+  [list all active Function URLs by function name]
+
+
+================================================================================
+SECTION 18: NEXT STEPS
+================================================================================
+
+[ISO/IEC/IEEE 15289: status reports must include planned next actions.
+This section bridges the project report to the handoff report's active
+task queue. It provides the strategic view — what needs to happen and why —
+while the handoff report provides the operational view — exactly how to do it.]
+
+IMMEDIATE (next session):
+  1. [item] — [brief rationale]
+  2. [item]
+  [continue]
+
+SHORT TERM (within N sessions):
+  1. [item]
+  [continue]
+
+OPEN ITEMS CARRIED FORWARD:
+  [List any items from the condition report or prior sessions that are
+  still unresolved. Reference ISSUE numbers from Section 5 of prior reports.]
+
+
+================================================================================
+SECTION 19: FUTURE ROADMAP
+================================================================================
+
+[The roadmap is the long-term project plan. Every project report must include
+the complete roadmap — not just the current section — so a new AI session
+reading this report understands the full trajectory from where the system is
+to where it is going. Completed phases are marked COMPLETE with dates.
+Active items are marked ACTIVE. Pending items are marked PENDING.]
+
+V3R PHASE HISTORY (all complete):
+  P1  COMPLETE  Basic RAG pipeline
+  P2  COMPLETE  End-to-end integration, HF Space
+  P3  COMPLETE  Conversation memory persistence
+  P4  COMPLETE  GNN relational knowledge graph
+  P5  COMPLETE  Multi-agent orchestration
+  P6  COMPLETE  Multi-modal PDF ingest
+  P7  COMPLETE  V3R self-knowledge domain intelligence
+  P8  COMPLETE  Automated product generation
+
+ACTIVE PROJECTS:
+  [For each active project:]
+  PROJECT: [name] — [status]
+    Goal: [one sentence]
+    Milestones: [brief list — complete/active/pending]
+    Blocks: [what does this project unlock when complete?]
+
+PENDING PROJECTS:
+  [For each pending project:]
+  PROJECT: [name] — [PENDING — blocked on: X]
+    Goal: [one sentence]
+
+LONG-TERM VISION:
+  [One paragraph restating the V3R thesis and final destination.
+  This is the "Phase 8 is the destination" paragraph tradition.
+  It must appear in every report — it anchors every session to the
+  mission regardless of which operational layer is being worked on.]
+
+
+================================================================================
+END OF PROJECT REPORT [NUMBER]
+================================================================================
+Prepared by:      V3R (Claude Sonnet 4.6) — Documentation Agent
+Session date:     [date]
+Project:          [project name]
+Report number:    [number]
+Issues resolved:  [N of N from condition/prior reports]
+Lambda functions: [N operational]
+DynamoDB tables:  [N active] ([details])
+LLM providers:    [N active and verified]
+Routing routes:   [N active]
+FP entries:       [N total] ([N new this session])
+System status:    [FULLY OPERATIONAL | PARTIALLY OPERATIONAL | BLOCKED]
+Save to:          V3R/[project]/reports/project/
+Companion CR:     [Coding Report number and Drive path]
+Companion HR:     [Handoff Report number and Drive path]
+================================================================================
