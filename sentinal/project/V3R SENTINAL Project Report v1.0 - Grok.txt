@@ -1,0 +1,45 @@
+Sentinel Project Report v1.0
+Exhaustive Specification for the Android Claude → Groq Lockout-to-Report System
+1. Project Purpose
+Sentinel is a lightweight, always-on Android service that silently tracks full conversation segments in the official Claude mobile app between lockout events, detects the exact lockout UI fingerprint (“You’re out of messages until XPM” + Upgrade button), then instantly forwards the complete logged segment to Groq (llama-3.1-8b-instant) to auto-generate three standardized reports:
+• Project Report
+• Handoff Report
+• Coding Report
+Goal: zero manual intervention, zero lost context, perfect continuity for V3R development even across multiple Claude accounts and variable lockout durations (minutes to 36 h).
+2. Core Requirements Captured from Q&A
+• Detects only on official Claude Android app (Moto G Power 2025, Android 16)
+• Tracks entire conversation history between resets (multi-account aware)
+• Trigger on visual lockout screen (no timer)
+• Root optional but accepted for simplest implementation
+• Output: three complete reports delivered back to user or saved to repo/Google Drive
+• 100 % free-stack: Groq free tier, no credit card, local Android only (AWS free tier reserved for later V3R cloud pieces)
+3. High-Level Architecture (kept deliberately simple)
+Background Android Accessibility Service (or root-based UI monitor if chosen)
+Real-time screen fingerprint matcher for lockout banner
+Local SQLite log of chat turns (timestamp + full text)
+On lockout: compile segment → Groq API call → parse three reports → optional save/export
+User receives reports in one message or file drop
+4. Tech Stack (minimal & free)
+Kotlin + Android Jetpack (AccessibilityService + NotificationListener)
+Tesseract OCR or simple pixel/fingerprint match (no heavy ML)
+Room SQLite for conversation vault
+Groq REST API (free key already in repo)
+Optional: Magisk module for root read of app internals (if we choose that path)
+No Docker, no Lambda, no paid services — pure phone-side until handoff complete
+5. Implementation Outline (6 simple phases)
+Phase 1: Build minimal Accessibility Service that logs every Claude message
+Phase 2: Hard-code lockout fingerprint match + test on your Moto G
+Phase 3: Add segment compilation & Groq prompt template (exact template will ask for Project/Handoff/Coding format)
+Phase 4: One-tap export or auto-post reports to your V3R repo folder
+Phase 5: Root-path option documented for ultra-simple screen scraping if Accessibility blocked
+Phase 6: Test with real lockout, refine prompt until reports match V3R standard
+6. Success Metrics
+Detection < 3 seconds after lockout appears
+Full conversation segment captured 100 % of time
+Three reports generated & delivered without user typing
+Works with multiple Claude accounts (user switches manually, Sentinel keeps separate vaults)
+Battery impact < 2 % per day
+7. Risks & Mitigations (kept simple)
+App updates breaking UI → fingerprint can be updated in 1 line
+Google Play Protect flags service → root path bypass available
+Groq rate limit → single lightweight call per lockout

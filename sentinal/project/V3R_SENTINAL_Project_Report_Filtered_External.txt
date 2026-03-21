@@ -1,0 +1,305 @@
+================================================================================
+PROJECT SENTINAL — FILTERED PROJECT REPORT
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 19, 2026
+Report Type: External Team Briefing — Objective, Concepts, and Components Only
+Classification: No troubleshooting data. No implementation code. No prior
+                session decisions. Fresh discovery intended.
+================================================================================
+
+
+================================================================================
+SECTION 1: WHAT SENTINAL IS
+================================================================================
+
+SENTINAL — Silent ENgine for Tracking, INtelligence, and Automated Logging —
+is a lightweight, always-on Android background service that monitors the
+official Claude AI mobile application, detects when the user reaches a
+conversation lockout event, and automatically generates and distributes
+three standardized project reports without any user action.
+
+SENTINAL is a satellite project of V3R — a Cloud-Native GNN-integrated
+Multi-Agent Multi-LLM Industrial Science and Intelligence Engineering Platform.
+SENTINAL exists to solve a specific operational gap in V3R development: when
+the Claude mobile app locks out mid-session, all conversation context captured
+during that session is lost unless manually preserved. SENTINAL eliminates
+this loss entirely through automated detection, capture, and distribution.
+
+
+================================================================================
+SECTION 2: THE PROBLEM SENTINAL SOLVES
+================================================================================
+
+V3R is developed in sessions via the Claude mobile app on an Android device
+(Motorola Moto G Power 2025, Android 16). These sessions contain highly
+valuable engineering decisions, code changes, infrastructure updates, and
+project state information. Claude enforces a usage limit per session — when
+reached, the app displays a lockout screen and no further messages can be sent.
+
+The problem: when lockout occurs, the developer must manually document what
+happened in the session, save that documentation, and begin the next session
+by re-briefing the AI from scratch. This is a slow, error-prone process that
+directly contradicts V3R's core thesis of persistent engineering memory.
+
+SENTINAL solves this by treating the lockout event as a trigger — not as a
+stopping point. The moment the lockout screen appears, SENTINAL silently
+captures the entire conversation, sends it to an LLM for report generation,
+and distributes the resulting reports to cloud storage and the V3R knowledge
+base. The next session can begin with complete context immediately.
+
+
+================================================================================
+SECTION 3: CORE OBJECTIVE
+================================================================================
+
+SENTINAL must accomplish the following without any user interaction after
+initial setup:
+
+  1. Run silently in the background at all times while the device is powered.
+  2. Monitor the Claude Android application in real time.
+  3. Capture the full text of every conversation turn as it occurs.
+  4. Detect the exact moment the Claude lockout screen appears.
+  5. Upon detection, compile the captured conversation segment.
+  6. Submit the conversation to an LLM API and receive three structured reports:
+       — Project Report (what the session accomplished, system state, next steps)
+       — Handoff Report (full context for the next AI session to resume work)
+       — Coding Report (files changed, commands run, technical decisions made)
+  7. Immediately push all three reports to Google Drive in the correct folder.
+  8. Simultaneously ingest all three reports into the V3R knowledge base via
+     the existing V3R cloud infrastructure.
+  9. Notify the user that reports have been generated and distributed.
+  10. Reset automatically and begin monitoring the next session.
+
+Success is defined as: developer closes the locked-out Claude session, opens
+a new one, loads the Handoff Report, and continues work with zero context loss.
+
+
+================================================================================
+SECTION 4: OPERATING ENVIRONMENT
+================================================================================
+
+Device:         Motorola Moto G Power 2025
+OS:             Android 16
+Target app:     Official Claude Android application (com.anthropic.claude)
+Network:        Standard mobile/WiFi — SENTINAL operates entirely over HTTPS
+Root access:    Optional — SENTINAL is designed to function without root
+Battery target: Less than 2% battery consumption per day
+Persistence:    SENTINAL must survive device reboots and remain active
+
+The developer operates across multiple Claude accounts. SENTINAL must be
+aware of session boundaries across account switches, maintaining separate
+conversation records per session regardless of which account is active.
+
+
+================================================================================
+SECTION 5: THE THREE REPORT TYPES
+================================================================================
+
+SENTINAL generates three reports per lockout event, each serving a distinct
+purpose in the V3R workflow:
+
+PROJECT REPORT
+  Purpose: Full status document of the current state of the V3R project.
+  Audience: Developer and future AI sessions needing project context.
+  Content: Session summary, what was accomplished, issues encountered,
+           current system state across all components, next steps.
+  Format: Matches the V3R Project Report standard — numbered sections,
+          technical detail, no ambiguity.
+
+HANDOFF REPORT
+  Purpose: Operational document that allows a fresh AI session to resume
+           work immediately with zero re-briefing required.
+  Audience: The next Claude session opened after lockout.
+  Content: Critical instruction header, full system snapshot, exact next
+           action in sequence, PowerShell command reference, all active
+           constraints and forbidden patterns.
+  Format: Matches the V3R Handoff Report standard — designed to be the
+          first document loaded in a new session.
+
+CODING REPORT
+  Purpose: Technical log of all code-level activity in the session.
+  Audience: Developer, documentation record, V3R knowledge base.
+  Content: Files modified or created, commands executed, infrastructure
+           changes, tests run and their results, push log.
+  Format: Matches the V3R Coding Report standard — exhaustive, precise,
+          no omissions.
+
+
+================================================================================
+SECTION 6: COMPONENT RELATIONSHIPS
+================================================================================
+
+SENTINAL has five functional components that interact in sequence:
+
+MONITOR
+  Watches the Claude app in real time.
+  Captures conversation text as it appears on screen.
+  Stores captured turns in a local on-device database.
+  Detects the lockout screen fingerprint.
+  Triggers the pipeline on detection.
+  Relationship: feeds captured conversation to the Generator.
+
+GENERATOR
+  Receives the captured conversation segment from the Monitor.
+  Formats it into a prompt and submits it to the Groq LLM API.
+  Receives three structured reports back from Groq.
+  Relationship: receives from Monitor, feeds reports to Distributor.
+
+DISTRIBUTOR
+  Receives the three generated reports from the Generator.
+  Pushes all three to Google Drive in the designated V3R reports folder.
+  Simultaneously submits all three to the V3R cloud ingest endpoint.
+  Both operations execute in parallel — neither blocks the other.
+  Relationship: receives from Generator, pushes to Drive and V3R.
+
+V3R INGEST ENDPOINT
+  Existing V3R cloud infrastructure — a Lambda function that accepts
+  text payloads, embeds them using a local ML model, and stores them
+  in DynamoDB as searchable knowledge base chunks.
+  SENTINAL does not modify this infrastructure — it consumes it as-is.
+  Relationship: receives reports from Distributor, stores in DynamoDB.
+
+NOTIFIER
+  Sends a local device notification confirming reports were generated
+  and distributed. User sees: session ID, timestamp, confirmation.
+  Relationship: fires after Distributor completes.
+
+
+================================================================================
+SECTION 7: EXTERNAL SERVICES AND SOFTWARE
+================================================================================
+
+GROQ API
+  LLM inference service. Used for report generation.
+  Model: llama-3.1-8b-instant (fast, capable, free tier available).
+  Communication: HTTPS REST API — standard OpenAI-compatible format.
+  Endpoint: api.groq.com
+  Key storage: Secure local configuration — never in source code.
+
+GOOGLE DRIVE
+  Cloud storage for the three generated reports.
+  Target folder: V3R/core/reports/ within the developer's Drive.
+  Authentication: Service account (no user OAuth flow required).
+  Access method: Google Drive REST API via service account credentials.
+
+V3R LAMBDA INGEST FUNCTION
+  Existing AWS Lambda function deployed as part of V3R infrastructure.
+  Accepts JSON payload: {"text": "...", "source": "sentinel_type_sessionid"}.
+  Handles embedding and DynamoDB storage internally.
+  SENTINAL calls it via its public HTTPS Function URL.
+  No AWS credentials required on the device — URL-authenticated only.
+
+ANDROID ACCESSIBILITY SERVICE FRAMEWORK
+  The native Android mechanism SENTINAL uses to monitor the Claude app.
+  Provides real-time access to on-screen text and UI events.
+  Requires user permission grant in device Settings once at setup.
+  Scoped specifically to the Claude app package only.
+
+ANDROID LOCAL DATABASE
+  On-device SQLite database (via Room persistence library).
+  Stores conversation turns between lockout events.
+  Cleared per session after reports are successfully distributed.
+  No conversation data leaves the device except via Groq and Drive APIs.
+
+KOTLIN
+  Primary development language for the Android application.
+  Runs on the JVM. Native Android support. Coroutines for async operations.
+
+ANDROID STUDIO
+  Development environment for building and deploying the Android APK.
+
+
+================================================================================
+SECTION 8: DATA FLOW SUMMARY
+================================================================================
+
+1. Claude app is open and in use on device.
+2. SENTINAL monitor captures each message as it appears on screen.
+3. Message stored locally in on-device database tagged with session ID.
+4. Lockout screen appears in Claude app.
+5. SENTINAL detects lockout fingerprint within 3 seconds.
+6. All turns from current session retrieved from local database.
+7. Three Groq API calls made — one per report type — using session transcript.
+8. Three reports received from Groq.
+9. In parallel:
+     a. All three reports uploaded to Google Drive V3R/core/reports/
+     b. All three reports submitted to V3R Lambda ingest endpoint
+10. V3R Lambda embeds report text and stores in DynamoDB rag-chunks table.
+    Source tags follow V3R schema: sentinel_project_, sentinel_handoff_,
+    sentinel_coding_ — prefixed for retrieval filtering.
+11. Local notification fires: reports delivered.
+12. Local session data cleared. SENTINAL ready for next session.
+
+
+================================================================================
+SECTION 9: RELATIONSHIP TO V3R
+================================================================================
+
+SENTINAL is a peripheral project that feeds V3R — it does not replace or
+modify any V3R component. Its relationship to V3R is strictly additive:
+
+  — SENTINAL is a data producer. V3R is the data consumer.
+  — SENTINAL uses V3R's existing ingest infrastructure as a write endpoint.
+  — Reports ingested by SENTINAL become searchable V3R knowledge base content.
+  — When V3R retrieves context to inform LLM responses, SENTINAL-sourced
+    reports are eligible for retrieval alongside all other V3R knowledge.
+  — Over time, SENTINAL-generated reports accumulate in V3R's knowledge base,
+    meaning V3R becomes progressively more aware of its own development history
+    automatically — without any manual ingestion step.
+
+This creates a feedback loop: V3R development sessions generate SENTINAL
+reports, SENTINAL reports feed back into V3R's knowledge base, V3R uses
+that knowledge in future sessions to reason more accurately about its own
+architecture and history.
+
+
+================================================================================
+SECTION 10: SUCCESS CRITERIA
+================================================================================
+
+SENTINAL is considered complete when:
+
+  — Lockout detection fires within 3 seconds of the lockout screen appearing.
+  — 100% of conversation turns between session start and lockout are captured.
+  — Three reports are generated without any developer action.
+  — All three reports appear in Google Drive within 60 seconds of lockout.
+  — All three reports are ingested into V3R DynamoDB within 60 seconds.
+  — Developer notification is received on device.
+  — The system resets and is ready for the next session without a restart.
+  — Battery consumption remains below 2% per day.
+  — SENTINAL survives device reboots and resumes monitoring automatically.
+  — Multi-account session separation works correctly.
+
+
+================================================================================
+SECTION 11: SCOPE BOUNDARIES
+================================================================================
+
+IN SCOPE:
+  — Android app monitoring and conversation capture
+  — Lockout detection
+  — Groq-based report generation
+  — Google Drive distribution
+  — V3R DynamoDB ingest
+  — Local notification
+  — Boot persistence
+
+OUT OF SCOPE:
+  — Modification of any V3R Lambda infrastructure
+  — Any paid services or APIs
+  — iOS implementation
+  — Monitoring of any app other than the official Claude Android app
+  — Intercepting network traffic
+  — Storing conversation data in any cloud location other than Drive and V3R
+
+
+================================================================================
+END OF REPORT
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 19, 2026
+Project: SENTINAL
+Report Type: External Team Briefing — Filtered
+Status: Active development — Android implementation in progress
+================================================================================

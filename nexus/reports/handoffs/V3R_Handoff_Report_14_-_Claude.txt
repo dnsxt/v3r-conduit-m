@@ -1,0 +1,260 @@
+================================================================================
+V3R PROJECT — SEAMLESS HANDOFF REPORT
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 18, 2026
+Report Number: 14
+Session: Infrastructure Audit Response + Groq Path Fix + Full Verification
+Save to: V3R/core/reports/handoffs/
+================================================================================
+
+CRITICAL INSTRUCTION TO RECEIVING AI
+--------------------------------------------------------------------------------
+This is a live operational handoff for V3R and Project NEXUS. Read every
+section before responding. Do not summarize. Do not ask orientation questions.
+Pick up exactly where this report ends. All prior V3R context applies.
+Partition 0 (V3R AI Framework v3.1) and Partition 1 (V3R AI Briefing v1.3)
+are active and govern all outputs from this session forward.
+
+Read this report, then scan Google Drive My Drive V3R/ folder for any
+updated files before responding.
+
+
+================================================================================
+SECTION 1 — SYSTEM STATUS: FULLY OPERATIONAL
+================================================================================
+
+As of March 18, 2026 16:34 EST:
+
+  All 6 Lambda functions: OPERATIONAL ✓
+  All 4 LLM providers:    ROUTING CORRECTLY ✓
+  All 6 DynamoDB tables:  ACTIVE ✓
+  CONDUIT:                OPERATIONAL ✓
+  Known issues:           ZERO
+
+This is the cleanest system state in V3R history. Every issue from the
+exhaustive AWS condition report (March 18, 2026) has been resolved.
+
+
+================================================================================
+SECTION 2 — WHAT WAS DONE THIS SESSION
+================================================================================
+
+Six priority issues resolved in one session:
+
+1. rag-orchestrator restored — Memory 1024 MB, Timeout 5 min (no rebuild)
+2. Groq path fix — FP-019 — lambda_router now reads path per provider
+   from v3r-keys. Groq routing confirmed active (requests_today: 2).
+3. ECR Public repo deleted — Lambda cannot use ECR Public. Eliminated.
+4. SOURCE_TAG test record deleted from rag-chunks — table clean at 24 records.
+5. 21 untagged ECR private images deleted — operator completed pre-session.
+6. Full re-verification — rag-chat, rag-orchestrator, rag-ideagen all PASSED.
+
+One rebuild executed. One new FP added (FP-019). Registry now at 19 entries
+(FP-016 held pending David's research).
+
+
+================================================================================
+SECTION 3 — CRITICAL STATE YOU MUST KNOW
+================================================================================
+
+GROQ PATH FIX — THIS IS THE MOST IMPORTANT CHANGE THIS SESSION:
+  lambda_router.py now reads path field from v3r-keys per provider.
+  All 4 providers have path field set in DynamoDB:
+    groq:      /openai/v1/chat/completions  ← different from all others
+    cerebras:  /v1/chat/completions
+    mistral:   /v1/chat/completions
+    fireworks: /inference/v1/chat/completions
+  Any new provider added to v3r-keys MUST include a path field. (FP-019)
+  Never assume a provider uses /v1/chat/completions without checking docs.
+
+GROQ WAS SILENTLY FAILING FOR 2 DAYS:
+  From March 16 (NEXUS ST-01 deployment) through March 18 (this fix),
+  Groq was failing on every call. Cerebras caught all calls as fallback_1.
+  The only detectable symptom was Groq requests_today = 0 while Cerebras
+  was accumulating counts. Monitor requests_today counters every session.
+
+rag-orchestrator WAS MISCONFIGURED:
+  Memory had been reduced to 512 MB and timeout to 60 seconds at some point
+  during NEXUS sessions. The 4-agent pipeline requires minimum 1024 MB and
+  5 minutes. Always verify rag-orchestrator config when it returns errors.
+
+FIREBASE NOTE ON DETECT SILENT FAILURES:
+  route_llm() in lambda_router.py catches all exceptions silently and moves
+  to the next provider. This is intentional for resilience but means failures
+  are invisible in CloudWatch. The only monitoring mechanism is checking
+  requests_today in v3r-keys. Make this a standard session-start check.
+
+
+================================================================================
+SECTION 4 — CURRENT INFRASTRUCTURE SNAPSHOT
+================================================================================
+
+AWS Account: 236510207245 | Region: us-east-1
+AWS Credits: $137.68 confirmed + up to $60 Explore AWS tasks
+
+ECR:
+  Private: rag-ingest-container:ml-offline-torch26 (3186 MB) — ONLY image
+  Public:  DELETED March 18, 2026
+
+LAMBDA (6 functions — all on ml-offline-torch26):
+  rag-ingest-ultra-test  2048MB/600s  URL: rgmkamtm7s6tlughi3ynp4c2540uassr.lambda-url.us-east-1.on.aws
+  rag-retrieve           2048MB/600s  URL: gbbtul6kwk7mb5krgwqjstzfwcc0uqvr.lambda-url.us-east-1.on.aws
+  rag-chat               2048MB/600s  URL: 2wnm4voyjtvb27hzkgmtdxycby0uyixf.lambda-url.us-east-1.on.aws
+  rag-graph               512MB/60s   No URL (internal)
+  rag-orchestrator       1024MB/300s  No URL (CLI invoke)
+  rag-ideagen            1024MB/300s  URL: typzeaanczxov26ntcm5apu0ojats.lambda-url.us-east-1.on.aws
+
+IAM Role: rag-ingest-ultra-test-role-hi7s90re
+Policies: AmazonDynamoDBFullAccess + AWSLambda_FullAccess + 2x BasicExecution
+
+DYNAMODB (6 tables):
+  rag-chunks    chunk_id(S)            24 records  On-demand  CLEAN
+  rag-memory    session_id(S)/ts(N)    10 sessions On-demand  ACTIVE TODAY
+  rag-graph     node_id(S)             7 nodes     On-demand  ACTIVE
+  rag-specs     spec_id(S)             1 spec      On-demand  ACTIVE
+  v3r-keys      key_id(S)              4 providers On-demand  ALL ACTIVE
+  v3r-routing   route_id(S)            8 routes    On-demand  ALL ACTIVE
+
+v3r-keys CURRENT STATE (with new path field):
+  groq:      api.groq.com | /openai/v1/chat/completions | llama-3.1-8b-instant
+  cerebras:  api.cerebras.ai | /v1/chat/completions | llama3.1-8b
+  mistral:   api.mistral.ai | /v1/chat/completions | mistral-small-latest
+  fireworks: api.fireworks.ai | /inference/v1/chat/completions | llama-v3p3-70b
+
+HUGGINGFACE: dnsxt/rag-memory — running, public, 163-line app.py with
+             Product Generator tab. CHAT_LAMBDA_URL + INGEST_LAMBDA_URL set.
+
+CONDUIT: conduit_sync.ps1 at C:\Users\Source-1\Desktop\V3R\conduit\
+         Run at end of every session to sync to Drive.
+
+
+================================================================================
+SECTION 5 — FILE INVENTORY
+================================================================================
+
+Build dir: C:\Users\Source-1\Desktop\rag-deploy\ecr-build\
+
+  lambda_router.py       ~145L  ← UPDATED March 18 — path fix
+  lambda_chat.py          ~90L  ← Updated NEXUS ST-01
+  lambda_orchestrator.py  ~85L  ← Updated NEXUS ST-01
+  lambda_ideagen.py       ~75L  ← Updated NEXUS ST-01
+  lambda_ingest_v4.py      82L  ← Phase 6
+  lambda_retrieve.py       52L  ← Phase 1 (unchanged)
+  lambda_graph.py          42L  ← Phase 4 (unchanged)
+  Dockerfile-ml-offline    43L  ← Phase 8 (unchanged)
+  orchestrator_config.json      ← Present
+
+HF Space: C:\Users\Source-1\Desktop\rag-deploy\hf-space\
+  app.py  163L
+
+All files in Drive at V3R/code/current/ (post last conduit_sync.ps1 run).
+lambda_router.py updated this session — sync before closing.
+
+
+================================================================================
+SECTION 6 — FORBIDDEN PATTERNS REGISTRY (19 entries)
+================================================================================
+
+FP-001: SentenceTransformer() direct instantiation → use AutoTokenizer/AutoModel
+FP-002: urllib.request for external APIs → use http.client.HTTPSConnection
+FP-003: Windows paths in Lambda code → use /var/task/ only
+FP-004: Hardcoded Groq model without KR confirmation → verify before use
+FP-005: win_amd64/cp314 wheels → Linux x86_64 manylinux cp312 only
+FP-006: Inline JSON in PowerShell AWS CLI → WriteAllText + file:// only
+FP-007: Relative file:// paths → always absolute paths
+FP-008: Missing import os when using os.environ → always import os
+FP-009: ECR login skipped after 12+ hours → always re-login before build
+FP-010: Missing --provenance false --sbom false → always include both
+FP-011: Missing --platform linux/amd64 → always include
+FP-012: Docker prune without diskpart compact vdisk → always compact after
+FP-013: Assuming Groq key is permanent → verify on Groq console if suspicious
+FP-014: Full app.py replacement without audit → surgical edits only
+FP-015: Missing --cli-binary-format raw-in-base64-out on lambda invoke → always include
+FP-016: HELD — pending research
+FP-017: Syncing credentials to Drive → never via rclone or any method
+FP-018: rclone --delete or rclone sync → use rclone copy --no-delete only
+FP-019: Hardcoding single API path in lambda_router → store path per provider
+        in v3r-keys. Groq=/openai/v1/chat/completions. Never assume /v1/chat/completions.
+        Every new provider MUST have path field. Check requests_today to detect.
+
+
+================================================================================
+SECTION 7 — NEXUS STATUS AND NEXT STEPS
+================================================================================
+
+NEXUS ST-01: COMPLETE — all handlers migrated to route_llm()
+NEXUS ST-02: PARTIALLY INITIATED — DynamoDB provisioned capacity
+             rag-chunks update issued but not confirmed last session.
+             rag-graph update not yet issued.
+             NOTE: Both tables are On-demand as of condition report.
+             ST-02 may need to be re-initiated next session.
+             Verify current billing mode before issuing update.
+
+NEXUS ST-03 onward: Per V3R Project NEXUS Report v1.0 in Drive at
+V3R/nexus/reports/project/
+
+RECOMMENDED FIRST ACTION NEXT SESSION:
+  1. Read NEXUS Report v1.0 from Drive
+  2. Check v3r-keys requests_today for all providers (silent failure check)
+  3. Resume from NEXUS ST-02
+
+
+================================================================================
+SECTION 8 — SESSION-END CHECKLIST
+================================================================================
+
+Before closing this session, complete:
+
+  □ Save Project Report 14 to V3R/core/reports/project/ locally
+  □ Save Coding Report 14 to V3R/core/reports/coding/ locally
+  □ Save this Handoff Report to V3R/core/reports/handoffs/ locally
+  □ Run conduit_sync.ps1 to push all files to Drive
+  □ Confirm lambda_router.py appears in V3R/code/current/ in Drive
+    (it was updated this session — sync is essential)
+
+  cd C:\Users\Source-1\Desktop\V3R\conduit
+  .\conduit_sync.ps1
+
+
+================================================================================
+SECTION 9 — POWERSHELL QUICK REFERENCE
+================================================================================
+
+ECR LOGIN:
+  aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 236510207245.dkr.ecr.us-east-1.amazonaws.com
+
+BUILD AND PUSH:
+  docker buildx build --platform linux/amd64 --provenance false --sbom false -f Dockerfile-ml-offline -t 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26 --push .
+
+LAMBDA UPDATE ALL 6:
+  aws lambda update-function-code --region us-east-1 --function-name rag-chat --image-uri 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26
+  aws lambda update-function-code --region us-east-1 --function-name rag-retrieve --image-uri 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26
+  aws lambda update-function-code --region us-east-1 --function-name rag-graph --image-uri 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26
+  aws lambda update-function-code --region us-east-1 --function-name rag-orchestrator --image-uri 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26
+  aws lambda update-function-code --region us-east-1 --function-name rag-ideagen --image-uri 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26
+  aws lambda update-function-code --region us-east-1 --function-name rag-ingest-ultra-test --image-uri 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26
+
+LAMBDA INVOKE (standard pattern):
+  [System.IO.File]::WriteAllText("C:\Users\Source-1\Desktop\rag-deploy\ecr-build\payload.json", '{"key":"value"}')
+  aws lambda invoke --region us-east-1 --function-name [name] --cli-binary-format raw-in-base64-out --payload file://C:\Users\Source-1\Desktop\rag-deploy\ecr-build\payload.json C:\Users\Source-1\Desktop\rag-deploy\ecr-build\response.json
+  Get-Content C:\Users\Source-1\Desktop\rag-deploy\ecr-build\response.json
+
+CONDUIT SYNC:
+  cd C:\Users\Source-1\Desktop\V3R\conduit
+  .\conduit_sync.ps1
+
+PROVIDER HEALTH CHECK:
+  aws dynamodb scan --region us-east-1 --table-name v3r-keys
+
+
+================================================================================
+END OF HANDOFF REPORT
+================================================================================
+Prepared by: V3R (Claude Sonnet 4.6) — Documentation Agent
+Date: March 18, 2026
+Report Number: 14
+Next action: NEXUS ST-02 — verify DynamoDB billing mode, resume from there
+System status: FULLY OPERATIONAL — ZERO KNOWN ISSUES
+Save to: V3R/core/reports/handoffs/
+================================================================================
