@@ -1,0 +1,695 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<LogCapture device="ZA222WT8KV	device" capturedAt="2026-03-21 08:35:48" durationSeconds="30">
+  <LogLine index="0"><![CDATA[--------- beginning of main]]></LogLine>
+  <LogLine index="1"><![CDATA[[ 03-21 08:35:16.993  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="2"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="3"><![CDATA[[ 03-21 08:35:16.993  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="4"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="5"><![CDATA[[ 03-21 08:35:16.994  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="6"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="7"><![CDATA[[ 03-21 08:35:16.994  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="8"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="9"><![CDATA[[ 03-21 08:35:16.989  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="10"><![CDATA[type=1400 audit(0.0:535961): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="11"><![CDATA[[ 03-21 08:35:16.993  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="12"><![CDATA[type=1400 audit(0.0:535962): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="13"><![CDATA[[ 03-21 08:35:16.993  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="14"><![CDATA[type=1400 audit(0.0:535963): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="15"><![CDATA[[ 03-21 08:35:17.194  1338: 1563 D/ULogGuard ]]]></LogLine>
+  <LogLine index="16"><![CDATA[Monitoring: 10 threads, 0 requests, 0 time-bombs; 1 guards. ResetFlags = 0x7]]></LogLine>
+  <LogLine index="17"><![CDATA[[ 03-21 08:35:17.240   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="18"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="19"><![CDATA[[ 03-21 08:35:17.993  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="20"><![CDATA[type=1400 audit(0.0:535964): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="21"><![CDATA[[ 03-21 08:35:17.994  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="22"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="23"><![CDATA[[ 03-21 08:35:17.995  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="24"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="25"><![CDATA[[ 03-21 08:35:17.995  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="26"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="27"><![CDATA[[ 03-21 08:35:17.996  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="28"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="29"><![CDATA[[ 03-21 08:35:17.993  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="30"><![CDATA[type=1400 audit(0.0:535965): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="31"><![CDATA[[ 03-21 08:35:17.993  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="32"><![CDATA[type=1400 audit(0.0:535966): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="33"><![CDATA[[ 03-21 08:35:18.308   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="34"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="35"><![CDATA[[ 03-21 08:35:18.806  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="36"><![CDATA[WifiRequest::create vendor command to iface 36, vendor_id=0x1a11, subcmd=0x0002, res=0]]></LogLine>
+  <LogLine index="37"><![CDATA[[ 03-21 08:35:18.806  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="38"><![CDATA[In GetFeatureSetCommand::handleResponse for 5]]></LogLine>
+  <LogLine index="39"><![CDATA[[ 03-21 08:35:18.806  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="40"><![CDATA[vendor_id = 0x0, subcmd = 0x0]]></LogLine>
+  <LogLine index="41"><![CDATA[[ 03-21 08:35:18.806  2124: 2124 I/WifiHAL  ]]]></LogLine>
+  <LogLine index="42"><![CDATA[feature_set=0x8488141a]]></LogLine>
+  <LogLine index="43"><![CDATA[[ 03-21 08:35:18.811  1741: 2048 I/HalDevMgr ]]]></LogLine>
+  <LogLine index="44"><![CDATA[bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]]]></LogLine>
+  <LogLine index="45"><![CDATA[[ 03-21 08:35:18.813  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="46"><![CDATA[onWifiUsabilityStats, seqNum: 3609, isSameBssidAndFreq: true, RSSI: -67, isThroughputSufficient: true, LinkSpeed: 26 Mbps, RxLinkSpeed: 65 Mbps]]></LogLine>
+  <LogLine index="47"><![CDATA[[ 03-21 08:35:18.813  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="48"><![CDATA[onWifiUsabilityStats, Duration: 219190191, Rx Good: 1 ( PPS: 0 ), Tx Good: 1, Tx Bad: 0 ( 0 % ), Tx Retry: 0 ( 0 % ), NSS: 0, Bandwidth: 0]]></LogLine>
+  <LogLine index="49"><![CDATA[[ 03-21 08:35:18.996  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="50"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="51"><![CDATA[[ 03-21 08:35:18.997  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="52"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="53"><![CDATA[[ 03-21 08:35:18.993  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="54"><![CDATA[type=1400 audit(0.0:535967): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="55"><![CDATA[[ 03-21 08:35:18.997  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="56"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="57"><![CDATA[[ 03-21 08:35:18.993  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="58"><![CDATA[type=1400 audit(0.0:535968): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="59"><![CDATA[[ 03-21 08:35:18.998  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="60"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="61"><![CDATA[[ 03-21 08:35:18.997  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="62"><![CDATA[type=1400 audit(0.0:535969): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="63"><![CDATA[[ 03-21 08:35:19.174  1004: 1485 I/hwcomposer ]]]></LogLine>
+  <LogLine index="64"><![CDATA[[DRMDEV] (0:60) failed to waitNextVsync: -1  ]]></LogLine>
+  <LogLine index="65"><![CDATA[[ 03-21 08:35:19.374   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="66"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="67"><![CDATA[[ 03-21 08:35:19.998  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="68"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="69"><![CDATA[[ 03-21 08:35:19.997  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="70"><![CDATA[type=1400 audit(0.0:535970): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="71"><![CDATA[[ 03-21 08:35:19.999  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="72"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="73"><![CDATA[[ 03-21 08:35:19.999  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="74"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="75"><![CDATA[[ 03-21 08:35:19.999  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="76"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="77"><![CDATA[[ 03-21 08:35:19.997  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="78"><![CDATA[type=1400 audit(0.0:535971): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="79"><![CDATA[[ 03-21 08:35:19.997  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="80"><![CDATA[type=1400 audit(0.0:535972): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="81"><![CDATA[[ 03-21 08:35:20.196  1338: 1563 D/ULogGuard ]]]></LogLine>
+  <LogLine index="82"><![CDATA[Monitoring: 10 threads, 0 requests, 0 time-bombs; 1 guards. ResetFlags = 0x7]]></LogLine>
+  <LogLine index="83"><![CDATA[[ 03-21 08:35:20.442   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="84"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="85"><![CDATA[[ 03-21 08:35:20.820 20470:20497 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="86"><![CDATA[bufferpool2 0xb400007b44af9e48 : 5(19200 size) total buffers - 4(15360 size) used buffers - 148200/148205 (recycle/alloc) - 304/296401 (fetch/transfer)]]></LogLine>
+  <LogLine index="87"><![CDATA[[ 03-21 08:35:21.000  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="88"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="89"><![CDATA[[ 03-21 08:35:21.001  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="90"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="91"><![CDATA[[ 03-21 08:35:20.997  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="92"><![CDATA[type=1400 audit(0.0:535973): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="93"><![CDATA[[ 03-21 08:35:21.001  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="94"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="95"><![CDATA[[ 03-21 08:35:21.002  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="96"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="97"><![CDATA[[ 03-21 08:35:20.997  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="98"><![CDATA[type=1400 audit(0.0:535974): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="99"><![CDATA[[ 03-21 08:35:20.997  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="100"><![CDATA[type=1400 audit(0.0:535975): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="101"><![CDATA[[ 03-21 08:35:21.484  1359:20506 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="102"><![CDATA[bufferpool2 0xb4000077c2560a88 : 2(6000 size) total buffers - 1(3000 size) used buffers - 148229/148235 (recycle/alloc) - 5/148233 (fetch/transfer)]]></LogLine>
+  <LogLine index="103"><![CDATA[[ 03-21 08:35:21.507   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="104"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="105"><![CDATA[[ 03-21 08:35:21.834  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="106"><![CDATA[WifiRequest::create vendor command to iface 36, vendor_id=0x1a11, subcmd=0x0002, res=0]]></LogLine>
+  <LogLine index="107"><![CDATA[[ 03-21 08:35:21.835  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="108"><![CDATA[In GetFeatureSetCommand::handleResponse for 5]]></LogLine>
+  <LogLine index="109"><![CDATA[[ 03-21 08:35:21.835  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="110"><![CDATA[vendor_id = 0x0, subcmd = 0x0]]></LogLine>
+  <LogLine index="111"><![CDATA[[ 03-21 08:35:21.835  2124: 2124 I/WifiHAL  ]]]></LogLine>
+  <LogLine index="112"><![CDATA[feature_set=0x8488141a]]></LogLine>
+  <LogLine index="113"><![CDATA[[ 03-21 08:35:21.839  1741: 2048 I/HalDevMgr ]]]></LogLine>
+  <LogLine index="114"><![CDATA[bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]]]></LogLine>
+  <LogLine index="115"><![CDATA[[ 03-21 08:35:21.840  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="116"><![CDATA[onWifiUsabilityStats, seqNum: 3610, isSameBssidAndFreq: true, RSSI: -68, isThroughputSufficient: true, LinkSpeed: 26 Mbps, RxLinkSpeed: 65 Mbps]]></LogLine>
+  <LogLine index="117"><![CDATA[[ 03-21 08:35:21.840  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="118"><![CDATA[onWifiUsabilityStats, Duration: 219193218, Rx Good: 2 ( PPS: 0 ), Tx Good: 2, Tx Bad: 0 ( 0 % ), Tx Retry: 0 ( 0 % ), NSS: 0, Bandwidth: 0]]></LogLine>
+  <LogLine index="119"><![CDATA[[ 03-21 08:35:22.002  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="120"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="121"><![CDATA[[ 03-21 08:35:22.003  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="122"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="123"><![CDATA[[ 03-21 08:35:22.003  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="124"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="125"><![CDATA[[ 03-21 08:35:22.003  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="126"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="127"><![CDATA[[ 03-21 08:35:22.001  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="128"><![CDATA[type=1400 audit(0.0:535976): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="129"><![CDATA[[ 03-21 08:35:22.001  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="130"><![CDATA[type=1400 audit(0.0:535977): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="131"><![CDATA[[ 03-21 08:35:22.001  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="132"><![CDATA[type=1400 audit(0.0:535978): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="133"><![CDATA[[ 03-21 08:35:22.246  1004: 1485 I/hwcomposer ]]]></LogLine>
+  <LogLine index="134"><![CDATA[[DRMDEV] (0:60) failed to waitNextVsync: -1  ]]></LogLine>
+  <LogLine index="135"><![CDATA[[ 03-21 08:35:22.574   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="136"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="137"><![CDATA[[ 03-21 08:35:23.004  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="138"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="139"><![CDATA[[ 03-21 08:35:23.005  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="140"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="141"><![CDATA[[ 03-21 08:35:23.005  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="142"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="143"><![CDATA[[ 03-21 08:35:23.005  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="144"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="145"><![CDATA[[ 03-21 08:35:23.001  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="146"><![CDATA[type=1400 audit(0.0:535980): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="147"><![CDATA[[ 03-21 08:35:23.001  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="148"><![CDATA[type=1400 audit(0.0:535981): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="149"><![CDATA[[ 03-21 08:35:23.197  1338: 1563 D/ULogGuard ]]]></LogLine>
+  <LogLine index="150"><![CDATA[Monitoring: 10 threads, 0 requests, 0 time-bombs; 1 guards. ResetFlags = 0x7]]></LogLine>
+  <LogLine index="151"><![CDATA[[ 03-21 08:35:23.641   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="152"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="153"><![CDATA[[ 03-21 08:35:24.006  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="154"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="155"><![CDATA[[ 03-21 08:35:24.007  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="156"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="157"><![CDATA[[ 03-21 08:35:24.005  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="158"><![CDATA[type=1400 audit(0.0:535982): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="159"><![CDATA[[ 03-21 08:35:24.007  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="160"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="161"><![CDATA[[ 03-21 08:35:24.007  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="162"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="163"><![CDATA[[ 03-21 08:35:24.005  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="164"><![CDATA[type=1400 audit(0.0:535983): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="165"><![CDATA[[ 03-21 08:35:24.005  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="166"><![CDATA[type=1400 audit(0.0:535984): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="167"><![CDATA[[ 03-21 08:35:24.154  1061: 1079 D/power@timer ]]]></LogLine>
+  <LogLine index="168"><![CDATA[[mtkPowerTimer] visRead:0]]></LogLine>
+  <LogLine index="169"><![CDATA[[ 03-21 08:35:24.311  2239: 8033 D/IpClient/wlan0 ]]]></LogLine>
+  <LogLine index="170"><![CDATA[interfaceLinkStateChanged: ifindex 36 up]]></LogLine>
+  <LogLine index="171"><![CDATA[[ 03-21 08:35:24.707   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="172"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="173"><![CDATA[[ 03-21 08:35:24.863  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="174"><![CDATA[WifiRequest::create vendor command to iface 36, vendor_id=0x1a11, subcmd=0x0002, res=0]]></LogLine>
+  <LogLine index="175"><![CDATA[[ 03-21 08:35:24.864  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="176"><![CDATA[In GetFeatureSetCommand::handleResponse for 5]]></LogLine>
+  <LogLine index="177"><![CDATA[[ 03-21 08:35:24.864  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="178"><![CDATA[vendor_id = 0x0, subcmd = 0x0]]></LogLine>
+  <LogLine index="179"><![CDATA[[ 03-21 08:35:24.864  2124: 2124 I/WifiHAL  ]]]></LogLine>
+  <LogLine index="180"><![CDATA[feature_set=0x8488141a]]></LogLine>
+  <LogLine index="181"><![CDATA[[ 03-21 08:35:24.869  1741: 2048 I/HalDevMgr ]]]></LogLine>
+  <LogLine index="182"><![CDATA[bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]]]></LogLine>
+  <LogLine index="183"><![CDATA[[ 03-21 08:35:24.870  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="184"><![CDATA[onWifiUsabilityStats, seqNum: 3611, isSameBssidAndFreq: true, RSSI: -67, isThroughputSufficient: true, LinkSpeed: 26 Mbps, RxLinkSpeed: 65 Mbps]]></LogLine>
+  <LogLine index="185"><![CDATA[[ 03-21 08:35:24.870  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="186"><![CDATA[onWifiUsabilityStats, Duration: 219196249, Rx Good: 1 ( PPS: 0 ), Tx Good: 1, Tx Bad: 0 ( 0 % ), Tx Retry: 0 ( 0 % ), NSS: 0, Bandwidth: 0]]></LogLine>
+  <LogLine index="187"><![CDATA[[ 03-21 08:35:25.008  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="188"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="189"><![CDATA[[ 03-21 08:35:25.009  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="190"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="191"><![CDATA[[ 03-21 08:35:25.005  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="192"><![CDATA[type=1400 audit(0.0:535985): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="193"><![CDATA[[ 03-21 08:35:25.009  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="194"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="195"><![CDATA[[ 03-21 08:35:25.009  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="196"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="197"><![CDATA[[ 03-21 08:35:25.005  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="198"><![CDATA[type=1400 audit(0.0:535986): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="199"><![CDATA[[ 03-21 08:35:25.005  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="200"><![CDATA[type=1400 audit(0.0:535987): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="201"><![CDATA[[ 03-21 08:35:25.318  1004: 1485 I/hwcomposer ]]]></LogLine>
+  <LogLine index="202"><![CDATA[[DRMDEV] (0:60) failed to waitNextVsync: -1  ]]></LogLine>
+  <LogLine index="203"><![CDATA[[ 03-21 08:35:25.774   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="204"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="205"><![CDATA[[ 03-21 08:35:25.942 20470:20497 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="206"><![CDATA[bufferpool2 0xb400007b44af9e48 : 5(19200 size) total buffers - 4(15360 size) used buffers - 148456/148461 (recycle/alloc) - 304/296913 (fetch/transfer)]]></LogLine>
+  <LogLine index="207"><![CDATA[[ 03-21 08:35:26.009  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="208"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="209"><![CDATA[[ 03-21 08:35:26.010  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="210"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="211"><![CDATA[[ 03-21 08:35:26.009  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="212"><![CDATA[type=1400 audit(0.0:535988): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="213"><![CDATA[[ 03-21 08:35:26.009  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="214"><![CDATA[type=1400 audit(0.0:535989): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="215"><![CDATA[[ 03-21 08:35:26.009  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="216"><![CDATA[type=1400 audit(0.0:535990): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="217"><![CDATA[[ 03-21 08:35:26.051  1279: 1854 E/md_thermal ]]]></LogLine>
+  <LogLine index="218"><![CDATA[interval=40 temp: 35100 32100 32200 31800]]></LogLine>
+  <LogLine index="219"><![CDATA[[ 03-21 08:35:26.198  1338: 1563 D/ULogGuard ]]]></LogLine>
+  <LogLine index="220"><![CDATA[Monitoring: 10 threads, 0 requests, 0 time-bombs; 1 guards. ResetFlags = 0x7]]></LogLine>
+  <LogLine index="221"><![CDATA[[ 03-21 08:35:26.603  1359:20506 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="222"><![CDATA[bufferpool2 0xb4000077c2560a88 : 2(6000 size) total buffers - 1(3000 size) used buffers - 148485/148491 (recycle/alloc) - 5/148489 (fetch/transfer)]]></LogLine>
+  <LogLine index="223"><![CDATA[[ 03-21 08:35:26.842   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="224"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="225"><![CDATA[[ 03-21 08:35:27.011  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="226"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="227"><![CDATA[[ 03-21 08:35:27.012  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="228"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="229"><![CDATA[[ 03-21 08:35:27.009  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="230"><![CDATA[type=1400 audit(0.0:535991): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="231"><![CDATA[[ 03-21 08:35:27.012  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="232"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="233"><![CDATA[[ 03-21 08:35:27.012  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="234"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="235"><![CDATA[[ 03-21 08:35:27.009  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="236"><![CDATA[type=1400 audit(0.0:535992): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="237"><![CDATA[[ 03-21 08:35:27.896  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="238"><![CDATA[WifiRequest::create vendor command to iface 36, vendor_id=0x1a11, subcmd=0x0002, res=0]]></LogLine>
+  <LogLine index="239"><![CDATA[[ 03-21 08:35:27.897  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="240"><![CDATA[In GetFeatureSetCommand::handleResponse for 5]]></LogLine>
+  <LogLine index="241"><![CDATA[[ 03-21 08:35:27.897  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="242"><![CDATA[vendor_id = 0x0, subcmd = 0x0]]></LogLine>
+  <LogLine index="243"><![CDATA[[ 03-21 08:35:27.897  2124: 2124 I/WifiHAL  ]]]></LogLine>
+  <LogLine index="244"><![CDATA[feature_set=0x8488141a]]></LogLine>
+  <LogLine index="245"><![CDATA[[ 03-21 08:35:27.902  1741: 2048 I/HalDevMgr ]]]></LogLine>
+  <LogLine index="246"><![CDATA[bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]]]></LogLine>
+  <LogLine index="247"><![CDATA[[ 03-21 08:35:27.903  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="248"><![CDATA[onWifiUsabilityStats, seqNum: 3612, isSameBssidAndFreq: true, RSSI: -68, isThroughputSufficient: true, LinkSpeed: 26 Mbps, RxLinkSpeed: 65 Mbps]]></LogLine>
+  <LogLine index="249"><![CDATA[[ 03-21 08:35:27.903  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="250"><![CDATA[onWifiUsabilityStats, Duration: 219199281, Rx Good: 0 ( PPS: 0 ), Tx Good: 0, Tx Bad: 0 ( 0 % ), Tx Retry: 0 ( 0 % ), NSS: 0, Bandwidth: 0]]></LogLine>
+  <LogLine index="251"><![CDATA[[ 03-21 08:35:27.908   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="252"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="253"><![CDATA[[ 03-21 08:35:28.013  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="254"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="255"><![CDATA[[ 03-21 08:35:28.013 24975:24975 D/SentinalAccessibilityService ]]]></LogLine>
+  <LogLine index="256"><![CDATA[Event received from: com.android.systemui type: 2048]]></LogLine>
+  <LogLine index="257"><![CDATA[[ 03-21 08:35:28.014  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="258"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="259"><![CDATA[[ 03-21 08:35:28.014  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="260"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="261"><![CDATA[[ 03-21 08:35:28.014  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="262"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="263"><![CDATA[[ 03-21 08:35:28.009  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="264"><![CDATA[type=1400 audit(0.0:535994): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="265"><![CDATA[[ 03-21 08:35:28.013  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="266"><![CDATA[type=1400 audit(0.0:535995): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="267"><![CDATA[[ 03-21 08:35:28.013  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="268"><![CDATA[type=1400 audit(0.0:535996): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="269"><![CDATA[[ 03-21 08:35:28.113 24975:24975 D/SentinalAccessibilityService ]]]></LogLine>
+  <LogLine index="270"><![CDATA[Event received from: com.android.systemui type: 2048]]></LogLine>
+  <LogLine index="271"><![CDATA[[ 03-21 08:35:28.974   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="272"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="273"><![CDATA[[ 03-21 08:35:29.015  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="274"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="275"><![CDATA[[ 03-21 08:35:29.015  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="276"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="277"><![CDATA[[ 03-21 08:35:29.013  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="278"><![CDATA[type=1400 audit(0.0:535997): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="279"><![CDATA[[ 03-21 08:35:29.015  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="280"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="281"><![CDATA[[ 03-21 08:35:29.016  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="282"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="283"><![CDATA[[ 03-21 08:35:29.013  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="284"><![CDATA[type=1400 audit(0.0:535998): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="285"><![CDATA[[ 03-21 08:35:29.013  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="286"><![CDATA[type=1400 audit(0.0:535999): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="287"><![CDATA[[ 03-21 08:35:29.200  1338: 1563 D/ULogGuard ]]]></LogLine>
+  <LogLine index="288"><![CDATA[Monitoring: 10 threads, 0 requests, 0 time-bombs; 1 guards. ResetFlags = 0x7]]></LogLine>
+  <LogLine index="289"><![CDATA[[ 03-21 08:35:30.016  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="290"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="291"><![CDATA[[ 03-21 08:35:30.017  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="292"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="293"><![CDATA[[ 03-21 08:35:30.013  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="294"><![CDATA[type=1400 audit(0.0:536000): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="295"><![CDATA[[ 03-21 08:35:30.017  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="296"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="297"><![CDATA[[ 03-21 08:35:30.018  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="298"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="299"><![CDATA[[ 03-21 08:35:30.013  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="300"><![CDATA[type=1400 audit(0.0:536001): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="301"><![CDATA[[ 03-21 08:35:30.017  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="302"><![CDATA[type=1400 audit(0.0:536002): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="303"><![CDATA[[ 03-21 08:35:30.042   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="304"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="305"><![CDATA[[ 03-21 08:35:30.926  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="306"><![CDATA[WifiRequest::create vendor command to iface 36, vendor_id=0x1a11, subcmd=0x0002, res=0]]></LogLine>
+  <LogLine index="307"><![CDATA[[ 03-21 08:35:30.927  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="308"><![CDATA[In GetFeatureSetCommand::handleResponse for 5]]></LogLine>
+  <LogLine index="309"><![CDATA[[ 03-21 08:35:30.927  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="310"><![CDATA[vendor_id = 0x0, subcmd = 0x0]]></LogLine>
+  <LogLine index="311"><![CDATA[[ 03-21 08:35:30.927  2124: 2124 I/WifiHAL  ]]]></LogLine>
+  <LogLine index="312"><![CDATA[feature_set=0x8488141a]]></LogLine>
+  <LogLine index="313"><![CDATA[[ 03-21 08:35:30.931  1741: 2048 I/HalDevMgr ]]]></LogLine>
+  <LogLine index="314"><![CDATA[bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]]]></LogLine>
+  <LogLine index="315"><![CDATA[[ 03-21 08:35:30.932  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="316"><![CDATA[onWifiUsabilityStats, seqNum: 3613, isSameBssidAndFreq: true, RSSI: -68, isThroughputSufficient: true, LinkSpeed: 26 Mbps, RxLinkSpeed: 65 Mbps]]></LogLine>
+  <LogLine index="317"><![CDATA[[ 03-21 08:35:30.934  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="318"><![CDATA[onWifiUsabilityStats, Duration: 219202312, Rx Good: 3 ( PPS: 0 ), Tx Good: 3, Tx Bad: 0 ( 0 % ), Tx Retry: 0 ( 0 % ), NSS: 0, Bandwidth: 0]]></LogLine>
+  <LogLine index="319"><![CDATA[[ 03-21 08:35:31.018  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="320"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="321"><![CDATA[[ 03-21 08:35:31.019  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="322"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="323"><![CDATA[[ 03-21 08:35:31.019  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="324"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="325"><![CDATA[[ 03-21 08:35:31.017  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="326"><![CDATA[type=1400 audit(0.0:536003): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="327"><![CDATA[[ 03-21 08:35:31.020  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="328"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="329"><![CDATA[[ 03-21 08:35:31.017  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="330"><![CDATA[type=1400 audit(0.0:536004): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="331"><![CDATA[[ 03-21 08:35:31.017  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="332"><![CDATA[type=1400 audit(0.0:536005): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="333"><![CDATA[[ 03-21 08:35:31.061 20470:20497 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="334"><![CDATA[bufferpool2 0xb400007b44af9e48 : 5(19200 size) total buffers - 4(15360 size) used buffers - 148712/148717 (recycle/alloc) - 304/297425 (fetch/transfer)]]></LogLine>
+  <LogLine index="335"><![CDATA[[ 03-21 08:35:31.108   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="336"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="337"><![CDATA[[ 03-21 08:35:31.142 24975:24975 D/SentinalAccessibilityService ]]]></LogLine>
+  <LogLine index="338"><![CDATA[Event received from: com.android.systemui type: 2048]]></LogLine>
+  <LogLine index="339"><![CDATA[--------- beginning of system]]></LogLine>
+  <LogLine index="340"><![CDATA[[ 03-21 08:35:31.499  1741: 1934 D/BatteryService ]]]></LogLine>
+  <LogLine index="341"><![CDATA[uevent={POWER_SUPPLY_VOLTAGE_NOW=4403000, POWER_SUPPLY_CURRENT_AVG=-300, POWER_SUPPLY_CAPACITY_LEVEL=Full, POWER_SUPPLY_TYPE=Battery, POWER_SUPPLY_HEALTH=Good, POWER_SUPPLY_CURRENT_NOW=600, POWER_SUPPLY_PRESENT=1, POWER_SUPPLY_TECHNOLOGY=Li-ion, POWER_SUPPLY_CHARGE_FULL=4827000, POWER_SUPPLY_TIME_TO_FULL_NOW=0, POWER_SUPPLY_CHARGE_FULL_DESIGN=4827000, SUBSYSTEM=power_supply, POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE=0, POWER_SUPPLY_TEMP=310, SEQNUM=57729, ACTION=change, POWER_SUPPLY_NAME=battery, POWER_SUPPLY_STATUS=Full, POWER_SUPPLY_CYCLE_COUNT=20, POWER_SUPPLY_CHARGE_COUNTER=4827000, POWER_SUPPLY_CAPACITY=100, DEVPATH=/devices/platform/soc/1c804000.spmi/spmi-0/0-04/mt6377-gauge/power_supply/battery}]]></LogLine>
+  <LogLine index="342"><![CDATA[[ 03-21 08:35:31.515  2153: 2153 D/InstantDataReceiver ]]]></LogLine>
+  <LogLine index="343"><![CDATA[onReceive: deviceBatteryLevel=100, deviceBatteryScale=100, deviceBatteryChargeStatus=5]]></LogLine>
+  <LogLine index="344"><![CDATA[[ 03-21 08:35:31.516  1741: 1741 V/UiModeManager ]]]></LogLine>
+  <LogLine index="345"><![CDATA[updateLocked: null action, mDockState=0, category=null]]></LogLine>
+  <LogLine index="346"><![CDATA[[ 03-21 08:35:31.517  1741: 1741 D/UiModeManager ]]]></LogLine>
+  <LogLine index="347"><![CDATA[updateConfigurationLocked: mDockState=0; mCarMode=false; mNightMode=1; mNightModeCustomType=-1; uiMode=17]]></LogLine>
+  <LogLine index="348"><![CDATA[[ 03-21 08:35:31.518  1741: 1741 I/WirelessBroadcastReceiver ]]]></LogLine>
+  <LogLine index="349"><![CDATA[onReceive, action: android.intent.action.BATTERY_CHANGED]]></LogLine>
+  <LogLine index="350"><![CDATA[[ 03-21 08:35:31.517  2153: 2948 D/PowerUI  ]]]></LogLine>
+  <LogLine index="351"><![CDATA[can't show warning due to - plugged: true status unknown: false]]></LogLine>
+  <LogLine index="352"><![CDATA[[ 03-21 08:35:31.529  1741: 1934 D/BatteryService ]]]></LogLine>
+  <LogLine index="353"><![CDATA[uevent={POWER_SUPPLY_VOLTAGE_NOW=4403000, POWER_SUPPLY_CURRENT_AVG=-300, POWER_SUPPLY_CAPACITY_LEVEL=Full, POWER_SUPPLY_TYPE=Battery, POWER_SUPPLY_HEALTH=Good, POWER_SUPPLY_CURRENT_NOW=0, POWER_SUPPLY_PRESENT=1, POWER_SUPPLY_TECHNOLOGY=Li-ion, POWER_SUPPLY_CHARGE_FULL=4827000, POWER_SUPPLY_TIME_TO_FULL_NOW=0, POWER_SUPPLY_CHARGE_FULL_DESIGN=4827000, SUBSYSTEM=power_supply, POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE=0, POWER_SUPPLY_TEMP=310, SEQNUM=57730, ACTION=change, POWER_SUPPLY_NAME=battery, POWER_SUPPLY_STATUS=Full, POWER_SUPPLY_CYCLE_COUNT=20, POWER_SUPPLY_CHARGE_COUNTER=4827000, POWER_SUPPLY_CAPACITY=100, DEVPATH=/devices/platform/soc/1c804000.spmi/spmi-0/0-04/mt6377-gauge/power_supply/battery}]]></LogLine>
+  <LogLine index="354"><![CDATA[[ 03-21 08:35:31.723  1359:20506 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="355"><![CDATA[bufferpool2 0xb4000077c2560a88 : 2(6000 size) total buffers - 1(3000 size) used buffers - 148741/148747 (recycle/alloc) - 5/148745 (fetch/transfer)]]></LogLine>
+  <LogLine index="356"><![CDATA[[ 03-21 08:35:32.017  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="357"><![CDATA[type=1400 audit(0.0:536006): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="358"><![CDATA[[ 03-21 08:35:32.020  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="359"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="360"><![CDATA[[ 03-21 08:35:32.021  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="361"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="362"><![CDATA[[ 03-21 08:35:32.021  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="363"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="364"><![CDATA[[ 03-21 08:35:32.021  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="365"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="366"><![CDATA[[ 03-21 08:35:32.017  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="367"><![CDATA[type=1400 audit(0.0:536007): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="368"><![CDATA[[ 03-21 08:35:32.017  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="369"><![CDATA[type=1400 audit(0.0:536008): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="370"><![CDATA[[ 03-21 08:35:32.174   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="371"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="372"><![CDATA[[ 03-21 08:35:32.201  1338: 1563 D/ULogGuard ]]]></LogLine>
+  <LogLine index="373"><![CDATA[Monitoring: 10 threads, 0 requests, 0 time-bombs; 1 guards. ResetFlags = 0x7]]></LogLine>
+  <LogLine index="374"><![CDATA[[ 03-21 08:35:32.698  1741: 1934 D/BatteryService ]]]></LogLine>
+  <LogLine index="375"><![CDATA[uevent={POWER_SUPPLY_VOLTAGE_NOW=4403000, POWER_SUPPLY_VBUS_PRESENT=true, POWER_SUPPLY_TYPE=Battery, POWER_SUPPLY_HEALTH=Good, POWER_SUPPLY_TECHNOLOGY=Li-ion, POWER_SUPPLY_CHARGE_FULL_DESIGN=4827000, POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE=0, SEQNUM=57731, POWER_SUPPLY_STATUS=Full, POWER_SUPPLY_CYCLE_COUNT=20, POWER_SUPPLY_CAPACITY=100, DEVPATH=/devices/platform/soc/1c804000.spmi/spmi-0/0-04/mt6377-gauge/power_supply/battery, POWER_SUPPLY_CHARGE_RATE=Normal, POWER_SUPPLY_CURRENT_AVG=-300, POWER_SUPPLY_CAPACITY_LEVEL=Full, POWER_SUPPLY_CURRENT_NOW=0, POWER_SUPPLY_PRESENT=1, POWER_SUPPLY_POWER_WATT=2, POWER_SUPPLY_CHARGE_FULL=4827000, POWER_SUPPLY_TIME_TO_FULL_NOW=0, SUBSYSTEM=power_supply, POWER_SUPPLY_TEMP=310, ACTION=change, POWER_SUPPLY_AGE=100, POWER_SUPPLY_CHARGE_REAL_TYPE=1, POWER_SUPPLY_NAME=battery, POWER_SUPPLY_LPD_PRESENT=false, POWER_SUPPLY_CHARGE_COUNTER=4827000, POWER_SUPPLY_POWER_WATT_DESIGN=30}]]></LogLine>
+  <LogLine index="376"><![CDATA[[ 03-21 08:35:33.022  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="377"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="378"><![CDATA[[ 03-21 08:35:33.023  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="379"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="380"><![CDATA[[ 03-21 08:35:33.023  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="381"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="382"><![CDATA[[ 03-21 08:35:33.023  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="383"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="384"><![CDATA[[ 03-21 08:35:33.021  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="385"><![CDATA[type=1400 audit(0.0:536009): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="386"><![CDATA[[ 03-21 08:35:33.021  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="387"><![CDATA[type=1400 audit(0.0:536010): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="388"><![CDATA[[ 03-21 08:35:33.021  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="389"><![CDATA[type=1400 audit(0.0:536011): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="390"><![CDATA[[ 03-21 08:35:33.102  1132: 1155 D/ccci_mdinit ]]]></LogLine>
+  <LogLine index="391"><![CDATA[(1):monitor_time_update_thread round:10159 ########]]></LogLine>
+  <LogLine index="392"><![CDATA[[ 03-21 08:35:33.241   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="393"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="394"><![CDATA[[ 03-21 08:35:33.957  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="395"><![CDATA[WifiRequest::create vendor command to iface 36, vendor_id=0x1a11, subcmd=0x0002, res=0]]></LogLine>
+  <LogLine index="396"><![CDATA[[ 03-21 08:35:33.957  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="397"><![CDATA[In GetFeatureSetCommand::handleResponse for 5]]></LogLine>
+  <LogLine index="398"><![CDATA[[ 03-21 08:35:33.957  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="399"><![CDATA[vendor_id = 0x0, subcmd = 0x0]]></LogLine>
+  <LogLine index="400"><![CDATA[[ 03-21 08:35:33.957  2124: 2124 I/WifiHAL  ]]]></LogLine>
+  <LogLine index="401"><![CDATA[feature_set=0x8488141a]]></LogLine>
+  <LogLine index="402"><![CDATA[[ 03-21 08:35:33.961  1741: 2048 I/HalDevMgr ]]]></LogLine>
+  <LogLine index="403"><![CDATA[bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]]]></LogLine>
+  <LogLine index="404"><![CDATA[[ 03-21 08:35:33.962  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="405"><![CDATA[onWifiUsabilityStats, seqNum: 3614, isSameBssidAndFreq: true, RSSI: -68, isThroughputSufficient: true, LinkSpeed: 26 Mbps, RxLinkSpeed: 65 Mbps]]></LogLine>
+  <LogLine index="406"><![CDATA[[ 03-21 08:35:33.962  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="407"><![CDATA[onWifiUsabilityStats, Duration: 219205340, Rx Good: 0 ( PPS: 0 ), Tx Good: 0, Tx Bad: 0 ( 0 % ), Tx Retry: 0 ( 0 % ), NSS: 0, Bandwidth: 0]]></LogLine>
+  <LogLine index="408"><![CDATA[[ 03-21 08:35:34.024  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="409"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="410"><![CDATA[[ 03-21 08:35:34.021  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="411"><![CDATA[type=1400 audit(0.0:536012): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="412"><![CDATA[[ 03-21 08:35:34.024  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="413"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="414"><![CDATA[[ 03-21 08:35:34.025  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="415"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="416"><![CDATA[[ 03-21 08:35:34.025  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="417"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="418"><![CDATA[[ 03-21 08:35:34.021  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="419"><![CDATA[type=1400 audit(0.0:536013): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="420"><![CDATA[[ 03-21 08:35:34.074 24975:24975 D/SentinalAccessibilityService ]]]></LogLine>
+  <LogLine index="421"><![CDATA[Event received from: com.android.systemui type: 2048]]></LogLine>
+  <LogLine index="422"><![CDATA[[ 03-21 08:35:34.174 24975:24975 D/SentinalAccessibilityService ]]]></LogLine>
+  <LogLine index="423"><![CDATA[Event received from: com.android.systemui type: 2048]]></LogLine>
+  <LogLine index="424"><![CDATA[[ 03-21 08:35:34.307   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="425"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="426"><![CDATA[[ 03-21 08:35:35.026  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="427"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="428"><![CDATA[[ 03-21 08:35:35.026  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="429"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="430"><![CDATA[[ 03-21 08:35:35.027  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="431"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="432"><![CDATA[[ 03-21 08:35:35.027  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="433"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="434"><![CDATA[[ 03-21 08:35:35.025  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="435"><![CDATA[type=1400 audit(0.0:536015): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="436"><![CDATA[[ 03-21 08:35:35.025  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="437"><![CDATA[type=1400 audit(0.0:536016): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="438"><![CDATA[[ 03-21 08:35:35.025  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="439"><![CDATA[type=1400 audit(0.0:536017): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="440"><![CDATA[[ 03-21 08:35:35.202  1338: 1563 D/ULogGuard ]]]></LogLine>
+  <LogLine index="441"><![CDATA[Monitoring: 10 threads, 0 requests, 0 time-bombs; 1 guards. ResetFlags = 0x7]]></LogLine>
+  <LogLine index="442"><![CDATA[[ 03-21 08:35:35.374   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="443"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="444"><![CDATA[[ 03-21 08:35:36.029  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="445"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="446"><![CDATA[[ 03-21 08:35:36.030  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="447"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="448"><![CDATA[[ 03-21 08:35:36.030  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="449"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="450"><![CDATA[[ 03-21 08:35:36.030  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="451"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="452"><![CDATA[[ 03-21 08:35:36.025  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="453"><![CDATA[type=1400 audit(0.0:536018): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="454"><![CDATA[[ 03-21 08:35:36.029  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="455"><![CDATA[type=1400 audit(0.0:536019): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="456"><![CDATA[[ 03-21 08:35:36.029  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="457"><![CDATA[type=1400 audit(0.0:536020): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="458"><![CDATA[[ 03-21 08:35:36.181 20470:20497 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="459"><![CDATA[bufferpool2 0xb400007b44af9e48 : 5(19200 size) total buffers - 4(15360 size) used buffers - 148968/148973 (recycle/alloc) - 304/297937 (fetch/transfer)]]></LogLine>
+  <LogLine index="460"><![CDATA[[ 03-21 08:35:36.441   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="461"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="462"><![CDATA[[ 03-21 08:35:36.843  1359:20506 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="463"><![CDATA[bufferpool2 0xb4000077c2560a88 : 2(6000 size) total buffers - 1(3000 size) used buffers - 148997/149003 (recycle/alloc) - 5/149001 (fetch/transfer)]]></LogLine>
+  <LogLine index="464"><![CDATA[[ 03-21 08:35:36.989  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="465"><![CDATA[WifiRequest::create vendor command to iface 36, vendor_id=0x1a11, subcmd=0x0002, res=0]]></LogLine>
+  <LogLine index="466"><![CDATA[[ 03-21 08:35:36.989  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="467"><![CDATA[In GetFeatureSetCommand::handleResponse for 5]]></LogLine>
+  <LogLine index="468"><![CDATA[[ 03-21 08:35:36.989  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="469"><![CDATA[vendor_id = 0x0, subcmd = 0x0]]></LogLine>
+  <LogLine index="470"><![CDATA[[ 03-21 08:35:36.989  2124: 2124 I/WifiHAL  ]]]></LogLine>
+  <LogLine index="471"><![CDATA[feature_set=0x8488141a]]></LogLine>
+  <LogLine index="472"><![CDATA[[ 03-21 08:35:36.994  1741: 2048 I/HalDevMgr ]]]></LogLine>
+  <LogLine index="473"><![CDATA[bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]]]></LogLine>
+  <LogLine index="474"><![CDATA[[ 03-21 08:35:36.996  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="475"><![CDATA[onWifiUsabilityStats, seqNum: 3615, isSameBssidAndFreq: true, RSSI: -68, isThroughputSufficient: true, LinkSpeed: 26 Mbps, RxLinkSpeed: 65 Mbps]]></LogLine>
+  <LogLine index="476"><![CDATA[[ 03-21 08:35:36.996  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="477"><![CDATA[onWifiUsabilityStats, Duration: 219208374, Rx Good: 2 ( PPS: 0 ), Tx Good: 2, Tx Bad: 0 ( 0 % ), Tx Retry: 0 ( 0 % ), NSS: 0, Bandwidth: 0]]></LogLine>
+  <LogLine index="478"><![CDATA[[ 03-21 08:35:37.029  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="479"><![CDATA[type=1400 audit(0.0:536021): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="480"><![CDATA[[ 03-21 08:35:37.030  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="481"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="482"><![CDATA[[ 03-21 08:35:37.031  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="483"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="484"><![CDATA[[ 03-21 08:35:37.029  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="485"><![CDATA[type=1400 audit(0.0:536022): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="486"><![CDATA[[ 03-21 08:35:37.031  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="487"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="488"><![CDATA[[ 03-21 08:35:37.032  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="489"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="490"><![CDATA[[ 03-21 08:35:37.029  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="491"><![CDATA[type=1400 audit(0.0:536023): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="492"><![CDATA[[ 03-21 08:35:37.205 24975:24975 D/SentinalAccessibilityService ]]]></LogLine>
+  <LogLine index="493"><![CDATA[Event received from: com.android.systemui type: 2048]]></LogLine>
+  <LogLine index="494"><![CDATA[[ 03-21 08:35:37.508   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="495"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="496"><![CDATA[[ 03-21 08:35:38.029  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="497"><![CDATA[type=1400 audit(0.0:536024): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="498"><![CDATA[[ 03-21 08:35:38.032  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="499"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="500"><![CDATA[[ 03-21 08:35:38.033  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="501"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="502"><![CDATA[[ 03-21 08:35:38.033  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="503"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="504"><![CDATA[[ 03-21 08:35:38.033  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="505"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="506"><![CDATA[[ 03-21 08:35:38.029  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="507"><![CDATA[type=1400 audit(0.0:536025): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="508"><![CDATA[[ 03-21 08:35:38.029  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="509"><![CDATA[type=1400 audit(0.0:536026): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="510"><![CDATA[[ 03-21 08:35:38.203  1338: 1563 D/ULogGuard ]]]></LogLine>
+  <LogLine index="511"><![CDATA[Monitoring: 10 threads, 0 requests, 0 time-bombs; 1 guards. ResetFlags = 0x7]]></LogLine>
+  <LogLine index="512"><![CDATA[[ 03-21 08:35:38.574   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="513"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="514"><![CDATA[[ 03-21 08:35:39.034  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="515"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="516"><![CDATA[[ 03-21 08:35:39.034  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="517"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="518"><![CDATA[[ 03-21 08:35:39.035  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="519"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="520"><![CDATA[[ 03-21 08:35:39.035  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="521"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="522"><![CDATA[[ 03-21 08:35:39.033  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="523"><![CDATA[type=1400 audit(0.0:536028): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="524"><![CDATA[[ 03-21 08:35:39.033  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="525"><![CDATA[type=1400 audit(0.0:536029): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="526"><![CDATA[[ 03-21 08:35:39.641   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="527"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="528"><![CDATA[[ 03-21 08:35:40.022  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="529"><![CDATA[WifiRequest::create vendor command to iface 36, vendor_id=0x1a11, subcmd=0x0002, res=0]]></LogLine>
+  <LogLine index="530"><![CDATA[[ 03-21 08:35:40.022  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="531"><![CDATA[In GetFeatureSetCommand::handleResponse for 5]]></LogLine>
+  <LogLine index="532"><![CDATA[[ 03-21 08:35:40.023  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="533"><![CDATA[vendor_id = 0x0, subcmd = 0x0]]></LogLine>
+  <LogLine index="534"><![CDATA[[ 03-21 08:35:40.023  2124: 2124 I/WifiHAL  ]]]></LogLine>
+  <LogLine index="535"><![CDATA[feature_set=0x8488141a]]></LogLine>
+  <LogLine index="536"><![CDATA[[ 03-21 08:35:40.028  1741: 2048 I/HalDevMgr ]]]></LogLine>
+  <LogLine index="537"><![CDATA[bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]]]></LogLine>
+  <LogLine index="538"><![CDATA[[ 03-21 08:35:40.029  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="539"><![CDATA[onWifiUsabilityStats, seqNum: 3616, isSameBssidAndFreq: true, RSSI: -68, isThroughputSufficient: true, LinkSpeed: 26 Mbps, RxLinkSpeed: 65 Mbps]]></LogLine>
+  <LogLine index="540"><![CDATA[[ 03-21 08:35:40.030  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="541"><![CDATA[onWifiUsabilityStats, Duration: 219211408, Rx Good: 2 ( PPS: 0 ), Tx Good: 2, Tx Bad: 0 ( 0 % ), Tx Retry: 0 ( 0 % ), NSS: 0, Bandwidth: 0]]></LogLine>
+  <LogLine index="542"><![CDATA[[ 03-21 08:35:40.035  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="543"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="544"><![CDATA[[ 03-21 08:35:40.036  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="545"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="546"><![CDATA[[ 03-21 08:35:40.036  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="547"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="548"><![CDATA[[ 03-21 08:35:40.036  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="549"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="550"><![CDATA[[ 03-21 08:35:40.033  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="551"><![CDATA[type=1400 audit(0.0:536030): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="552"><![CDATA[[ 03-21 08:35:40.033  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="553"><![CDATA[type=1400 audit(0.0:536031): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="554"><![CDATA[[ 03-21 08:35:40.033  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="555"><![CDATA[type=1400 audit(0.0:536032): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="556"><![CDATA[[ 03-21 08:35:40.709   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="557"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="558"><![CDATA[[ 03-21 08:35:41.037  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="559"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="560"><![CDATA[[ 03-21 08:35:41.037  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="561"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="562"><![CDATA[[ 03-21 08:35:41.038  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="563"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="564"><![CDATA[[ 03-21 08:35:41.033  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="565"><![CDATA[type=1400 audit(0.0:536033): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="566"><![CDATA[[ 03-21 08:35:41.037  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="567"><![CDATA[type=1400 audit(0.0:536034): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="568"><![CDATA[[ 03-21 08:35:41.037  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="569"><![CDATA[type=1400 audit(0.0:536035): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="570"><![CDATA[[ 03-21 08:35:41.204  1338: 1563 D/ULogGuard ]]]></LogLine>
+  <LogLine index="571"><![CDATA[Monitoring: 10 threads, 0 requests, 0 time-bombs; 1 guards. ResetFlags = 0x7]]></LogLine>
+  <LogLine index="572"><![CDATA[[ 03-21 08:35:41.300 20470:20497 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="573"><![CDATA[bufferpool2 0xb400007b44af9e48 : 5(19200 size) total buffers - 4(15360 size) used buffers - 149224/149229 (recycle/alloc) - 304/298449 (fetch/transfer)]]></LogLine>
+  <LogLine index="574"><![CDATA[[ 03-21 08:35:41.774   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="575"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="576"><![CDATA[[ 03-21 08:35:41.964  1359:20506 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="577"><![CDATA[bufferpool2 0xb4000077c2560a88 : 2(6000 size) total buffers - 1(3000 size) used buffers - 149253/149259 (recycle/alloc) - 5/149257 (fetch/transfer)]]></LogLine>
+  <LogLine index="578"><![CDATA[[ 03-21 08:35:42.037  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="579"><![CDATA[type=1400 audit(0.0:536036): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="580"><![CDATA[[ 03-21 08:35:42.038  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="581"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="582"><![CDATA[[ 03-21 08:35:42.037  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="583"><![CDATA[type=1400 audit(0.0:536037): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="584"><![CDATA[[ 03-21 08:35:42.039  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="585"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="586"><![CDATA[[ 03-21 08:35:42.039  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="587"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="588"><![CDATA[[ 03-21 08:35:42.039  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="589"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="590"><![CDATA[[ 03-21 08:35:42.037  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="591"><![CDATA[type=1400 audit(0.0:536038): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="592"><![CDATA[[ 03-21 08:35:42.841   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="593"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="594"><![CDATA[[ 03-21 08:35:43.040  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="595"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="596"><![CDATA[[ 03-21 08:35:43.040  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="597"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="598"><![CDATA[[ 03-21 08:35:43.037  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="599"><![CDATA[type=1400 audit(0.0:536039): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="600"><![CDATA[[ 03-21 08:35:43.041  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="601"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="602"><![CDATA[[ 03-21 08:35:43.041  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="603"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="604"><![CDATA[[ 03-21 08:35:43.037  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="605"><![CDATA[type=1400 audit(0.0:536040): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="606"><![CDATA[[ 03-21 08:35:43.037  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="607"><![CDATA[type=1400 audit(0.0:536041): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="608"><![CDATA[[ 03-21 08:35:43.052  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="609"><![CDATA[WifiRequest::create vendor command to iface 36, vendor_id=0x1a11, subcmd=0x0002, res=0]]></LogLine>
+  <LogLine index="610"><![CDATA[[ 03-21 08:35:43.052  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="611"><![CDATA[In GetFeatureSetCommand::handleResponse for 5]]></LogLine>
+  <LogLine index="612"><![CDATA[[ 03-21 08:35:43.052  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="613"><![CDATA[vendor_id = 0x0, subcmd = 0x0]]></LogLine>
+  <LogLine index="614"><![CDATA[[ 03-21 08:35:43.052  2124: 2124 I/WifiHAL  ]]]></LogLine>
+  <LogLine index="615"><![CDATA[feature_set=0x8488141a]]></LogLine>
+  <LogLine index="616"><![CDATA[[ 03-21 08:35:43.057  1741: 2048 I/HalDevMgr ]]]></LogLine>
+  <LogLine index="617"><![CDATA[bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]]]></LogLine>
+  <LogLine index="618"><![CDATA[[ 03-21 08:35:43.058  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="619"><![CDATA[onWifiUsabilityStats, seqNum: 3617, isSameBssidAndFreq: true, RSSI: -67, isThroughputSufficient: true, LinkSpeed: 26 Mbps, RxLinkSpeed: 65 Mbps]]></LogLine>
+  <LogLine index="620"><![CDATA[[ 03-21 08:35:43.058  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="621"><![CDATA[onWifiUsabilityStats, Duration: 219214436, Rx Good: 2 ( PPS: 0 ), Tx Good: 1, Tx Bad: 0 ( 0 % ), Tx Retry: 0 ( 0 % ), NSS: 0, Bandwidth: 0]]></LogLine>
+  <LogLine index="622"><![CDATA[[ 03-21 08:35:43.907   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="623"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="624"><![CDATA[[ 03-21 08:35:44.041  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="625"><![CDATA[type=1400 audit(0.0:536042): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="626"><![CDATA[[ 03-21 08:35:44.042  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="627"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="628"><![CDATA[[ 03-21 08:35:44.041  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="629"><![CDATA[type=1400 audit(0.0:536043): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="630"><![CDATA[[ 03-21 08:35:44.042  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="631"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="632"><![CDATA[[ 03-21 08:35:44.043  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="633"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="634"><![CDATA[[ 03-21 08:35:44.043  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="635"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="636"><![CDATA[[ 03-21 08:35:44.041  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="637"><![CDATA[type=1400 audit(0.0:536044): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="638"><![CDATA[[ 03-21 08:35:44.205  1338: 1563 D/ULogGuard ]]]></LogLine>
+  <LogLine index="639"><![CDATA[Monitoring: 10 threads, 0 requests, 0 time-bombs; 1 guards. ResetFlags = 0x7]]></LogLine>
+  <LogLine index="640"><![CDATA[[ 03-21 08:35:44.974   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="641"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="642"><![CDATA[[ 03-21 08:35:45.043  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="643"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="644"><![CDATA[[ 03-21 08:35:45.041  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="645"><![CDATA[type=1400 audit(0.0:536045): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="646"><![CDATA[[ 03-21 08:35:45.044  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="647"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="648"><![CDATA[[ 03-21 08:35:45.044  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="649"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="650"><![CDATA[[ 03-21 08:35:45.045  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="651"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="652"><![CDATA[[ 03-21 08:35:45.041  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="653"><![CDATA[type=1400 audit(0.0:536046): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="654"><![CDATA[[ 03-21 08:35:45.041  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="655"><![CDATA[type=1400 audit(0.0:536047): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="656"><![CDATA[[ 03-21 08:35:46.041   996:20522 D/r_submix ]]]></LogLine>
+  <LogLine index="657"><![CDATA[in_read unread data (1024)/(1024)]]></LogLine>
+  <LogLine index="658"><![CDATA[[ 03-21 08:35:46.045  1307: 1307 W/lbs_dbg_ext ]]]></LogLine>
+  <LogLine index="659"><![CDATA[Waited for hwservicemanager.ready for a second, waiting another...]]></LogLine>
+  <LogLine index="660"><![CDATA[[ 03-21 08:35:46.046  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="661"><![CDATA[Access denied finding property "hwservicemanager.disabled"]]></LogLine>
+  <LogLine index="662"><![CDATA[[ 03-21 08:35:46.046  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="663"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="664"><![CDATA[[ 03-21 08:35:46.046  1307: 1307 W/libc     ]]]></LogLine>
+  <LogLine index="665"><![CDATA[Access denied finding property "hwservicemanager.ready"]]></LogLine>
+  <LogLine index="666"><![CDATA[[ 03-21 08:35:46.041  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="667"><![CDATA[type=1400 audit(0.0:536048): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="668"><![CDATA[[ 03-21 08:35:46.045  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="669"><![CDATA[type=1400 audit(0.0:536049): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="670"><![CDATA[[ 03-21 08:35:46.045  1307: 1307 W/binder:1307_2 ]]]></LogLine>
+  <LogLine index="671"><![CDATA[type=1400 audit(0.0:536050): avc:  denied  { read } for  name="u:object_r:hwservicemanager_prop:s0" dev="tmpfs" ino=256 scontext=u:r:lbs_dbg_ext:s0 tcontext=u:object_r:hwservicemanager_prop:s0 tclass=file permissive=0]]></LogLine>
+  <LogLine index="672"><![CDATA[[ 03-21 08:35:46.080  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="673"><![CDATA[WifiRequest::create vendor command to iface 36, vendor_id=0x1a11, subcmd=0x0002, res=0]]></LogLine>
+  <LogLine index="674"><![CDATA[[ 03-21 08:35:46.081  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="675"><![CDATA[In GetFeatureSetCommand::handleResponse for 5]]></LogLine>
+  <LogLine index="676"><![CDATA[[ 03-21 08:35:46.081  2124: 2124 D/WifiHAL  ]]]></LogLine>
+  <LogLine index="677"><![CDATA[vendor_id = 0x0, subcmd = 0x0]]></LogLine>
+  <LogLine index="678"><![CDATA[[ 03-21 08:35:46.081  2124: 2124 I/WifiHAL  ]]]></LogLine>
+  <LogLine index="679"><![CDATA[feature_set=0x8488141a]]></LogLine>
+  <LogLine index="680"><![CDATA[[ 03-21 08:35:46.084  1741: 2048 I/HalDevMgr ]]]></LogLine>
+  <LogLine index="681"><![CDATA[bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]]]></LogLine>
+  <LogLine index="682"><![CDATA[[ 03-21 08:35:46.086  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="683"><![CDATA[onWifiUsabilityStats, seqNum: 3618, isSameBssidAndFreq: true, RSSI: -68, isThroughputSufficient: true, LinkSpeed: 26 Mbps, RxLinkSpeed: 65 Mbps]]></LogLine>
+  <LogLine index="684"><![CDATA[[ 03-21 08:35:46.086  1741: 3329 I/MotoStaCheckin ]]]></LogLine>
+  <LogLine index="685"><![CDATA[onWifiUsabilityStats, Duration: 219217464, Rx Good: 0 ( PPS: 0 ), Tx Good: 0, Tx Bad: 0 ( 0 % ), Tx Retry: 0 ( 0 % ), NSS: 0, Bandwidth: 0]]></LogLine>
+  <LogLine index="686"><![CDATA[[ 03-21 08:35:46.195 24975:24975 D/SentinalAccessibilityService ]]]></LogLine>
+  <LogLine index="687"><![CDATA[Event received from: com.android.systemui type: 2048]]></LogLine>
+  <LogLine index="688"><![CDATA[[ 03-21 08:35:46.296 24975:24975 D/SentinalAccessibilityService ]]]></LogLine>
+  <LogLine index="689"><![CDATA[Event received from: com.android.systemui type: 2048]]></LogLine>
+  <LogLine index="690"><![CDATA[[ 03-21 08:35:46.420 20470:20497 D/BufferPoolAccessor2.0 ]]]></LogLine>
+  <LogLine index="691"><![CDATA[bufferpool2 0xb400007b44af9e48 : 5(19200 size) total buffers - 4(15360 size) used buffers - 149480/149485 (recycle/alloc) - 304/298961 (fetch/transfer)]]></LogLine>
+</LogCapture>
