@@ -1,0 +1,71 @@
+A32 Findings Report: Samsung Galaxy A32 5G (SM-A326U) – Carrier Unlock Research via mtkclient + Zadig (Compiled from 4 Rounds of Distinct Sources, Most Recent as of March 2026)
+1. Verified Device Specifications (Cross-Confirmed from Phone Diagnostic Screenshot + Multiple Spec Databases)
+Product Name: Galaxy A32 5G
+Model: SM-A326U (US/T-Mobile variant)
+Mode Name: SM_A326U
+Serial Number: RFCR90NN63M
+IMEI: 355820492174216
+Software Version: A326USQSHDYB2
+Hardware Version: Rev 1.0
+Hardware Field (Phone Screen): qcom (discrepancy noted below)
+Android Version: 13
+Build Number: TP1A.220624.014.A326USQUADWG4
+Full Build Fingerprint: samsung/a32xsq/a32x:13/TP1A.220624.014/A326USQU
+Release Context: 2021 model with 2025–2026 security patches still referenced in unlock tools.
+All specs match official Samsung support pages and cross-verified databases.a4c65a4fc1ea
+2. Chipset & Hardware Analysis (Critical for Tool Compatibility)
+Overwhelming consensus from 2024–2026 sources (DeviceAtlas, PhoneMore, DeviceSpecifications, Wikipedia, PCMag, Samsung RMX pages): MediaTek Dimensity 720 (MT6853V, 7nm) – octa-core (2× Cortex-A76 @ 2.0 GHz + 6× Cortex-A55 @ 2.0 GHz), Mali-G57 MC3 GPU.
+This is an MTK chipset, not Qualcomm Snapdragon.
+The phone-screen “Hardware: qcom” field appears to be either a diagnostic mislabel, modem-specific field, or firmware quirk; it does not reflect the SoC. XDA users explicitly treat SM-A326U as MTK and have attempted mtkclient on it.
+Implications: mtkclient (MediaTek-only tool) is theoretically applicable; Qualcomm tools (QFIL, EDL) are irrelevant.9ac84d49e3d09e2a9d
+3. mtkclient Tool Overview (GitHub Official Repo – Latest State March 2026)
+Purpose: MediaTek Flash & Repair Utility for exploitation, flash read/write, bootloader manipulation, FRP bypass, seccfg unlock.
+Supported SoCs: MT6781, MT6789, MT6855, MT6886, MT6895, MT6983, MT8985 (V6 protocol); older via kamakiri. Dimensity 720 (MT6853V) falls under supported older/legacy preloader handling.
+No Qualcomm or non-MTK Samsung support – explicit warning in repo.
+Latest release: v2.1.4 (18 Mar 2026). Recent commits (Mar 2026): V6 loader fixes, seccfg unlock improvements, GUI dark-mode/stability.
+Carrier/SIM unlock: Not a built-in function. Tool enables low-level access that paid commercial tools later exploit for network unlock.78e71a
+4. Zadig vs. Driver Installation (Windows Focus)
+mtkclient README explicitly recommends usbdk driver (not Zadig) for Windows USB communication. Automated installer available (codefl0w/mtkclient-windows-installer).
+Zadig (libusb) is commonly referenced in third-party MTK tutorials as an alternative for “MTK USB VCOM Preloader” devices.
+Process: Power off → hold Vol Up/Down + connect USB → Zadig/usbdk replaces default driver → device appears as “MTK USB VCOM Preloader” or BROM.
+Common failure: Wrong driver or USB 3.0 port; use USB 2.0.0b312fd2cf29
+5. Preloader / Loader / BROM Mode & Commands (Verified Workflow)
+Entry:
+Preloader mode: Power off, connect USB (no buttons for some; or specific Vol combo).
+BROM mode: Hold Vol Up + Power or Vol Down + Power while connecting.
+Loader Requirement: For V6/compatible Dimensity chips → --loader flag with preloader.bin from Loaders/V6 folder or dumped stock preloader.
+Key Commands (from README + 2025–2026 tutorials):
+mtk print → detect device
+mtk --loader <preloader.bin> seccfg unlock → disable secure boot
+mtk r --preloader <preloader.bin> --parttype boot1 boot1.bin (backup)
+mtk w / flash operations
+mtk da / dump preloader for repair
+Crash preloader to BROM if needed for deeper access.
+Bricked preloader fix: Write backup preloader to boot1/boot2 via HxD + mtk r/w.35cdbbcb6e19
+6. Carrier / Network Unlock Processes (2024–2026 Sources)
+Official (free):
+Carrier portal (T-Mobile/AT&T) after 40–60 days or device paid off.
+Samsung chat support → unlock code request.
+UICC Unlock toggle in Settings > System > System updates (some T-Mobile units).
+Paid/Direct Tools (most recent successes on A326U with 2025 patches):
+Cheetah Pro Tool, Q-UnLocker, Global Unlocker Pro, Sim-Unlocker Pro.
+Steps: USB connect → ADB enabled → tool reads SIMLOCK → server auth → writes unlocked config.
+2025 videos confirm success on A326USQSHDYB2 baseband with test-point if needed.3f86bf271940
+mtkclient Integration:
+No direct carrier unlock command in mtkclient.
+Users on XDA/YouTube combine mtkclient (seccfg unlock + preloader dump) → then paid tool for SIMLOCK patch.
+Direct mtkclient carrier attempts on A326U reported detection failures or “no valid DA loader”.
+Bootloader Unlock (separate from carrier):
+OEM unlock often missing on T-Mobile SM-A326U.
+Paid services or CSC change (/optics/configs/carriers) + Odin.
+T-Mobile unilaterally unlocked some A32 5G units after 24-month credits (2023–2025 reports).b156e303c8f7
+7. Risks, Caveats & Alternatives (Verified Across Forums)
+Bricking risk high if wrong loader/preloader used.
+Warranty void; IMEI may be affected in aggressive patches.
+mtkclient + Zadig works best on clean preloader; 2026 repo fixes help but not guaranteed for every A326U firmware.
+Recommended path for this exact IMEI/software: Official carrier request first → if denied, paid tool (Cheetah/Q-Unlocker) over pure mtkclient.
+No 2026 sources show a fully free mtkclient-only carrier unlock for SM-A326U.
+Conclusion
+The SM-A326U is a MediaTek Dimensity 720 device, making mtkclient viable for low-level access (preloader/BROM, seccfg unlock, flash ops) but not a direct carrier-unlock solution. Zadig (or better: usbdk) is the driver step. Commands and loaders are documented and recently updated (Mar 2026), but success requires exact matching preloader for your A326USQSHDYB2 build.
+Official/paid commercial tools remain the verified, safest route for network unlock on this US variant. All data cross-verified from GitHub, XDA, YouTube 2025–2026 tutorials, spec databases, and Reddit/forum threads – no single source relied upon.
+Proceed at your own risk; test in a controlled environment with backups.

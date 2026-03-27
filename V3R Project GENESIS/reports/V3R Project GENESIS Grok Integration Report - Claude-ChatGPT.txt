@@ -1,0 +1,254 @@
+SYSTEM SPECIFICATION REPORT: PROJECT V3R_NEXUS (REVISION Ω)
+Subject: Automated Bit-to-Pixel Data Pipeline with Deterministic Multi-Frame Execution
+Prepared For: Systems Lead / Genesis Node Deployment
+Environment: Windows 10 Host | VirtualBox 7.x (Tiny10 Guest) | Android Device (USB-ADB)
+I. EXECUTIVE SUMMARY
+The system enables lossless transmission of structured data via images, bypassing UI constraints by encoding binary data into a 512×512 1-bit PNG format. These images are extracted via ADB automation, decoded at the pixel level, validated, and executed within a controlled VM environment.
+Core Principle
+The image is not visual content — it is a deterministic data container
+Evolution (This Revision)
+The system has been upgraded from:
+Single-frame extraction pipeline
+To:
+Multi-frame, validated, stateful visual protocol
+With strict integrity enforcement, sequencing, and execution control
+II. IMAGE DATA SPECIFICATION (CANONICAL FORMAT)
+1. Base Format (Unchanged Core)
+Resolution: 512 × 512 pixels
+Bit Depth: 1-bit (strict binary)
+Encoding:
+Black pixel = 0
+White pixel = 1
+Total Bits: 262,144 bits
+Total Bytes: 32,768 bytes
+Scan Order: Row-major (left → right, top → bottom)
+2. Frame Segmentation (NEW – REQUIRED)
+The image is no longer treated as a flat payload. It is now a structured frame:
+Plain text
+Rows 0–3     → SYNC + MAGIC
+Rows 4–7     → HEADER
+Rows 8–503   → PAYLOAD
+Rows 504–507 → CRC32 (repeated)
+Rows 508–511 → FOOTER / CONTROL
+3. SYNC + MAGIC (NEW)
+First 64 bits:
+Plain text
+"GENESIS"
+Purpose:
+Detect alignment errors instantly
+Prevent decoding garbage data
+4. HEADER STRUCTURE (NEW)
+Fixed-size binary header (~256 bits):
+Plain text
+MAGIC        (64 bits)
+VERSION      (8 bits)
+FLAGS        (8 bits)
+FRAME_ID     (32 bits)
+TOTAL_FRAMES (32 bits)
+PAYLOAD_LEN  (32 bits)
+ENCODING     (8 bits)   (0=UTF8, 1=ZLIB)
+RESERVED     (72 bits)
+5. PAYLOAD (ENHANCED)
+Original:
+Raw UTF-8 text
+Upgrade (Recommended):
+Python
+payload = zlib.compress(script.encode('utf-8'))
+Benefits:
+Reduced size
+Fewer frames
+Lower corruption surface
+6. CRC VALIDATION (UPGRADED)
+Use CRC32 or CRC64
+Stored in reserved rows
+Repeated for redundancy
+7. FOOTER / CONTROL BLOCK (NEW)
+Used for:
+Execution flags
+End-of-stream markers
+Future extensibility
+III. DATA EXTRACTION PIPELINE (UPDATED)
+1. Safe Image Loading (CRITICAL FIX)
+❌ Original Risk:
+Python
+.convert('1')
+✅ Corrected:
+Python
+im = Image.open('frame.png')
+
+if im.mode != '1':
+    raise ValueError("Image not true 1-bit")
+
+pixels = np.array(im, dtype=np.uint8)
+pixels = (pixels > 0).astype(np.uint8)
+2. Bitstream Reconstruction (UPGRADED)
+❌ Original:
+Python
+int(bit_string, 2)
+✅ Replacement (Streaming Safe):
+Python
+byte_array = bytearray()
+
+for i in range(0, len(pixels), 8):
+    byte = 0
+    for bit in pixels[i:i+8]:
+        byte = (byte << 1) | bit
+    byte_array.append(byte)
+3. Validation Pipeline (STRICT)
+Plain text
+1. Bit Count Check (must be 262,144)
+2. MAGIC Header Check
+3. HEADER Integrity Check
+4. CRC Validation
+If ANY fail:
+Plain text
+→ Reject Frame
+→ Request Resend
+IV. MULTI-FRAME PROTOCOL (NEW CORE LAYER)
+1. Sequencing
+Each frame includes:
+FRAME_ID
+TOTAL_FRAMES
+2. Behavior
+Plain text
+Receive → Validate → Store → Reassemble → Execute
+3. ACK / NACK SYSTEM
+Responses:
+Plain text
+ACK FRAME 0003
+NACK FRAME 0004 CRC_FAIL
+Rule:
+Only failed frames are resent
+4. State Machine (FORMALIZED)
+Plain text
+WAIT_FOR_FRAME
+   ↓
+CAPTURE_IMAGE
+   ↓
+DECODE_BITS
+   ↓
+VALIDATE_HEADER
+   ↓
+CHECK_CRC
+ ↓        ↓
+PASS     FAIL
+ ↓        ↓
+STORE    NACK
+ ↓
+ALL RECEIVED?
+ ↓        ↓
+YES      NO
+ ↓        ↓
+REASSEMBLE
+ ↓
+DECOMPRESS
+ ↓
+VALIDATE EXEC BLOCK
+ ↓
+EXECUTE
+V. AUTOMATION SYSTEM ("WATCHDOG")
+1. Core Functions (Preserved)
+ADB screen polling
+Pixel-based event detection
+Tap simulation
+File extraction
+2. Enhancements
+Replace coordinate tapping with:
+Bash
+adb shell uiautomator dump
+Add fallback:
+Visual hashing (pHash)
+UI text detection
+VI. EXECUTION PIPELINE (HARDENED)
+1. Mandatory Execution Wrapper (NEW)
+Plain text
+BEGIN_EXECUTION_BLOCK
+...
+END_EXECUTION_BLOCK
+Enforcement:
+Reject if missing
+2. Sandbox Gatekeeper (UPDATED)
+Stage 1:
+Syntax validation
+Stage 2:
+Execution permission check
+⚠️ OPPOSITIONAL CHANGE (IMPORTANT)
+REMOVE:
+Levenshtein correction for execution
+Reason:
+Bit errors in code must NOT be “guessed”
+Corrupted commands = dangerous execution
+Replacement:
+Plain text
+IF ERROR → REJECT + REQUEST RESEND
+VII. ERROR HANDLING & RECOVERY
+1. Expected Failures
+Frame corruption
+Missing frames
+UI-induced distortions (future risk)
+2. Recovery Strategy
+CRC-based rejection
+Frame-level retransmission
+No partial execution
+VIII. RISK ANALYSIS (UPDATED)
+1. Rendering Risk
+UI scaling
+compression artifacts
+Mitigation:
+Always decode downloaded PNG
+Never decode screenshots
+2. Color Space Drift
+Even binary images may be altered.
+Mitigation:
+Enforce mode == '1'
+Reject otherwise
+3. IRQ / Performance Spike (Preserved)
+ADB priority → Below Normal
+4. Resolution Trap (Preserved + Reinforced)
+Use raw ADB buffer dimensions only
+5. Vertical Artifact Risk (NEW OBSERVATION)
+Your sample shows structured vertical noise risk
+Future Fix (if needed):
+Block-based bit encoding (2×2 or 4×4)
+IX. OPTIONAL ENHANCEMENTS (NOT REQUIRED)
+1. Block-Based Bit Encoding
+Improves resilience
+Slightly reduces capacity
+2. Interleaving
+Protects against streak corruption
+3. Encryption Layer
+AES before encoding
+4. Compression (RECOMMENDED)
+zlib layer before encoding
+5. Self-Test Frame
+Calibration before execution stream
+X. SYSTEM CHARACTERIZATION
+What This System Now Is:
+A deterministic, multi-frame, error-checked visual communication protocol capable of transmitting executable instruction streams
+What Makes It Unique:
+No OCR
+No heuristics
+No ambiguity
+Full control over encoding and decoding
+My Direct Assessment
+This is no longer a workaround.
+This is effectively:
+A custom air-gap-compatible data transport layer using images as a carrier medium
+And importantly:
+Your constraints (fixed PNG, programmatic generation) make this highly reliable
+Your decision to prioritize reliability over throughput is correct
+Your move to multi-frame sequencing is what makes this scalable
+Where I Push Back (Critical)
+❌ Do NOT allow auto-correction of corrupted payloads
+❌ Do NOT trust any non-binary image input
+❌ Do NOT execute partial or unverified payloads
+Where You Are Strong
+Deterministic bit mapping ✔
+Controlled generation ✔
+Hardware-level extraction ✔
+Execution sandbox concept ✔
+XI. FINAL STATUS
+System State: Architecturally Sound
+Reliability: High (with validation layers)
+Scalability: Enabled via multi-frame protocol
+Execution Safety: Controlled (with enforced constraints)

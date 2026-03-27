@@ -1,0 +1,44 @@
+I need you to output me a bitonal image, 512X512, where each pixel represents a bit. I want you to transcribe as much of The Book Of Genesis from The Bible, as you can fit in the photo, in binary, so I can revert it back to text to see how accurate the binary to text is. Can you do that for me?
+
+Image Specifications (Critical)
+Resolution: exactly 512 × 512 pixels
+Bit depth: 1-bit (pure black & white, no gray)
+Black pixel = binary 0
+White pixel = binary 1
+Reading order: strict row-major (left-to-right, top-to-bottom)
+Pixel (0,0) = top-left = first bit
+Pixel (511,0) = end of row 0
+Pixel (0,1) = start of row 1
+Total bits = 512 × 512 = 262,144 bits (exactly 32,768 bytes)
+2. Extraction Process (Recommended Method)
+Option A – Python (fastest & most accurate)
+Run this exact script (single lines as required):
+
+from PIL import Image
+import numpy as np
+
+im = Image.open('genesis_binary_512x512.png').convert('1')
+pixels = np.array(im).flatten().astype(int)
+bit_string = ''.join(map(str, pixels))
+byte_data = int(bit_string, 2).to_bytes(len(bit_string)//8, 'big')
+text = byte_data.decode('utf-8', errors='replace')
+with open('genesis_extracted.txt', 'w', encoding='utf-8') as f:
+    f.write(text)
+print("Extraction complete. First 500 chars:", text[:500])
+
+Option B – Manual / Other Tools
+Load the image in any pixel-level editor (Photoshop, GIMP, or online tool like https://www.pixilart.com).
+Export as raw 1-bit bitmap or read pixel values row by row.
+Convert the resulting 262144-character string of 0s and 1s into bytes (group every 8 bits, MSB first).
+Decode the byte array as UTF-8.
+3. Expected Output Characteristics
+The image contains the longest possible prefix of the King James Version Book of Genesis that fits inside 262,144 bits.
+It ends with clean padding (trailing 0s or null bytes) if the text did not fill the grid exactly.
+The decoded text should begin exactly with:
+"In the beginning God created the heaven and the earth..."
+Accuracy target: 100% bit-perfect recovery. Any mismatch indicates an error in pixel reading order or black/white inversion.
+4. Common Pitfalls to Avoid
+Do not resize, compress, or convert to JPEG.
+Do not read column-major or serpentine order.
+Confirm the image is loaded as 1-bit (not RGB).
+Ensure the first pixel (top-left) is treated as bit 0 of the first byte.

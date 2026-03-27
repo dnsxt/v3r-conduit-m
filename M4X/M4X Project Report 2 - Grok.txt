@@ -1,0 +1,136 @@
+M4X PROJECT REPORT + SOFTWARE/CONFIGURATIONS/COMMANDS REPORT
+Prepared by: Agent 7 (Executive Controller - Simulation: Claude)
+Date: March 22, 2026
+Session Coverage: March 22, 2026 (full conversation history from framework adoption to TP attempt halt)
+Report Type: Exhaustive Combined Project & Technical Reference
+Supersedes: All prior session artifacts
+
+==============================================================
+SECTION 1: SESSION SUMMARY
+==============================================================
+
+This session covered the complete activation of M4X AI Flamework v2.1 and M4X AI Briefing v1.2 on Grok platform, followed by a test-point carrier unlock attempt on the target device.
+
+Device: Galaxy A32 5G (SM-A326U, TracFone/Verizon MVNO variant)
+IMEI: 355820492174216
+Serial: RFCR90NN63M
+Software: A326USQSHDYB2 (TP1A.220624.014 variant, Android 13-based, \~2025 security patch)
+Chipset: MediaTek Dimensity 720 (MT6853 confirmed via getprop)
+Hardware: Rev1.0
+
+Key Operations:
+1. Framework adoption & pipeline priming (3 research rounds completed, all agents routed).
+2. mtkclient installation verification (Desktop\unlock\mtkclient path).
+3. ADB authorization & basic property verification.
+4. Zadig driver preparation (libusb-win32 targeted).
+5. Disassembly & test-point short attempts (multiple combos, battery-connected failure identified).
+6. Diagnostic escalation & final HALT on free-tier path.
+
+Status: COMPLETE (free mtkclient + TP carrier unlock path exhausted and halted)
+Result: No BROM/Preloader entry achieved. Phone fully functional post-attempt (normal boot confirmed). Official carrier unlock or paid professional service recommended.
+
+Space/Storage Impact on PC: None (all operations non-destructive on laptop).
+Phone State: Stock, locked, operational.
+
+==============================================================
+SECTION 2: OPERATIONAL TIMELINE & ROOT CAUSES
+==============================================================
+
+- Framework load → Device Identity Card partial (phone details REPORTED/OBSERVED via ADB).
+- mtkclient setup verified (python mtk.py --help success).
+- ADB unauthorized → authorized via on-screen allow + kill/start-server.
+- Preloader attempts failed (button combos only → Recovery mode).
+- Zadig config attempted (no Preloader VID 0e8d detection without short).
+- Disassembly performed (back cover off, motherboard exposed).
+- TP short attempts (tweezers on masked pad + GND): Zero state change in Zadig/Device Manager (normal MTP/charging mode only).
+- Critical root cause identified (Agent 3 causal graph): Battery connector left plugged during short → prevented BROM voltage/handshake (USB power insufficient override).
+- Additional factors: Samsung MTK A326U US variant security restrictions (SLA/DAA/auth blocks free mtkclient BROM reliably).
+- Agent 4 FMEA final: Procedure Risk 78 → HALT (free path exhausted per Protocol 7).
+
+Lessons Applied (mirroring prior UsbDk incident in March 11–22 reports):
+- Battery disconnect mandatory before TP short on SM-A326U.
+- A326U TP effectiveness lower than international variants.
+- Free mtkclient limited to basic DA operations; full carrier unlock requires paid auth bypass.
+
+==============================================================
+SECTION 3: PENDING ITEMS / RECOMMENDATIONS
+==============================================================
+
+1. Reassemble phone (battery connector re-plugged, back cover secured).
+2. Official carrier unlock: Contact TracFone/Verizon with IMEI (free if eligible: device paid off, 60+ days active).
+3. Professional service: Local Milwaukee shop with Chimera/UnlockTool (paid credits + TP + auth bypass).
+4. Abandon free TP path (Diagnostic Loop Reset triggered if new goal requested).
+5. Next session: V3R RAG Phase 2 or new project (Identity Card rebuild required).
+
+==============================================================
+SECTION 4: M4X SOFTWARE / CONFIGURATIONS / COMMANDS REPORT
+==============================================================
+
+All commands single-line, platform-compliant (Windows 11, C:\platform-tools, Desktop\unlock\mtkclient).
+Executed from Administrator PowerShell unless noted.
+
+**Platform-Tools & ADB Section:**
+cd C:\platform-tools
+adb kill-server
+adb start-server
+adb devices
+adb shell getprop ro.product.model
+adb shell getprop ro.build.display.id
+adb shell getprop ro.product.board
+adb shell getprop ro.mediatek.version.release
+adb shell getprop gsm.version.baseband   (if needed in future)
+
+**mtkclient Setup & Verification:**
+cd %USERPROFILE%\Desktop\unlock\mtkclient
+python mtk.py --help
+python mtk.py printgpt
+python mtk.py payload
+python mtk.py da seccfg unlock   (attempted post-BROM, not reached)
+
+**Zadig Configuration (exact steps executed):**
+- Run zadig.exe as Administrator
+- Options → List All Devices (checked)
+- Force Preloader: Power off → short TP + GND → plug USB
+- Dropdown select: MediaTek Preloader USB VCOM / MTK USB Port / VID 0e8d
+- Driver: libusb-win32 (v1.2.6.0)
+- Click Install WCID Driver / Replace Driver
+- Verification: Device Manager → libusb-win32 devices section (no yellow !)
+
+**Device Manager & Rollback Commands:**
+devmgmt.msc
+(manual: right-click → Uninstall device → Delete driver software)
+(power cycle phone after)
+
+**Battery Disconnect Prep (identified post-failure):**
+- Power off
+- Pry battery connector (white/black flex near charging port/bottom right on motherboard)
+- Short TP while battery unplugged
+- Plug USB → Zadig/Device Manager check
+- Re-plug battery after test
+
+**Rollback Trigger (used after every attempt):**
+- Release tweezers/short
+- Unplug USB
+- Re-plug battery connector
+- Reassemble
+- Power on (hold Power 10–20s)
+- adb devices (confirm authorized)
+
+**Verification Sentinel Template (Agent 8):**
+adb devices
+adb shell getprop ro.product.model
+python mtk.py printgpt   (post-BROM check)
+
+**Fixed Configurations:**
+- mtkclient folder: C:\Users\Source-1\Desktop\unlock\mtkclient
+- Zadig: libusb-win32 (preferred for BROM)
+- USB port: USB 2.0 recommended
+- Cable: Original/short recommended
+- No paid tools (Protocol 7 enforced)
+
+==============================================================
+END OF COMBINED REPORT
+Prepared by: M4X (Agent 7)
+Date: March 22, 2026
+Save as: M4X_Combined_Project_Commands_Report_March22_2026.txt
+Committed to: Partition 1

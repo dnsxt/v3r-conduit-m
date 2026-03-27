@@ -1,0 +1,37 @@
+These are details on a phone we are going to be carrier unlocking. We need a guide for handling resetting the phone and the Windows machine we will be working with, to cure the "ghost device" problem that occures after you attempt to run the carrier unlock process, and fail. I haven't been able to find a pattern. When another Grok and I were making attempts, I was able to make repeated (>10) jumps before a failed recognition occured. Then I tried with another Grok, attempting to use the preloader bin first instead of the loader, but it would lock out every, or every other attempt. I need levels of resetting (eg. easiest, intermediate, most intensive), so I can find one that works for our circumstances.
+
+Conduct an in-depth first round of research from the most recent sources starting with today and working your way backwards.
+
+When you are finished, say nothing other than, "Done".
+
+
+Conduct an in-depth second round of research from the most recent sources starting with today and working your way backwards.
+
+When you are finished, say nothing other than, "Done".
+
+
+When you are finished, output me an exhaustive A32 Resetting Guide with all of the verified data you found.
+
+
+DNSXT (Finished), DNS (Round 4 Incomplete), DS (Finished), Aux1 (Finished), 
+
+These are details on a phone we are going to be carrier unlocking. We need a guide for handling resetting the phone and the Windows machine we will be working with, to cure the "ghost device" problem that occures after you attempt to run the carrier unlock process, and fail. I haven't been able to find a pattern. When another Grok and I were making attempts, I was able to make repeated (>10) jumps before a failed recognition occured. Then I tried with another Grok, attempting to use the preloader bin first instead of the loader, but it would lock out every, or every other attempt. I need levels of resetting (eg. easiest, intermediate, most intensive), so I can find one that works for our circumstances.
+
+Conduct an in-depth first round of research from the most recent sources starting with today and working your way backwards.
+
+When you are finished, say nothing other than, "Done".
+
+Conduct an in-depth second round of research from the most recent sources starting with today and working your way backwards.
+
+When you are finished, say nothing other than, "Done".
+
+
+Conduct an in-depth second round of research from the most recent sources starting with today and working your way backwards.
+
+When you are finished, say nothing other than, "Done".
+
+
+Conduct an in-depth fourth round of research from the most recent sources starting with today and working your way backwards.
+
+When you are finished, output me an exhaustive A32 Resetting Guide with all of your verified findings.
+
