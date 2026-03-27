@@ -1,0 +1,1047 @@
+================================================================================
+V3R COMMAND HEADER LIBRARY
+Generated: 03/27/26 12:00:00
+================================================================================
+
+USAGE RULES
+-----------
+- "data" = the command, path, or value you supply at the call site.
+- "current shell" = whichever terminal is active when the header fires.
+- All cd navigations use Push-Location (PS) or pushd (CMD) so the caller can
+  pop back to the prior directory when done.
+- Admin headers always prompt UAC unless the session is already elevated.
+- All paths reference the local user profile root: c:\users\source-1
+
+================================================================================
+SECTION 1 — SHELL CONTROL
+================================================================================
+
+\\\ps///
+  While in PowerShell, type data, then hit Enter.
+  If not in PowerShell, switch to an open PowerShell window; if none is open,
+  open one, then type data, then hit Enter.
+
+\\\cmd///
+  While in Command Prompt, enter data, then hit Enter.
+  If not in Command Prompt, switch to an open CMD window; if none is open,
+  open one, then enter data, then hit Enter.
+
+\\\s2_ps///
+  Switch focus to an open PowerShell window.
+  If no PowerShell window is open, open one.
+
+\\\s2_cmd///
+  Switch focus to an open Command Prompt window.
+  If no CMD window is open, open one.
+
+\\\2nd_ps///
+  Open a second PowerShell instance as a new independent window.
+  Do not reuse any existing PowerShell windows.
+
+\\\2nd_cmd///
+  Open a second Command Prompt instance as a new independent window.
+  Do not reuse any existing CMD windows.
+
+\\\wsl///
+  Switch to an open WSL terminal. If none is open, launch WSL with the default
+  distro. Once in WSL, type data, then hit Enter.
+
+\\\s2_wsl///
+  Switch focus to an open WSL window.
+  If no WSL window is open, open one.
+
+\\\2nd_wsl///
+  Open a second WSL instance as a new independent window.
+  Do not reuse any existing WSL windows.
+
+\\\admin_ps///
+  Open a new PowerShell window with elevated (Administrator) privileges.
+  Accept the UAC prompt. Once open, type data, then hit Enter.
+
+\\\admin_cmd///
+  Open a new Command Prompt window with elevated (Administrator) privileges.
+  Accept the UAC prompt. Once open, enter data, then hit Enter.
+
+================================================================================
+SECTION 2 — DIRECTORY NAVIGATION — V3R PROJECT
+================================================================================
+
+\\\v3r_nex///
+  Target directory: c:\users\source-1\desktop\v3r_nexus
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\desktop\v3r_nexus
+  Hit Enter, then enter data, then hit Enter.
+
+\\\v3r_src///
+  Target directory: c:\users\source-1\desktop\v3r_nexus\src
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\desktop\v3r_nexus\src
+  Hit Enter, then enter data, then hit Enter.
+
+\\\v3r_lam///
+  Target directory: c:\users\source-1\desktop\v3r_nexus\lambdas
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\desktop\v3r_nexus\lambdas
+  Hit Enter, then enter data, then hit Enter.
+
+\\\v3r_cfg///
+  Target directory: c:\users\source-1\desktop\v3r_nexus\config
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\desktop\v3r_nexus\config
+  Hit Enter, then enter data, then hit Enter.
+
+\\\v3r_tst///
+  Target directory: c:\users\source-1\desktop\v3r_nexus\tests
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\desktop\v3r_nexus\tests
+  Hit Enter, then enter data, then hit Enter.
+
+\\\v3r_logs///
+  Target directory: c:\users\source-1\desktop\v3r_nexus\logs
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\desktop\v3r_nexus\logs
+  Hit Enter, then enter data, then hit Enter.
+
+\\\v3r_scripts///
+  Target directory: c:\users\source-1\desktop\v3r_nexus\scripts
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\desktop\v3r_nexus\scripts
+  Hit Enter, then enter data, then hit Enter.
+
+================================================================================
+SECTION 3 — DIRECTORY NAVIGATION — USER FOLDERS
+================================================================================
+
+\\\dsktp///
+  Target directory: c:\users\source-1\desktop
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\desktop
+  Hit Enter, then enter data, then hit Enter.
+
+\\\dwnlds///
+  Target directory: c:\users\source-1\downloads
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\downloads
+  Hit Enter, then enter data, then hit Enter.
+
+\\\docs///
+  Target directory: c:\users\source-1\documents
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\documents
+  Hit Enter, then enter data, then hit Enter.
+
+\\\usr_root///
+  Target directory: c:\users\source-1
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1
+  Hit Enter, then enter data, then hit Enter.
+
+\\\appdata///
+  Target directory: c:\users\source-1\appdata\roaming
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\appdata\roaming
+  Hit Enter, then enter data, then hit Enter.
+
+\\\appdata_loc///
+  Target directory: c:\users\source-1\appdata\local
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\appdata\local
+  Hit Enter, then enter data, then hit Enter.
+
+\\\tmp///
+  Target directory: c:\users\source-1\appdata\local\temp
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\users\source-1\appdata\local\temp
+  Hit Enter, then enter data, then hit Enter.
+
+================================================================================
+SECTION 4 — DIRECTORY NAVIGATION — SYSTEM
+================================================================================
+
+\\\c_root///
+  Target directory: c:\
+  If already at c:\, enter data, then hit Enter.
+  If not, run:  cd c:\
+  Hit Enter, then enter data, then hit Enter.
+
+\\\sys32///
+  Target directory: c:\windows\system32
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd c:\windows\system32
+  Hit Enter, then enter data, then hit Enter.
+  Note: Most operations here require an elevated shell.
+
+\\\prog_files///
+  Target directory: c:\program files
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd "c:\program files"
+  Hit Enter, then enter data, then hit Enter.
+
+\\\prog_files_x86///
+  Target directory: c:\program files (x86)
+  If already in this directory, enter data, then hit Enter.
+  If not, run:  cd "c:\program files (x86)"
+  Hit Enter, then enter data, then hit Enter.
+
+\\\python_dir///
+  Target directory: c:\users\source-1\appdata\local\programs\python
+  If already in this directory, enter data, then hit Enter.
+  If not, navigate there first, then enter data, then hit Enter.
+
+\\\pip_dir///
+  Target directory: c:\users\source-1\appdata\roaming\python\scripts
+  If already in this directory, enter data, then hit Enter.
+  If not, navigate there first, then enter data, then hit Enter.
+
+================================================================================
+SECTION 5 — APPLICATION LAUNCHERS
+================================================================================
+
+\\\open_explorer///
+  Open Windows File Explorer.
+  If a current working directory is known, open Explorer to that path.
+  Otherwise open Explorer to c:\users\source-1.
+
+\\\open_vscode///
+  Launch VS Code.
+  If a workspace or directory is implied by recent context, open it with:
+    code <path>
+  Otherwise launch VS Code to its last session.
+
+\\\open_notepad///
+  Open Notepad.
+  If a file path is supplied as data, open that file:
+    notepad data
+
+\\\open_notepad_plus///
+  Open Notepad++.
+  If a file path is supplied as data, open that file:
+    notepad++ data
+
+\\\open_docker///
+  Launch Docker Desktop.
+  Wait for the Docker engine to report as running before issuing further
+  Docker commands.
+
+\\\open_git_bash///
+  Launch Git Bash.
+  If a directory is implied by context, cd into it after launch.
+
+\\\open_python///
+  In the current shell, launch the Python interactive REPL:
+    python
+  If Python is not on PATH, alert the user.
+
+\\\open_pip///
+  In the current shell, run:
+    pip data
+  then hit Enter. If pip is not on PATH, alert the user.
+
+\\\open_aws_cli///
+  Verify the AWS CLI is available in the current shell by running:
+    aws --version
+  If the command is not found, alert the user and suggest install steps.
+  Once confirmed, accept data as the subcommand and run:
+    aws data
+
+\\\open_task_mgr///
+  Open Windows Task Manager:
+    taskmgr
+  Requires no elevation unless the user requests the full detail view.
+
+\\\open_reg_edit///
+  Open Registry Editor:
+    regedit
+  Requires elevation. Confirm UAC prompt before proceeding.
+  Alert the user to back up any key before editing.
+
+\\\open_services///
+  Open Windows Services Manager:
+    services.msc
+  Can be run from any shell without elevation for read access.
+  Write operations require elevation.
+
+\\\open_evt_log///
+  Open Windows Event Viewer:
+    eventvwr.msc
+  No elevation required for viewing. Clearing logs requires elevation.
+
+\\\open_msconfig///
+  Open System Configuration utility:
+    msconfig
+  Used for managing startup items, boot options, and services.
+
+\\\open_devmgr///
+  Open Device Manager:
+    devmgmt.msc
+  Requires elevation for driver changes.
+
+\\\open_disk_mgmt///
+  Open Disk Management:
+    diskmgmt.msc
+  Requires elevation.
+
+\\\open_firewall///
+  Open Windows Defender Firewall with Advanced Security:
+    wf.msc
+  Requires elevation for rule modifications.
+
+================================================================================
+SECTION 6 — GIT COMMANDS
+================================================================================
+
+\\\git_status///
+  In the current shell, within the current or implied repo directory, run:
+    git status
+  then hit Enter.
+
+\\\git_add///
+  In the current shell, run:
+    git add data
+  then hit Enter.
+  data = file path, directory, or . for all changes.
+
+\\\git_commit///
+  In the current shell, run:
+    git commit -m "data"
+  then hit Enter.
+  data = commit message string.
+
+\\\git_push///
+  In the current shell, run:
+    git push data
+  then hit Enter.
+  data = remote and branch, e.g. origin main. If omitted, push to tracking branch.
+
+\\\git_pull///
+  In the current shell, run:
+    git pull data
+  then hit Enter.
+  data = remote and branch. If omitted, pull from tracking branch.
+
+\\\git_fetch///
+  In the current shell, run:
+    git fetch data
+  then hit Enter.
+  data = remote name, e.g. origin. If omitted, fetch all remotes.
+
+\\\git_checkout///
+  In the current shell, run:
+    git checkout data
+  then hit Enter.
+  data = branch name or file path.
+
+\\\git_branch///
+  In the current shell, run:
+    git branch data
+  then hit Enter.
+  data = new branch name to create, or leave empty to list all branches.
+
+\\\git_merge///
+  In the current shell, run:
+    git merge data
+  then hit Enter.
+  data = branch name to merge into the current branch.
+
+\\\git_log///
+  In the current shell, run:
+    git log --oneline --graph --decorate data
+  then hit Enter.
+  data = optional flags or branch name. If omitted, shows full repo log.
+
+\\\git_diff///
+  In the current shell, run:
+    git diff data
+  then hit Enter.
+  data = file path, branch name, or commit hash to compare.
+
+\\\git_stash///
+  In the current shell, run:
+    git stash data
+  then hit Enter.
+  data = subcommand: push, pop, list, drop, apply. If omitted, defaults to push.
+
+\\\git_clone///
+  In the current shell, navigate to the target parent directory first, then run:
+    git clone data
+  then hit Enter.
+  data = repository URL, optionally followed by a local folder name.
+
+\\\git_reset///
+  In the current shell, run:
+    git reset data
+  then hit Enter.
+  data = flag and commit ref, e.g. --soft HEAD~1 or --hard HEAD.
+  Warn user before any --hard reset.
+
+\\\git_tag///
+  In the current shell, run:
+    git tag data
+  then hit Enter.
+  data = tag name and optional commit hash.
+
+================================================================================
+SECTION 7 — DOCKER COMMANDS
+================================================================================
+
+\\\dkr_build///
+  In the current shell, within the directory containing the Dockerfile, run:
+    docker buildx build --platform linux/amd64 -t data .
+  then hit Enter.
+  data = full image tag, e.g. ecr-uri/repo:tag.
+  Always use --platform linux/amd64 per V3R build rules.
+
+\\\dkr_push///
+  In the current shell, run:
+    docker push data
+  then hit Enter.
+  data = full ECR image URI including tag.
+  Ensure docker login / ECR auth has been completed before pushing.
+
+\\\dkr_pull///
+  In the current shell, run:
+    docker pull data
+  then hit Enter.
+  data = image name and tag.
+
+\\\dkr_run///
+  In the current shell, run:
+    docker run data
+  then hit Enter.
+  data = flags and image name, e.g. --rm -it myimage:latest.
+
+\\\dkr_ps///
+  In the current shell, run:
+    docker ps data
+  then hit Enter.
+  data = optional flag. Use -a to include stopped containers.
+
+\\\dkr_stop///
+  In the current shell, run:
+    docker stop data
+  then hit Enter.
+  data = container ID or container name.
+
+\\\dkr_rm///
+  In the current shell, run:
+    docker rm data
+  then hit Enter.
+  data = container ID or container name. Add -f to force remove a running container.
+
+\\\dkr_rmi///
+  In the current shell, run:
+    docker rmi data
+  then hit Enter.
+  data = image ID or image name:tag. Add -f to force.
+
+\\\dkr_logs///
+  In the current shell, run:
+    docker logs data
+  then hit Enter.
+  data = container ID or name. Append --follow to stream live logs.
+
+\\\dkr_exec///
+  In the current shell, run:
+    docker exec -it data
+  then hit Enter.
+  data = container ID or name followed by the command, e.g. mycontainer /bin/bash.
+
+\\\dkr_images///
+  In the current shell, run:
+    docker images data
+  then hit Enter.
+  data = optional repository filter. If omitted, lists all local images.
+
+\\\dkr_compose_up///
+  In the current shell, within the directory containing docker-compose.yml, run:
+    docker compose up data
+  then hit Enter.
+  data = optional flags, e.g. -d for detached mode.
+
+\\\dkr_compose_down///
+  In the current shell, within the directory containing docker-compose.yml, run:
+    docker compose down data
+  then hit Enter.
+  data = optional flags, e.g. --volumes to also remove named volumes.
+
+\\\dkr_system_prune///
+  In the current shell, run:
+    docker system prune data
+  then hit Enter.
+  data = optional flag. Use -a to also remove all unused images.
+  Warn user before running — this is destructive.
+
+================================================================================
+SECTION 8 — AWS CLI COMMANDS
+================================================================================
+
+\\\aws_cfg///
+  In the current shell, run:
+    aws configure data
+  then hit Enter.
+  data = optional profile flag, e.g. --profile myprofile.
+  Steps through Access Key, Secret Key, region, and output format prompts.
+
+\\\aws_whoami///
+  In the current shell, run:
+    aws sts get-caller-identity
+  then hit Enter.
+  Confirms which IAM identity is active.
+
+\\\aws_s3_ls///
+  In the current shell, run:
+    aws s3 ls data
+  then hit Enter.
+  data = optional bucket name or s3://bucket/prefix path.
+
+\\\aws_s3_cp///
+  In the current shell, run:
+    aws s3 cp data
+  then hit Enter.
+  data = source path and destination path, e.g. file.txt s3://bucket/prefix/.
+  Add --recursive for directories.
+
+\\\aws_s3_sync///
+  In the current shell, run:
+    aws s3 sync data
+  then hit Enter.
+  data = source and destination, e.g. ./local-dir s3://bucket/prefix.
+
+\\\aws_s3_rm///
+  In the current shell, run:
+    aws s3 rm data
+  then hit Enter.
+  data = s3://bucket/key. Add --recursive to remove a prefix.
+  Warn user before running — this is destructive.
+
+\\\aws_lam_list///
+  In the current shell, run:
+    aws lambda list-functions
+  then hit Enter.
+  Outputs all Lambda functions in the configured region.
+
+\\\aws_lam_invoke///
+  In the current shell, run:
+    aws lambda invoke --function-name data /tmp/lambda_out.json
+  then hit Enter.
+  data = Lambda function name or ARN.
+
+\\\aws_lam_update///
+  In the current shell, run:
+    aws lambda update-function-code --function-name data
+  then hit Enter.
+  data = function name followed by --image-uri or --zip-file flags and values.
+
+\\\aws_lam_logs///
+  In the current shell, run:
+    aws logs tail /aws/lambda/data --follow
+  then hit Enter.
+  data = Lambda function name. Streams live CloudWatch logs.
+
+\\\aws_dyn_scan///
+  In the current shell, run:
+    aws dynamodb scan --table-name data
+  then hit Enter.
+  data = DynamoDB table name.
+
+\\\aws_dyn_get///
+  In the current shell, run:
+    aws dynamodb get-item --table-name data
+  then hit Enter.
+  data = table name followed by --key JSON, e.g. v3r-keys --key '{"id":{"S":"groq"}}'
+
+\\\aws_dyn_put///
+  In the current shell, run:
+    aws dynamodb put-item --table-name data
+  then hit Enter.
+  data = table name followed by --item JSON.
+
+\\\aws_dyn_del///
+  In the current shell, run:
+    aws dynamodb delete-item --table-name data
+  then hit Enter.
+  data = table name followed by --key JSON.
+  Warn user before running — this is destructive.
+
+\\\aws_ecr_login///
+  In the current shell, run:
+    aws ecr get-login-password --region data | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com
+  Substitute data = AWS region, e.g. us-east-1.
+  This authenticates Docker to push/pull from ECR.
+
+\\\aws_ecr_list///
+  In the current shell, run:
+    aws ecr list-images --repository-name data
+  then hit Enter.
+  data = ECR repository name.
+
+\\\aws_ecr_desc///
+  In the current shell, run:
+    aws ecr describe-repositories
+  then hit Enter.
+  Lists all ECR repositories in the configured account and region.
+
+================================================================================
+SECTION 9 — PYTHON AND PIP COMMANDS
+================================================================================
+
+\\\py_run///
+  In the current shell, run:
+    python data
+  then hit Enter.
+  data = script filename or path, with optional arguments.
+
+\\\py_repl///
+  In the current shell, launch the Python interactive REPL:
+    python
+  then hit Enter. Exit with exit() or Ctrl+Z then Enter.
+
+\\\py_version///
+  In the current shell, run:
+    python --version
+  then hit Enter.
+
+\\\pip_inst///
+  In the current shell, run:
+    pip install data
+  then hit Enter.
+  data = package name(s), e.g. boto3 requests. Add --upgrade to upgrade existing.
+
+\\\pip_inst_req///
+  In the current shell, navigate to the directory containing requirements.txt,
+  then run:
+    pip install -r requirements.txt
+  then hit Enter.
+
+\\\pip_uninst///
+  In the current shell, run:
+    pip uninstall data -y
+  then hit Enter.
+  data = package name(s).
+
+\\\pip_list///
+  In the current shell, run:
+    pip list
+  then hit Enter.
+  Outputs all installed packages and versions.
+
+\\\pip_freeze///
+  In the current shell, run:
+    pip freeze
+  then hit Enter.
+  Outputs installed packages in requirements.txt format. Pipe with > to save:
+    pip freeze > requirements.txt
+
+\\\pip_show///
+  In the current shell, run:
+    pip show data
+  then hit Enter.
+  data = package name. Shows version, location, and dependencies.
+
+\\\venv_create///
+  In the current shell, navigate to the project root, then run:
+    python -m venv data
+  then hit Enter.
+  data = name of the virtual environment folder, e.g. .venv
+
+\\\venv_act///
+  In the current shell (PowerShell), run:
+    data\Scripts\Activate.ps1
+  then hit Enter.
+  data = path to the virtual environment folder, e.g. .venv
+  For CMD, use:  data\Scripts\activate.bat
+
+\\\venv_deact///
+  In the current shell, run:
+    deactivate
+  then hit Enter.
+
+================================================================================
+SECTION 10 — NETWORK COMMANDS
+================================================================================
+
+\\\ping///
+  In the current shell, run:
+    ping data
+  then hit Enter.
+  data = hostname or IP address. Add -n COUNT (CMD) or -Count COUNT (PS)
+  to limit attempts.
+
+\\\ipconfig///
+  In the current shell, run:
+    ipconfig data
+  then hit Enter.
+  data = optional flag. Use /all for full adapter details.
+  Use /release and /renew to cycle DHCP.
+
+\\\nslookup///
+  In the current shell, run:
+    nslookup data
+  then hit Enter.
+  data = hostname or IP address to resolve.
+
+\\\tracert///
+  In the current shell, run:
+    tracert data
+  then hit Enter.
+  data = hostname or IP address.
+
+\\\netstat///
+  In the current shell, run:
+    netstat data
+  then hit Enter.
+  data = optional flags. Use -ano for all connections with PIDs.
+  Use -b (elevated) to show owning executables.
+
+\\\test_conn///
+  In PowerShell, run:
+    Test-NetConnection -ComputerName data
+  then hit Enter.
+  data = hostname or IP, optionally followed by -Port NUMBER.
+
+\\\curl///
+  In the current shell, run:
+    curl data
+  then hit Enter.
+  data = URL with optional flags, e.g. -X POST -H "Content-Type: application/json" -d '{}' https://api.example.com
+
+\\\dns_flush///
+  In an elevated CMD or PowerShell, run:
+    ipconfig /flushdns
+  then hit Enter.
+
+\\\port_check///
+  In PowerShell, run:
+    Test-NetConnection -ComputerName data -Port PORT
+  Replace data = hostname or IP, PORT = port number.
+
+================================================================================
+SECTION 11 — PROCESS MANAGEMENT
+================================================================================
+
+\\\tasklist///
+  In CMD, run:
+    tasklist data
+  then hit Enter.
+  data = optional filter, e.g. /FI "IMAGENAME eq python.exe"
+
+\\\get_proc///
+  In PowerShell, run:
+    Get-Process data
+  then hit Enter.
+  data = process name (wildcard supported), or leave empty for all processes.
+
+\\\taskkill///
+  In CMD, run:
+    taskkill /PID data /F
+  then hit Enter.
+  data = process ID number.
+  Use /IM imagename.exe to kill by name instead of PID.
+
+\\\stop_proc///
+  In PowerShell, run:
+    Stop-Process -Id data -Force
+  then hit Enter.
+  data = process ID. Use -Name "processname" to stop by name instead.
+
+\\\start_proc///
+  In PowerShell, run:
+    Start-Process data
+  then hit Enter.
+  data = executable path or name, with optional -ArgumentList and -Verb RunAs
+  for elevation.
+
+\\\get_svc///
+  In PowerShell, run:
+    Get-Service data
+  then hit Enter.
+  data = service name or wildcard, e.g. W32* Leave empty for all services.
+
+\\\start_svc///
+  In PowerShell (elevated), run:
+    Start-Service data
+  then hit Enter.
+  data = service name.
+
+\\\stop_svc///
+  In PowerShell (elevated), run:
+    Stop-Service data
+  then hit Enter.
+  data = service name.
+
+\\\restart_svc///
+  In PowerShell (elevated), run:
+    Restart-Service data
+  then hit Enter.
+  data = service name.
+
+================================================================================
+SECTION 12 — FILE OPERATIONS
+================================================================================
+
+\\\ls///
+  In PowerShell, run:
+    Get-ChildItem data
+  then hit Enter.
+  data = optional path and flags, e.g. -Force to show hidden files.
+  In CMD equivalent:  dir data
+
+\\\mkdir///
+  In the current shell, run:
+    mkdir data
+  then hit Enter.
+  data = directory name or full path to create.
+  In PowerShell also accepts:  New-Item -ItemType Directory -Path data
+
+\\\rmdir///
+  In CMD, run:
+    rmdir /s /q data
+  then hit Enter.
+  data = directory path.
+  In PowerShell:  Remove-Item -Recurse -Force data
+  Warn user before running — this is destructive.
+
+\\\copy_f///
+  In CMD, run:
+    copy data
+  then hit Enter.
+  data = source path and destination path.
+  In PowerShell:  Copy-Item -Path source -Destination dest -Recurse
+
+\\\move_f///
+  In CMD, run:
+    move data
+  then hit Enter.
+  data = source path and destination path.
+  In PowerShell:  Move-Item -Path source -Destination dest
+
+\\\del_f///
+  In CMD, run:
+    del /f /q data
+  then hit Enter.
+  data = file path or wildcard.
+  In PowerShell:  Remove-Item -Force data
+  Warn user before running — this is destructive.
+
+\\\ren_f///
+  In CMD, run:
+    ren data
+  then hit Enter.
+  data = current filename followed by new filename.
+  In PowerShell:  Rename-Item -Path oldname -NewName newname
+
+\\\type_f///
+  In CMD, run:
+    type data
+  then hit Enter.
+  data = file path. Outputs file contents to the terminal.
+  In PowerShell:  Get-Content data
+
+\\\find_f///
+  In PowerShell, run:
+    Get-ChildItem -Recurse -Filter data
+  then hit Enter.
+  data = filename or wildcard pattern, optionally preceded by -Path to scope.
+
+\\\grep_f///
+  In PowerShell, run:
+    Select-String -Path data
+  then hit Enter.
+  data = file path(s) followed by -Pattern "searchterm"
+  In CMD:  findstr data
+
+\\\zip_f///
+  In PowerShell, run:
+    Compress-Archive -Path data -DestinationPath archive.zip
+  then hit Enter.
+  data = source path or wildcard.
+
+\\\unzip_f///
+  In PowerShell, run:
+    Expand-Archive -Path data -DestinationPath .
+  then hit Enter.
+  data = path to the .zip file.
+
+================================================================================
+SECTION 13 — SYSTEM INFORMATION
+================================================================================
+
+\\\sys_info///
+  In PowerShell, run:
+    Get-ComputerInfo
+  then hit Enter.
+  Outputs detailed hardware and OS information.
+  In CMD equivalent:  systeminfo
+
+\\\env_vars///
+  In PowerShell, run:
+    Get-ChildItem Env: data
+  then hit Enter.
+  data = optional variable name filter, e.g. PATH Leave empty for all.
+  In CMD:  set data
+
+\\\set_env///
+  In PowerShell, run:
+    $env:data
+  then hit Enter.
+  data = VARNAME = "value" to set a session-scoped environment variable.
+  For persistent machine-level variables use:
+    [System.Environment]::SetEnvironmentVariable("VARNAME","value","Machine")
+
+\\\disk_usage///
+  In PowerShell, run:
+    Get-PSDrive data
+  then hit Enter.
+  data = optional drive letter, e.g. C Leave empty for all drives.
+  In CMD:  wmic logicaldisk get size,freespace,caption
+
+\\\os_version///
+  In PowerShell, run:
+    [System.Environment]::OSVersion
+  then hit Enter.
+  Also useful:  winver (launches the graphical version dialog)
+
+\\\uptime///
+  In PowerShell, run:
+    (Get-Date) - (gcim Win32_OperatingSystem).LastBootUpTime
+  then hit Enter.
+
+\\\cpu_info///
+  In PowerShell, run:
+    Get-WmiObject Win32_Processor | Select-Object Name, NumberOfCores, MaxClockSpeed
+  then hit Enter.
+
+\\\mem_info///
+  In PowerShell, run:
+    Get-WmiObject Win32_PhysicalMemory | Select-Object Capacity, Speed, Manufacturer
+  then hit Enter.
+
+\\\who_am_i///
+  In the current shell, run:
+    whoami
+  then hit Enter.
+  Add /all in CMD for full group and privilege listing.
+  In PowerShell:  [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+
+================================================================================
+SECTION 14 — POWERSHELL SPECIFIC
+================================================================================
+
+\\\ps_profile///
+  In PowerShell, open the current user profile script:
+    notepad $PROFILE
+  then hit Enter. Creates the file if it does not exist.
+
+\\\ps_exec_policy///
+  In PowerShell (elevated), run:
+    Set-ExecutionPolicy data -Scope CurrentUser
+  then hit Enter.
+  data = policy level: Restricted, RemoteSigned, Unrestricted, Bypass.
+  Recommended for scripts:  RemoteSigned
+
+\\\ps_get_history///
+  In PowerShell, run:
+    Get-History data
+  then hit Enter.
+  data = optional -Count NUMBER to limit output.
+
+\\\ps_clear_history///
+  In PowerShell, run:
+    Clear-History
+  then hit Enter.
+
+\\\ps_alias///
+  In PowerShell, run:
+    Get-Alias data
+  then hit Enter.
+  data = optional alias name to look up. Leave empty to list all aliases.
+
+\\\ps_measure///
+  In PowerShell, pipe a command into:
+    Measure-Object data
+  then hit Enter.
+  data = optional property flags, e.g. -Line -Word -Character for text,
+  or -Property Size -Sum for numeric aggregation.
+
+\\\ps_export_csv///
+  In PowerShell, pipe a command into:
+    Export-Csv -Path data -NoTypeInformation
+  then hit Enter.
+  data = output file path, e.g. .\output.csv
+
+\\\ps_out_file///
+  In PowerShell, pipe a command into:
+    Out-File -FilePath data
+  then hit Enter.
+  data = output file path. Add -Append to append rather than overwrite.
+
+\\\ps_invoke_web///
+  In PowerShell, run:
+    Invoke-WebRequest -Uri data
+  then hit Enter.
+  data = URL. Add -OutFile filepath to download. Use .Content for body text.
+
+\\\ps_invoke_rest///
+  In PowerShell, run:
+    Invoke-RestMethod -Uri data
+  then hit Enter.
+  data = URL with optional -Method, -Headers, and -Body parameters.
+
+================================================================================
+SECTION 15 — MISCELLANEOUS / UTILITY
+================================================================================
+
+\\\cls///
+  In the current shell, run:
+    cls
+  then hit Enter.
+  Clears the terminal screen.
+  In PowerShell also accepts:  Clear-Host
+
+\\\history///
+  In CMD, run:
+    doskey /history
+  then hit Enter.
+  In PowerShell:  Get-History
+
+\\\path_check///
+  In the current shell, run:
+    echo %PATH%
+  then hit Enter.
+  In PowerShell:  $env:PATH -split ";"
+
+\\\hash_file///
+  In PowerShell, run:
+    Get-FileHash data
+  then hit Enter.
+  data = file path. Default algorithm is SHA256.
+  Add -Algorithm MD5 or -Algorithm SHA1 to change.
+
+\\\clip///
+  Pipe any command output into:
+    | clip
+  to copy it to the Windows clipboard.
+  Example:  cat file.txt | clip
+
+\\\exit_shell///
+  In the current shell, run:
+    exit
+  then hit Enter.
+  Closes the current terminal window or ends the current shell session.
+
+\\\reboot///
+  In an elevated shell, run:
+    shutdown /r /t 0
+  then hit Enter.
+  Warn user before running. Immediate restart with no delay.
+
+\\\shutdown///
+  In an elevated shell, run:
+    shutdown /s /t 0
+  then hit Enter.
+  Warn user before running. Immediate shutdown with no delay.
+
+================================================================================
+END OF V3R COMMAND HEADER LIBRARY
+Total headers defined: 131
+================================================================================

@@ -1,0 +1,345 @@
+V3R COMMAND HEADER LIBRARY
+Generated: 03/27/26 12:00:00
+Total headers: 65
+---------------------------
+
+USAGE
+-----
+"data" = the command, value, or argument supplied at call site.
+All paths: c:\users\source-1 as user root.
+PS = PowerShell preferred unless noted.
+
+---------------------------------
+SECTION 1 — SHELL CONTROL (8)
+---------------------------------
+
+\\\ps///
+In PS, type data then Enter. If not in PS, switch to or open PS, type data, Enter.
+
+\\\cmd///
+In CMD, type data then Enter. If not in CMD, switch to or open CMD, type data, Enter.
+
+\\\s2_ps///
+Switch to open PS window. If none, open one.
+
+\\\s2_cmd///
+Switch to open CMD window. If none, open one.
+
+\\\2nd_ps///
+Open a second PS instance.
+
+\\\2nd_cmd///
+Open a second CMD instance.
+
+\\\admin_ps///
+Open new PS window as Administrator. Type data, Enter.
+
+\\\admin_cmd///
+Open new CMD window as Administrator. Type data, Enter.
+
+-----------------------------------------
+SECTION 2 — DIRECTORY NAVIGATION (9)
+-----------------------------------------
+
+\\\v3r_nex///
+cd c:\users\source-1\desktop\v3r_nexus then run data.
+
+\\\v3r_lam///
+cd c:\users\source-1\desktop\v3r_nexus\lambdas then run data.
+
+\\\v3r_cfg///
+cd c:\users\source-1\desktop\v3r_nexus\config then run data.
+
+\\\v3r_scripts///
+cd c:\users\source-1\desktop\v3r_nexus\scripts then run data.
+
+\\\dsktp///
+cd c:\users\source-1\desktop then run data.
+
+\\\dwnlds///
+cd c:\users\source-1\downloads then run data.
+
+\\\docs///
+cd c:\users\source-1\documents then run data.
+
+\\\tmp///
+cd c:\users\source-1\appdata\local\temp then run data.
+
+\\\c_root///
+cd c:\ then run data.
+
+--------------------------------------
+SECTION 3 — APP LAUNCHERS (6)
+--------------------------------------
+
+\\\open_explorer///
+Open File Explorer. If directory implied by context, open to that path.
+
+\\\open_vscode///
+Launch VS Code. If workspace implied, run: code <path>
+
+\\\open_docker///
+Launch Docker Desktop. Wait for engine running before issuing Docker commands.
+
+\\\open_python///
+PS: python
+
+\\\open_task_mgr///
+Run: taskmgr
+
+\\\open_evt_log///
+Run: eventvwr.msc
+
+--------------------------
+SECTION 4 — GIT (10)
+--------------------------
+
+\\\git_status///
+PS: git status
+
+\\\git_add///
+PS: git add data
+data = path, dir, or . for all.
+
+\\\git_commit///
+PS: git commit -m "data"
+
+\\\git_push///
+PS: git push data
+data = remote branch, e.g. origin main. Omit for tracking branch.
+
+\\\git_pull///
+PS: git pull data
+Omit data for tracking branch.
+
+\\\git_checkout///
+PS: git checkout data
+data = branch name or file path.
+
+\\\git_log///
+PS: git log --oneline --graph --decorate data
+
+\\\git_stash///
+PS: git stash data
+data = push, pop, list, drop, or apply. Omit to default push.
+
+\\\git_clone///
+Navigate to parent dir first. PS: git clone data
+data = repo URL and optional folder name.
+
+\\\git_reset///
+PS: git reset data
+data = flag + ref, e.g. --soft HEAD~1 or --hard HEAD.
+
+----------------------------
+SECTION 5 — DOCKER (7)
+----------------------------
+
+\\\dkr_build///
+PS: docker buildx build --platform linux/amd64 -t data .
+data = full image tag. Always use --platform linux/amd64.
+
+\\\dkr_push///
+PS: docker push data
+data = full ECR URI with tag. Ensure ECR auth completed first.
+
+\\\dkr_run///
+PS: docker run data
+data = flags and image name.
+
+\\\dkr_ps///
+PS: docker ps data
+data = omit for running only; -a for all.
+
+\\\dkr_logs///
+PS: docker logs data
+data = container ID or name. Append --follow to stream.
+
+\\\dkr_exec///
+PS: docker exec -it data
+data = container ID or name + command, e.g. mycontainer /bin/bash
+
+\\\dkr_system_prune///
+PS: docker system prune data
+data = omit for default; -a to also remove unused images.
+
+------------------------------
+SECTION 6 — AWS CLI (8)
+------------------------------
+
+\\\aws_whoami///
+PS: aws sts get-caller-identity
+
+\\\aws_s3_ls///
+PS: aws s3 ls data
+data = optional bucket or s3://bucket/prefix.
+
+\\\aws_s3_cp///
+PS: aws s3 cp data
+data = source dest. Add --recursive for dirs.
+
+\\\aws_lam_list///
+PS: aws lambda list-functions
+
+\\\aws_lam_update///
+PS: aws lambda update-function-code --function-name data
+data = function name + --image-uri or --zip-file flags.
+
+\\\aws_lam_logs///
+PS: aws logs tail /aws/lambda/data --follow
+data = function name.
+
+\\\aws_dyn_scan///
+PS: aws dynamodb scan --table-name data
+
+\\\aws_ecr_login///
+PS: aws ecr get-login-password --region data | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com
+data = AWS region, e.g. us-east-1.
+
+----------------------------------------
+SECTION 7 — PYTHON AND PIP (6)
+----------------------------------------
+
+\\\py_run///
+PS: python data
+data = script path and optional args.
+
+\\\pip_inst///
+PS: pip install data
+data = package name(s). Add --upgrade to upgrade.
+
+\\\pip_inst_req///
+Navigate to dir with requirements.txt first.
+PS: pip install -r requirements.txt
+
+\\\pip_list///
+PS: pip list
+
+\\\pip_freeze///
+PS: pip freeze
+To save: pip freeze > requirements.txt
+
+\\\venv_act///
+PS: data\Scripts\Activate.ps1
+data = venv folder path, e.g. .venv
+
+-----------------------------
+SECTION 8 — NETWORK (5)
+-----------------------------
+
+\\\ping///
+PS: ping data
+data = hostname or IP. Add -Count N to limit.
+
+\\\test_conn///
+PS: Test-NetConnection -ComputerName data
+data = hostname or IP. Append -Port NUMBER for port check.
+
+\\\ipconfig///
+CMD: ipconfig data
+data = omit for summary; /all for full detail; /flushdns to flush.
+
+\\\curl///
+PS: curl data
+data = URL with optional flags, e.g. -Method POST -Headers @{} -Body '{}'
+
+\\\web_search///
+PS instant answer: Invoke-RestMethod "https://api.duckduckgo.com/?q=data&format=json" | Select-Object -ExpandProperty AbstractText
+PS open browser: Start-Process "https://www.google.com/search?q=data"
+data = search query. Replace spaces with +.
+
+-----------------------------------------
+SECTION 9 — PROCESS MANAGEMENT (4)
+-----------------------------------------
+
+\\\get_proc///
+PS: Get-Process data
+data = process name (wildcard ok). Omit for all.
+
+\\\stop_proc///
+PS: Stop-Process -Id data -Force
+data = PID. Use -Name "name" to stop by name.
+
+\\\get_svc///
+PS: Get-Service data
+data = service name or wildcard. Omit for all.
+
+\\\restart_svc///
+PS: Restart-Service data
+
+---------------------------------
+SECTION 10 — FILE OPS (7)
+---------------------------------
+
+\\\ls///
+PS: Get-ChildItem data
+data = optional path + flags. Use -Force for hidden files.
+
+\\\mkdir///
+PS: mkdir data
+
+\\\del_f///
+PS: Remove-Item -Force data
+data = file path or wildcard.
+
+\\\copy_f///
+PS: Copy-Item -Path source -Destination dest -Recurse
+
+\\\find_f///
+PS: Get-ChildItem -Recurse -Filter data
+data = filename or wildcard.
+
+\\\grep_f///
+PS: Select-String -Path data -Pattern "term"
+
+\\\type_f///
+PS: Get-Content data
+
+---------------------------------------
+SECTION 11 — SYSTEM INFO (5)
+---------------------------------------
+
+\\\sys_info///
+PS: Get-ComputerInfo
+
+\\\env_vars///
+PS: Get-ChildItem Env: data
+data = optional var name. Omit for all.
+
+\\\set_env///
+PS: $env:VARNAME = "value"
+Persistent: [System.Environment]::SetEnvironmentVariable("NAME","value","Machine")
+
+\\\disk_usage///
+PS: Get-PSDrive data
+data = drive letter, e.g. C. Omit for all.
+
+\\\who_am_i///
+PS: whoami
+
+--------------------------------------
+SECTION 12 — PS UTILITIES (5)
+--------------------------------------
+
+\\\ps_invoke_rest///
+PS: Invoke-RestMethod -Uri data
+data = URL with optional -Method, -Headers, -Body params.
+
+\\\ps_out_file///
+Pipe into: Out-File -FilePath data
+data = output path. Add -Append to append.
+
+\\\hash_file///
+PS: Get-FileHash data
+data = file path. Default SHA256. Add -Algorithm MD5 to change.
+
+\\\cls///
+PS: Clear-Host
+
+\\\clip///
+Pipe any output into: | clip
+Copies result to Windows clipboard.
+
+-------------------
+END OF LIBRARY
+-------------------

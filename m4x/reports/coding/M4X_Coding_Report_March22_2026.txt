@@ -1,0 +1,186 @@
+M4X CODING REPORT
+Prepared by: M4X (Claude)
+Date: March 22, 2026
+Session Coverage: March 11, 2026 — March 22, 2026
+Report Type: Full Technical Coding and Command Reference
+
+==============================================================
+SECTION 1: POWERSHELL COMMANDS EXECUTED — STORAGE CLEANUP
+==============================================================
+
+DRIVE ANALYSIS:
+Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object Size, FreeSpace
+Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object @{N='FreeGB';E={[math]::Round($_.FreeSpace/1GB,2)}}
+Get-Item C:\pagefile.sys -Force | Select-Object Name, Length
+Get-Item C:\hiberfil.sys -Force | Select-Object Name, Length
+Get-WmiObject -Query "SELECT * FROM CIM_DataFile WHERE Name='C:\\hiberfil.sys'"
+(Get-WmiObject Win32_OperatingSystem).FreePhysicalMemory
+
+FOLDER SIZE SCANNING:
+Get-ChildItem C:\ -Directory | ForEach-Object { $size = (Get-ChildItem $_.FullName -Recurse -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum; [PSCustomObject]@{Folder=$_.FullName; SizeGB=[math]::Round($size/1GB,2)} } | Sort-Object SizeGB -Descending
+"{0:N2} GB" -f ((Get-ChildItem 'C:\ProgramData' -Recurse -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum / 1GB)
+Get-ChildItem "C:\Users\Source-1\AppData\Local" -Directory -ErrorAction SilentlyContinue | ForEach-Object { $s = (Get-ChildItem $_.FullName -Recurse -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum; [PSCustomObject]@{Folder=$_.Name; SizeGB=[math]::Round($s/1GB,2)} } | Sort-Object SizeGB -Descending | Select-Object -First 15
+Get-ChildItem "C:\ProgramData" -Directory -ErrorAction SilentlyContinue | ForEach-Object { $s = (Get-ChildItem $_.FullName -Recurse -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum; [PSCustomObject]@{Folder=$_.Name; SizeGB=[math]::Round($s/1GB,2)} } | Sort-Object SizeGB -Descending | Select-Object -First 15
+
+SHADOW COPY MANAGEMENT:
+vssadmin list shadowstorage
+(Get-WmiObject Win32_ShadowCopy).Count
+vssadmin delete shadows /all /quiet
+
+SYSTEM FILE ANALYSIS:
+powercfg /hibernate /size 0
+powercfg /hibernate off
+Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*UsbDk*" } | ForEach-Object { $_.Uninstall() }
+
+CLEANUP COMMANDS:
+Remove-Item "C:\ProgramData\RSA" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "C:\Users\Source-1\AppData\Local\1Docker" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "C:\Users\Source-1\AppData\Local\Google\Chrome\User Data\Default\Cache\*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "C:\Users\Source-1\AppData\Local\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "C:\ProgramData\Package Cache\*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "C:\Windows\SoftwareDistribution\Download\*" -Recurse -Force -ErrorAction SilentlyContinue
+pip cache purge
+shutdown /r /t 0
+
+DEVICE MANAGER:
+devmgmt.msc
+
+==============================================================
+SECTION 2: ADB COMMANDS EXECUTED — USB RECOVERY AND WIRELESS
+==============================================================
+
+SERVER MANAGEMENT:
+.\adb.exe kill-server
+.\adb.exe start-server
+
+DEVICE DETECTION:
+.\adb.exe devices
+
+WIRELESS PAIRING AND CONNECTION:
+.\adb.exe pair 192.168.137.77:46503
+.\adb.exe connect 192.168.137.77:42201
+
+USB FUNCTION CONTROL:
+.\adb.exe shell svc usb getFunctions
+.\adb.exe shell svc usb setFunctions mtp
+.\adb.exe shell svc usb setScreenUnlockedFunctions mtp
+.\adb.exe shell svc usb resetUsbGadget
+.\adb.exe shell svc usb getUsbSpeed
+.\adb.exe shell svc usb getGadgetHalVersion
+.\adb.exe shell svc usb getUsbHalVersion
+
+DEVICE PROPERTIES:
+.\adb.exe shell getprop gsm.version.baseband
+.\adb.exe shell getprop gsm.operator.alpha
+.\adb.exe shell getprop | findstr "baseband\|gsm\|radio\|modem\|ril"
+.\adb.exe shell settings put global usb_mtp_enabled 1
+.\adb.exe shell setprop persist.sys.usb.config mtp,adb
+
+REBOOT:
+.\adb.exe reboot
+
+==============================================================
+SECTION 3: FASTBOOT COMMANDS — REFERENCE (NOT YET EXECUTED)
+==============================================================
+
+NOTE: These commands are documented for future reference. The UsbDk incident was resolved before fastboot flashing was needed.
+
+.\fastboot.exe devices
+.\fastboot.exe flash modem NON-HLOS.bin
+.\fastboot.exe flash fsg fsg.mbn
+.\fastboot.exe erase modemst1
+.\fastboot.exe erase modemst2
+.\fastboot.exe reboot
+
+==============================================================
+SECTION 4: PLATFORM-TOOLS LOCATION AND USAGE
+==============================================================
+
+Location: C:\platform-tools
+Navigate to: cd C:\platform-tools
+ADB executable: .\adb.exe
+Fastboot executable: .\fastboot.exe
+
+Note: Always navigate to C:\platform-tools before running adb.exe or fastboot.exe commands. Using system-wide adb without path may reference an older version.
+
+==============================================================
+SECTION 5: KEY DEVICE DATA — XT2515V
+==============================================================
+
+Device: Motorola Moto G Power (2025)
+Model Number: XT2515V
+Carrier: TracFone (Verizon MVNO)
+Chipset: MediaTek Dimensity 6300
+OS: Android 16
+Build Number: W1VE36H.10-12-9-3
+IP Address (Connectify hotspot): 192.168.137.77
+Baseband: MT6835V_NR17.RC.MP.V40.2.P227.01.325R
+Operator: Verizon
+Bluetooth Address: Unavailable (radio stack partially degraded — now resolved)
+Device Wi-Fi MAC: c8:d9:59:4e:bf:e3
+ADB Pairing Port: 46503 (session-specific, regenerates)
+ADB Connection Port: 42201 (session-specific, regenerates)
+ADB GUID: adb-ZA222WT8KV-T71ZAo
+
+==============================================================
+SECTION 6: MTKCLIENT INSTALLATION — PENDING (RESUME NEXT SESSION)
+==============================================================
+
+URL: https://github.com/bkerler/mtkclient
+
+CRITICAL PROTOCOL FOR NEXT ATTEMPT:
+1. Download and install UsbDk.msi
+2. DO NOT connect phone during or immediately after UsbDk installation
+3. After UsbDk installation completes, open Device Manager
+4. Verify there are no phone-related entries with yellow warning icons
+5. Then install remaining mtkclient dependencies
+6. Only connect phone AFTER all drivers are confirmed correct in Device Manager
+7. If phone appears with wrong driver, right-click and update driver manually to Android ADB Interface
+
+REASON: UsbDk hijacks USB device enumeration at system level. If phone is connected when UsbDk activates, Windows assigns UsbDk driver to the phone, breaking MTP and ADB.
+
+==============================================================
+SECTION 7: V3R RAG SYSTEM — CODE REFERENCE
+==============================================================
+
+LAMBDA FUNCTIONS (all use image ml-offline-torch26):
+- rag-ingest-ultra-test: lambda_ingest_v4.lambda_handler
+- rag-retrieve: lambda_retrieve.lambda_handler
+- rag-chat: lambda_chat.lambda_handler
+
+ECR LOGIN (run before any push):
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 236510207245.dkr.ecr.us-east-1.amazonaws.com
+
+DOCKER BUILD COMMAND FORMAT:
+docker buildx build --platform linux/amd64 --provenance false --sbom false -t 236510207245.dkr.ecr.us-east-1.amazonaws.com/rag-ingest-container:ml-offline-torch26 --push .
+
+FORBIDDEN PATTERNS (do not use):
+- SentenceTransformer() direct instantiation
+- urllib.request for Groq API calls
+- local_files_only=True in SentenceTransformer()
+- win_amd64 wheels in Lambda builds
+- Hardcoded llama3-8b-8192 (decommissioned)
+
+CORRECT PATTERNS:
+- AutoTokenizer.from_pretrained() with local_files_only=True
+- AutoModel.from_pretrained() with local_files_only=True
+- http.client.HTTPSConnection for Groq API
+- llama-3.1-8b-instant (current active model)
+- manylinux x86_64 cp312 wheels only
+
+==============================================================
+SECTION 8: DOCUMENT OUTPUT FILES GENERATED THIS SESSION
+==============================================================
+
+Baseband_Recovery_Project_Report.docx — SUPERSEDED (incorrect diagnosis)
+Baseband_Recovery_Handoff_Report.docx — SUPERSEDED (incorrect diagnosis)
+M4X_AI_Flamework_v2_1.txt — CURRENT (Partition 0)
+M4X_AI_Briefing_v1_2.txt — CURRENT (Partition 1)
+M4X_Project_Report_March22_2026.txt — CURRENT
+M4X_Coding_Report_March22_2026.txt — CURRENT (this file)
+
+==============================================================
+END OF CODING REPORT
+Prepared by: M4X (Claude)
+Date: March 22, 2026
+Save as: M4X_Coding_Report_March22_2026.txt

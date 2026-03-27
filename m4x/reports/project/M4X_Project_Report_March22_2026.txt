@@ -1,0 +1,201 @@
+M4X PROJECT REPORT
+Prepared by: M4X (Claude)
+Date: March 22, 2026
+Session Coverage: March 11, 2026 — March 22, 2026
+Report Type: Full Exhaustive Project Report
+
+==============================================================
+SECTION 1: SESSION SUMMARY
+==============================================================
+
+This session covered four major operational areas:
+
+1. STORAGE CLEANUP OPERATION — HP Pavilion x360 (238 GB NVMe SSD)
+   Status: COMPLETE
+   Result: Recovered approximately 30+ GB through shadow copy deletion, Docker orphan removal, temp file purge, pip cache purge, hiberfil.sys disable, RSA folder deletion, Google cache clearing, Windows Update cache purge, and ProgramData Package Cache removal.
+
+2. M4X FRAMEWORK AND BRIEFING DEVELOPMENT — v1.0 through v2.1
+   Status: COMPLETE
+   Result: Full multi-version evolution of both documents from initial concept through self-improvement cycle.
+
+3. BASEBAND RECOVERY OPERATION — Motorola XT2515V
+   Status: RESOLVED
+   Result: USB functionality fully restored. Root cause: UsbDk driver installation (required by mtkclient) hijacked Windows USB driver stack on HP, replacing standard Android MTP driver. Fix: UsbDk uninstall + HP reboot. Phone was never damaged.
+
+4. ADB WIRELESS DEBUGGING ESTABLISHMENT
+   Status: COMPLETE
+   Result: ADB over WiFi successfully established via Connectify hotspot on HP, pairing the phone and HP on an isolated network that bypassed hospital network device isolation policy.
+
+==============================================================
+SECTION 2: STORAGE CLEANUP — FINAL RESULTS
+==============================================================
+
+Starting State: ~17 GB free (critically low)
+Post-Partial Cleanup (prior session): ~105 GB free
+Estimated Final State: ~135+ GB free
+
+Space Recovered This Session:
+- Shadow Copy Storage deleted: ~8 GB
+- Docker 1Docker orphan folder: ~6.04 GB
+- ProgramData\RSA (third-party app data): ~6.90 GB
+- Google Chrome cache: ~3.34 GB
+- AppData\Local\Temp: ~1.79 GB
+- pip cache (purged via pip cache purge): ~1.42 GB
+- hiberfil.sys (hibernation disabled): ~3.15 GB
+- Windows Update cache: estimated 1-5 GB
+- ProgramData\Package Cache: ~0.52 GB
+
+Critical Protected Files — Confirmed Untouched:
+- C:\Users\Source-1\Desktop\rag-deploy (entire directory)
+- C:\aws
+- C:\all-MiniLM-L6-v2
+- Docker Desktop installation
+- Python 3.14.3
+- AWS CLI v2
+- PowerShell 5.1
+
+==============================================================
+SECTION 3: M4X FRAMEWORK EVOLUTION LOG
+==============================================================
+
+VERSION HISTORY:
+
+M4X AI Flamework v1.0 (Original, Partition 0 initial commit)
+- 7 agents across 3 phases + Executive Layer
+- Simulation labels: Bright Data AI, Perplexity, IBM Watson, watsonx AutoAI, Zapier AI, GPT-4o, You/Grok
+- Issues identified: simulation labels misaligned, no pre-pipeline context layer, no post-execution verification, missing baseband in firmware not flagged
+
+M4X AI Flamework v1.1 (First revision)
+- Expanded to 9 agents (added Agent 0 Context Guardian, Agent 1B Knowledge Retriever, Agent 8 Verification Sentinel)
+- Added 5-phase structure (Phase 0 through Phase 4)
+- Revised simulation labels to: Guardrails AI, Splunk, Perplexity AI, Wolfram Alpha, Dynatrace Davis AI, Palantir AIP, Microsoft AutoGen, DeepMind AlphaDev, Claude, Datadog
+- Added Simulation Label Directive
+- Added Fixed Operational Risk Score Parameters
+
+M4X AI Flamework v2.0 (Second revision — simulation label implementation)
+- Added Simulation Application instructions to every agent
+- Cross-platform consistency requirement embedded
+- Agent 7 identity updated from You/Grok to Claude (Anthropic)
+- All simulation labels confirmed and documented
+
+M4X AI Flamework v2.1 (Self-improvement cycle revision — CURRENT)
+- 12 new improvements added from self-improvement cycle
+- Agent 0: added Device/Environment Identity Card requirement and Assumption Registry
+- Agent 1A: added OBSERVED/REPORTED source tagging
+- Agent 1B: added mandatory Platform Verification as first action
+- Agent 2: added REPORTED data confidence cap (70%) and VERIFICATION REQUIRED flag
+- Agent 3: added Premise Verification Gate with Premise Risk Scoring
+- Agent 4: added Premise Risk category to FMEA, added four-category risk scoring
+- Agent 5: added Platform Compatibility Check as Step 0
+- Agent 6: added Lowest Cost Verification First principle
+- Agent 7: added Session Integrity Check (every 20 prompts) and Diagnostic Loop Reset trigger
+- Agent 8: added Verification Failure Protocol with Incomplete Verification Report
+
+M4X AI Briefing v1.1 (Initial briefing)
+- Established priority order, output rules, partition modification protocol
+- Added prompt countdown at 92.5% confidence
+
+M4X AI Briefing v1.2 (Self-improvement cycle revision — CURRENT)
+- Added Protocol 1: Research Before Capability Assessment
+- Added Platform Verification directive
+- Added Assumption Registry directive
+- Added Diagnostic Loop Reset directive
+- Added Session Integrity Check directive
+- Added Lowest Cost Verification First directive
+- Updated priority order to reflect v1.2 and v2.1
+
+==============================================================
+SECTION 4: BASEBAND RECOVERY OPERATION — CORRECTED RECORD
+==============================================================
+
+NOTE: Previous documents (Baseband Recovery Project Report and Baseband Recovery Handoff Report, both dated March 11, 2026) contain incorrect diagnosis. They should not be used as reference. The correct record is as follows:
+
+Device: Motorola Moto G Power (2025) — XT2515V (TracFone)
+Chipset: MediaTek Dimensity 6300
+OS: Android 16
+Build: W1VE36H.10-12-9-3
+Baseband (confirmed via ADB): MT6835V_NR17.RC.MP.V40.2.P227.01.325R
+
+ACTUAL ROOT CAUSE:
+UsbDk.msi was installed on the HP Pavilion as part of the mtkclient setup process. UsbDk is a low-level Windows USB driver framework that replaces standard Windows USB device enumeration. After installation, when the phone was reconnected to the HP, Windows assigned it the UsbDk driver instead of the standard Android MTP driver, breaking all USB communication. The phone was never damaged. The baseband was present throughout. The USB hardware was functional throughout.
+
+CONFIRMATION METHOD:
+Phone connected to a second computer — full USB menu appeared immediately, confirming phone was healthy.
+
+RESOLUTION:
+Uninstall UsbDk from HP + reboot HP + reconnect phone. Windows reinstalls correct MTP driver automatically.
+
+DIAGNOSTIC ERRORS MADE (for framework improvement reference):
+1. Chipset was not verified before beginning diagnosis — assumed Qualcomm, device is MediaTek
+2. Missing baseband (reported by user) was accepted as ground truth without ADB verification
+3. USB hardware failure was inferred from software evidence without research
+4. Multiple research rounds and solution paths were built on unverified premises
+
+LESSONS APPLIED TO FRAMEWORK:
+All four errors above directly generated the 12 improvements in Flamework v2.1.
+
+==============================================================
+SECTION 5: ADB WIRELESS DEBUGGING — TECHNICAL LOG
+==============================================================
+
+Challenge: Hospital-grade network "Restricted2" isolates devices from each other via client isolation policy. Standard ADB over WiFi pairing was blocked. Hospital network blocked mDNS and device-to-device TCP traffic.
+
+Solution Path:
+1. Wireless Debugging enabled on phone (Developer Options)
+2. Connectify hotspot created on HP laptop
+3. Phone connected to HP's Connectify hotspot — bypassing hospital network isolation
+4. ADB paired via: adb.exe pair 192.168.137.77:46503 (pairing code 625187)
+5. ADB connected via: adb.exe connect 192.168.137.77:42201
+6. Device confirmed authorized in adb devices
+
+Key Data Captured:
+- Phone IP on Connectify network: 192.168.137.77
+- Baseband confirmed: MT6835V_NR17.RC.MP.V40.2.P227.01.325R
+- Operator confirmed: Verizon
+- USB function set to: mtp (confirmed via getFunctions)
+
+==============================================================
+SECTION 6: PENDING ITEMS FOR NEXT SESSION
+==============================================================
+
+1. mtkclient installation — the original goal before the UsbDk incident. Resume with caution. UsbDk must be installed but phone should be disconnected during installation and only reconnected after confirming correct driver assignment in Device Manager.
+
+2. V3R Phase 2 objectives — still pending from Report 7:
+   - Enable Function URLs on Lambda functions
+   - Connect HuggingFace Space to Function URLs
+   - Ingest real project data into rag-chunks
+   - Implement conversation history in rag-memory
+
+3. Update Baseband Recovery Project Report and Handoff Report with corrected root cause.
+
+4. Project Report 8 should be generated at start of next session covering this session's full state.
+
+==============================================================
+SECTION 7: SYSTEM STATE — END OF SESSION
+==============================================================
+
+HP Pavilion x360:
+- Storage: ~135+ GB free (estimate)
+- UsbDk: UNINSTALLED
+- Docker Desktop: operational
+- Python 3.14.3: operational
+- AWS CLI v2: operational
+- platform-tools: operational at C:\platform-tools
+- Connectify: installed, operational
+
+V3R RAG System:
+- Phase 1: COMPLETE — all three Lambda functions operational
+- ECR Image: ml-offline-torch26 (3.9 GB)
+- Lambda Functions: rag-ingest-ultra-test, rag-retrieve, rag-chat
+- DynamoDB: rag-chunks (active), rag-memory (reserved)
+- Groq Model: llama-3.1-8b-instant
+
+M4X Framework:
+- Partition 0: M4X AI Flamework v2.1
+- Partition 1: M4X AI Briefing v1.2
+
+==============================================================
+END OF REPORT
+Prepared by: M4X (Claude)
+Date: March 22, 2026
+Save as: M4X_Project_Report_March22_2026.txt

@@ -1,0 +1,153 @@
+c:\Users\Source-1\Desktop\unlock\mtkclient>python mtk.py printgpt
+Preloader - Status: Waiting for PreLoader VCOM, please reconnect mobile/iot device to brom mode
+
+Port - Hint:
+
+Power off the phone before connecting.
+For brom mode, press and hold vol up, vol dwn, or all hw buttons and connect usb.
+For preloader mode, don't press any hw button and connect usb.
+If it is already connected and on, hold power for 10 seconds to reset.
+
+
+...........
+Port - Device detected :)
+Preloader - Detected regular mode !
+Preloader -     CPU:                    MT6853(Dimensity 720 5G)
+Preloader -     HW version:             0x0
+Preloader -     WDT:                    0x10007000
+Preloader -     Uart:                   0x11002000
+Preloader -     Brom payload addr:      0x100a00
+Preloader -     DA payload addr:        0x201000
+Preloader -     CQ_DMA addr:            0x10212000
+Preloader -     Var1:                   0xa
+Preloader - Disabling Watchdog...
+Preloader - HW code:                    0x996
+Preloader - Target config:              0xe5
+Preloader -     SBC enabled:            True
+Preloader -     SLA enabled:            False
+Preloader -     DAA enabled:            True
+Preloader -     SWJTAG enabled:         True
+Preloader -     EPP_PARAM at 0x600 after EMMC_BOOT/SDMMC_BOOT:  False
+Preloader -     Root cert required:     False
+Preloader -     Mem read auth:          True
+Preloader -     Mem write auth:         True
+Preloader -     Cmd 0xC8 blocked:       True
+Preloader - Get Target info
+Preloader - BROM mode detected.
+Preloader -     HW subcode:             0x8a00
+Preloader -     HW Ver:                 0xca00
+Preloader -     SW Ver:                 0x0
+Preloader - ME_ID:                      AAF3C26F4EF61E7059F5F974A6B455C0
+Preloader - SOC_ID:                     8CAF79E0578DF13B7ADB8D0101B4DB409B856D70F9A9777415A9A27954D32927
+Preloader
+Preloader - [LIB]: ←[33mAuth file is required. Use --auth option.←[0m
+DaHandler - Device is protected.
+DaHandler - Device is in BROM-Mode. Bypassing security.
+PLTools - Loading payload from mt6853_payload.bin, 0x264 bytes
+Exploitation - Kamakiri Run
+Exploitation - Done sending payload...
+PLTools - Successfully sent payload: C:\Users\Source-1\Desktop\unlock\mtkclient\mtkclient\payloads\mt6853_payload.bin
+Port - Device detected :)
+DaHandler
+DaHandler - [LIB]: ←[33mDevice is in BROM mode. No preloader given, trying to dump preloader from ram.←[0m
+DAXFlash - Uploading xflash stage 1 from MTK_DA_V5.bin
+XFlashExt - Patching da1 ...
+Mtk - Patched "Patched loader msg" in preloader
+Mtk - Patched "hash_check" in preloader
+Mtk - Patched "Patched loader msg" in preloader
+Mtk - Patched "get_vfy_policy" in preloader
+XFlashExt - Patching da2 ...
+XFlashExt - Security check patched
+XFlashExt - DA version anti-rollback patched
+XFlashExt - SBC patched to be disabled
+XFlashExt - Register read/write not allowed patched
+DAXFlash - Successfully uploaded stage 1, jumping ..
+Preloader - Jumping to 0x200000
+Preloader - Jumping to 0x200000: ok.
+DAXFlash - Successfully received DA sync
+DAXFlash - Sending emi data ...
+DAXFlash - DRAM setup passed.
+DAXFlash - Sending emi data succeeded.
+DAXFlash - Uploading stage 2...
+DAXFlash - Upload data was accepted. Jumping to stage 2...
+DAXFlash - Boot to succeeded.
+DAXFlash - Successfully uploaded stage 2
+DAXFlash - DA SLA is disabled
+DAXFlash - UFS Blocksize: 0x1000
+DAXFlash - UFS ID:       KM5P8001DM-B42
+DAXFlash - UFS MID:      0xce
+DAXFlash - UFS CID:      ce014b4d355038303031444d2d423432
+DAXFlash - UFS FWVer:    30303032
+DAXFlash - UFS Serial:   464431303030300000000000
+DAXFlash - UFS LU0 Size: 0xee5800000
+DAXFlash - UFS LU1 Size: 0x400000
+DAXFlash - UFS LU2 Size: 0x400000
+DAXFlash - Extensions were accepted. Jumping to extensions...
+DAXFlash - Boot to succeeded.
+DAXFlash - DA Extensions successfully added at 0x4fff0000
+Main - Handling da commands ...
+
+GPT Table:
+-------------
+md5hdr:              Offset 0x000000000000a000, Length 0x00000000003f6000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-646d-356864720000, Type EFI_BASIC_DATA
+efs:                 Offset 0x0000000000400000, Length 0x0000000000800000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6665-730000000000, Type EFI_BASIC_DATA
+sec_efs:             Offset 0x0000000000c00000, Length 0x0000000000800000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6573-635f65667300, Type EFI_BASIC_DATA
+steady:              Offset 0x0000000001400000, Length 0x0000000000400000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7473-656164790000, Type EFI_BASIC_DATA
+nvram:               Offset 0x0000000001800000, Length 0x0000000004000000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-766e-72616d000000, Type EFI_BASIC_DATA
+spmfw:               Offset 0x0000000005800000, Length 0x0000000000100000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7073-6d6677000000, Type EFI_BASIC_DATA
+scp1:                Offset 0x0000000005900000, Length 0x0000000000100000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6373-703100000000, Type EFI_BASIC_DATA
+sspm_1:              Offset 0x0000000005a00000, Length 0x0000000000100000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7373-706d5f310000, Type EFI_BASIC_DATA
+uh:                  Offset 0x0000000005b00000, Length 0x0000000000200000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6875-000000000000, Type EFI_BASIC_DATA
+tee1:                Offset 0x0000000005d00000, Length 0x0000000000200000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6574-653100000000, Type EFI_BASIC_DATA
+tzar:                Offset 0x0000000005f00000, Length 0x0000000000400000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7a74-617200000000, Type EFI_BASIC_DATA
+gz1:                 Offset 0x0000000006300000, Length 0x0000000001000000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7a67-310000000000, Type EFI_BASIC_DATA
+lk:                  Offset 0x0000000007300000, Length 0x0000000000200000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6b6c-000000000000, Type EFI_BASIC_DATA
+dpm_1:               Offset 0x0000000007500000, Length 0x0000000000100000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7064-6d5f31000000, Type EFI_BASIC_DATA
+audio_dsp:           Offset 0x0000000007600000, Length 0x0000000000400000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7561-64696f5f6473, Type EFI_BASIC_DATA
+mcupm_1:             Offset 0x0000000007a00000, Length 0x0000000000100000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-636d-75706d5f3100, Type EFI_BASIC_DATA
+dtbo:                Offset 0x0000000007b00000, Length 0x0000000000800000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7464-626f00000000, Type EFI_BASIC_DATA
+vbmeta:              Offset 0x0000000008300000, Length 0x0000000000010000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6276-6d6574610000, Type EFI_BASIC_DATA
+btd:                 Offset 0x0000000008310000, Length 0x00000000004f0000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7462-640000000000, Type EFI_BASIC_DATA
+protect1:            Offset 0x0000000008800000, Length 0x0000000000800000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7270-6f7465637431, Type EFI_BASIC_DATA
+protect2:            Offset 0x0000000009000000, Length 0x0000000000800000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7270-6f7465637432, Type EFI_BASIC_DATA
+seccfg:              Offset 0x0000000009800000, Length 0x0000000000800000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6573-636366670000, Type EFI_BASIC_DATA
+bota:                Offset 0x000000000a000000, Length 0x0000000003400000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6f62-746100000000, Type EFI_BASIC_DATA
+boot_para:           Offset 0x000000000d400000, Length 0x0000000001a00000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6f62-6f745f706172, Type EFI_BASIC_DATA
+para:                Offset 0x000000000ee00000, Length 0x0000000000080000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6170-726100000000, Type EFI_BASIC_DATA
+misc:                Offset 0x000000000ee80000, Length 0x0000000000080000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-696d-736300000000, Type EFI_BASIC_DATA
+expdb:               Offset 0x000000000ef00000, Length 0x0000000001400000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7865-706462000000, Type EFI_BASIC_DATA
+frp:                 Offset 0x0000000010300000, Length 0x0000000000100000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7266-700000000000, Type EFI_BASIC_DATA
+nvcfg:               Offset 0x0000000010400000, Length 0x0000000002000000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-766e-636667000000, Type EFI_BASIC_DATA
+nvdata:              Offset 0x0000000012400000, Length 0x0000000004000000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-766e-646174610000, Type EFI_BASIC_DATA
+metadata:            Offset 0x0000000016400000, Length 0x0000000002000000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-656d-746164617461, Type EFI_BASIC_DATA
+keyrefuge:           Offset 0x0000000018400000, Length 0x0000000001000000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-656b-797265667567, Type EFI_BASIC_DATA
+keydata:             Offset 0x0000000019400000, Length 0x0000000001000000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-656b-796461746100, Type EFI_BASIC_DATA
+persistent:          Offset 0x000000001a400000, Length 0x0000000000080000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6570-727369737465, Type EFI_BASIC_DATA
+proinfo:             Offset 0x000000001a480000, Length 0x0000000000300000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7270-6f696e666f00, Type EFI_BASIC_DATA
+md1img:              Offset 0x000000001a780000, Length 0x000000000c800000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-646d-31696d670000, Type EFI_BASIC_DATA
+pi_img:              Offset 0x0000000026f80000, Length 0x0000000000100000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6970-5f696d670000, Type EFI_BASIC_DATA
+cam_vpu1:            Offset 0x0000000027080000, Length 0x0000000000f00000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6163-6d5f76707531, Type EFI_BASIC_DATA
+cam_vpu2:            Offset 0x0000000027f80000, Length 0x0000000000f00000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6163-6d5f76707532, Type EFI_BASIC_DATA
+cam_vpu3:            Offset 0x0000000028e80000, Length 0x0000000000f00000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6163-6d5f76707533, Type EFI_BASIC_DATA
+param:               Offset 0x0000000029d80000, Length 0x0000000000400000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6170-72616d000000, Type EFI_BASIC_DATA
+up_param:            Offset 0x000000002a180000, Length 0x0000000000400000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7075-5f706172616d, Type EFI_BASIC_DATA
+boot:                Offset 0x000000002a580000, Length 0x0000000002000000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6f62-6f7400000000, Type EFI_BASIC_DATA
+recovery:            Offset 0x000000002c580000, Length 0x0000000002800000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6572-636f76657279, Type EFI_BASIC_DATA
+vbmeta_system:       Offset 0x000000002ed80000, Length 0x0000000000010000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6276-6d6574615f73, Type EFI_BASIC_DATA
+vbmeta_vendor:       Offset 0x000000002ed90000, Length 0x0000000000010000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6276-6d6574615f76, Type EFI_BASIC_DATA
+efuse:               Offset 0x000000002eda0000, Length 0x0000000000080000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6665-757365000000, Type EFI_BASIC_DATA
+reserved:            Offset 0x000000002ee20000, Length 0x00000000001e0000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6572-736572766564, Type EFI_BASIC_DATA
+sec1:                Offset 0x000000002f000000, Length 0x0000000000800000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6573-633100000000, Type EFI_BASIC_DATA
+super:               Offset 0x000000002f800000, Length 0x00000001fd000000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7573-706572000000, Type EFI_BASIC_DATA
+prism:               Offset 0x000000022c800000, Length 0x000000000b400000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7270-69736d000000, Type EFI_BASIC_DATA
+optics:              Offset 0x0000000237c00000, Length 0x0000000001400000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-706f-746963730000, Type EFI_BASIC_DATA
+cache:               Offset 0x0000000239000000, Length 0x0000000025800000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6163-636865000000, Type EFI_BASIC_DATA
+carrier:             Offset 0x000000025e800000, Length 0x0000000002d00000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6163-727269657200, Type EFI_BASIC_DATA
+omr:                 Offset 0x0000000261500000, Length 0x0000000001400000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-6d6f-720000000000, Type EFI_BASIC_DATA
+spu:                 Offset 0x0000000262900000, Length 0x0000000003200000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7073-750000000000, Type EFI_BASIC_DATA
+userdata:            Offset 0x0000000265b00000, Length 0x0000000c7f900000, Flags 0x0000000000000000, UUID 52444e41-494f-2044-7375-657264617461, Type EFI_BASIC_DATA
+
+Total disk size:0x0000000ee581c000, sectors:0x0000000000ee581c
+
+
+c:\Users\Source-1\Desktop\unlock\mtkclient>

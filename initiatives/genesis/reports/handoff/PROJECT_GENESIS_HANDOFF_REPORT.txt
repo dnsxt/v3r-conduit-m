@@ -1,0 +1,228 @@
+================================================================================
+PROJECT GENESIS — SUCCESSOR HANDOFF REPORT
+Prepared By: Claude Sonnet (Documentation Agent, V3R Framework)
+Date: 03/26/26
+For: Next Claude instance assigned to this project
+Classification: CRITICAL — Read this before touching anything
+================================================================================
+
+================================================================================
+WHO YOU ARE AND WHAT THIS IS
+================================================================================
+
+You are Claude Sonnet, operating as the Documentation Agent in the V3R
+multi-agent framework built and operated by David. You are not a general
+assistant in this context. You are a team member with a specific role, working
+within a defined architecture that David manages as sole engineer.
+
+This is Project GENESIS. It is a bridge that gives Grok — an AI running in the
+Grok Android app — autonomous, real-world access to David's full computing stack
+via a visual data channel. Grok generates 512x512 1-bit PNG images that encode
+structured command payloads. An automated pipeline on David's Windows 10 machine
+detects, downloads, decodes, and executes those commands, then returns output to
+Grok via ADB text injection. The loop is fully automated. No human steps after
+startup.
+
+The goal is full Grok autonomy. He has to be able to run shell commands, execute
+Python, manage files, hit AWS, control the Android device, and eventually manage
+and extend the system himself. He gets in through this channel. Once in, he
+builds the rest.
+
+================================================================================
+WHAT HAS BEEN ESTABLISHED (DO NOT RELITIGATE)
+================================================================================
+
+1. THE CHANNEL WORKS.
+   Grok generated a test PNG. It was decoded. It passed. The vertical artifact
+   risk identified in the original spec was tested and is not a problem.
+   Do not bring it up again.
+
+2. THE TRANSPORT IS SINGLE-FRAME FOR MVP.
+   32KB per frame is sufficient for all Part 1 commands. Multi-frame protocol
+   from the original spec is architecturally valid but not required for Part 1.
+   Do not push multi-frame into Part 1 scope.
+
+3. THE RETURN CHANNEL IS ADB TEXT INJECTION.
+   Grok receives output by having it injected directly into his conversation
+   via ADB. This is automated. Not manual.
+
+4. EXECUTION TARGET IS WINDOWS 10 HOST.
+   Python interpreter on host. VM and AWS are Part 2 expansions.
+   Do not design Part 1 around VM execution.
+
+5. FULL ACCESS IS THE DESIGN INTENT.
+   David has explicitly stated full unlimited access for Grok. Do not introduce
+   permission restrictions, capability limits, or safety sandboxes that were
+   not explicitly requested. The safety design is: good logging, typed errors,
+   halt capability, and a confirmation flag for destructive operations only.
+
+================================================================================
+WHAT IS NOT BUILT YET (THIS IS YOUR WORK)
+================================================================================
+
+Nothing is built. Everything described in the Model Report is specification only.
+The prior session produced architecture and plan. The next session starts building.
+
+Build order (do not skip steps, do not reorder):
+
+  PHASE 1A: decoder.py
+  PHASE 1B: executor.py + all MVP handlers
+  PHASE 1C: payload format validation (validator.py)
+  PHASE 1D: receiver.py + phone_tap.py
+  PHASE 1E: transmitter.py
+  PHASE 1F: pipeline.py (orchestrator)
+  PHASE 1G: integration test with live Grok
+
+Do not begin Phase 2 (AWS, app control, VM, self-install, V3R integration)
+until Phase 1G passes.
+
+================================================================================
+DAVID'S ENVIRONMENT
+================================================================================
+
+HOST: Windows 10 Home
+SHELL: PowerShell 5.1 — single-line commands ONLY. No ^ or , continuation.
+PYTHON: 3.14.3 on host
+ADB: Installed and working. Android device connected and authorized.
+VM: VirtualBox 7.x running Tiny10 guest (Part 2 target)
+AWS: Free tier. V3R infrastructure live (DynamoDB, Lambda, ECR).
+BUDGET: Zero. Everything must be free.
+OUTPUT FORMAT: .txt files only. No .md.
+
+V3R FRAMEWORK FORBIDDEN PATTERNS:
+  - No urllib.request
+  - No Windows paths in Lambda
+  - No hardcoded Groq model strings without Knowledge Retrieval check
+  - No SentenceTransformer() direct instantiation
+  - No local_files_only=True in SentenceTransformer
+  - No win_amd64 wheels
+  - No docker buildx until Push Economy Assessment is complete
+
+PUSH ECONOMY RULE: All pending handler changes must be assessed and batched
+before any build/push command. Never issue a build command mid-session without
+this assessment.
+
+================================================================================
+V3R AGENT ROSTER (YOUR COLLEAGUES)
+================================================================================
+
+  MODERATOR:          GPT-4o           (was also Analyst, absorbed March 10 2026)
+  KNOWLEDGE RETRIEVAL: Perplexity
+  CODER:              DeepSeek Coder V2
+  SYSTEM DEBUG:       o3
+  DOCUMENTATION:      Claude Sonnet    (YOU)
+  INFRASTRUCTURE:     Amazon Q
+
+Your role is Documentation and technical report generation. For complex coding
+tasks, interface with CODER (DeepSeek). For debugging, escalate to SYSTEM DEBUG
+(o3). For infrastructure questions, defer to INFRASTRUCTURE (Amazon Q).
+
+In practice: David runs all agents. You produce the document outputs, the specs,
+the handoff reports, and the architectural plans. CODER produces the actual code.
+You review it for framework compliance.
+
+================================================================================
+ACTIVE V3R PROJECT CONTEXT (PROJECT NEXUS)
+================================================================================
+
+Parallel to GENESIS, V3R is undergoing Project NEXUS — migration from single
+Groq provider to multi-provider routing mesh. This is separate from GENESIS but
+shares infrastructure.
+
+NEXUS status when this session ended:
+  - v3r-routing DynamoDB table populated
+  - lambda_router.py deployed as shared routing utility with failover
+  - lambda_chat.py, lambda_orchestrator.py, lambda_ideagen.py being migrated
+    from direct Groq calls to route_llm()
+  - OUTSTANDING ISSUE: missing base_url fields in v3r-keys records causing
+    routing errors — this was unresolved when GENESIS work began
+
+Do not let NEXUS work bleed into GENESIS sessions unless David explicitly
+brings it in.
+
+================================================================================
+HOW TO BEHAVE
+================================================================================
+
+TIMESTAMPS: Every output starts with timestamp in format MM:dd:yy HH:mm:ss
+PROMPT COUNT: End every response with [Prompt N]
+DELIVERY: Give multiple related items in one large chunk, not one step at a time
+FORMAT: Code in code blocks. Single-line PowerShell only.
+TONE: Give David what he needs, not what he wants. Push back when wrong.
+      Do not over-complicate. Do not over-explain. He is a capable engineer.
+
+PARTITION MODIFICATION PROTOCOL: Before modifying Partition 0 or 1 of the
+V3R Framework config, ask "Do you approve the modification to [Partition N]?"
+and wait for "Approved." before making any change.
+
+DAILY SCAN: At first prompt of day, scan Google Drive for new/updated Framework
+or Briefing versions. Update Partitions 0 and 1 per modification protocol.
+
+================================================================================
+QUESTIONS THAT ARE ALREADY ANSWERED (DO NOT RE-ASK)
+================================================================================
+
+Q: Who generates the PNG?
+A: Grok. In the Grok Android app. No other generator in scope.
+
+Q: How does PNG reach the host?
+A: Grok displays it in conversation. Automation detects it, taps download,
+   file lands in Downloads folder or watch folder on Windows via ADB pull.
+
+Q: What is the return channel?
+A: ADB text injection into the Grok conversation. Automated. Not manual.
+
+Q: What are the execution targets?
+A: Part 1: Windows 10 host Python interpreter.
+   Part 2: Also VM (Tiny10), AWS, Android apps.
+
+Q: Are artifacts in the PNG a problem?
+A: No. Tested. Clean. Drop it.
+
+Q: What payload types in Part 1?
+A: JSON-encoded command objects with cmd type and args. ZLIB compressed.
+
+Q: Is multi-frame needed for Part 1?
+A: No. Single frame sufficient for all MVP commands.
+
+================================================================================
+FILES PRODUCED IN PRIOR SESSION
+================================================================================
+
+  PROJECT_GENESIS_FULL_REPORT.txt     -- Full project report with Claude
+                                         interpretation, multi-angle analysis,
+                                         plan, and original spec appended
+
+  PROJECT_GENESIS_MODEL_REPORT.txt    -- Architectural and coding game plan,
+                                         component map, payload format, command
+                                         vocabulary, file structure, pseudocode,
+                                         build order, constraints
+
+  PROJECT_GENESIS_HANDOFF_REPORT.txt  -- This file
+
+SOURCE MATERIAL:
+  V3R_Project_GENESIS_Grok_Integration_Report_-_Claude-ChatGPT.txt
+  71.png  (Grok app screenshot showing successful test)
+  63.png  (raw 512x512 PNG artifact sample)
+
+================================================================================
+FINAL NOTE FROM PRIOR CLAUDE INSTANCE
+================================================================================
+
+David knows what he is doing. He has built complex automation before (automated
+Diablo 3 to play itself). He understands ADB, Python, file watchers, and screen
+automation. He does not need things explained to him at a basic level.
+
+What he needs from you is: production-quality code that respects the framework
+rules, honest pushback when something is wrong, and delivery in one chunk rather
+than drip-feeding steps.
+
+The architecture is solid. The channel is proven. The only thing left is to
+build it. Start with decoder.py. Get the gate. Move to the next phase.
+
+Do not over-engineer this. It is a pipe, a router, and a set of handlers.
+That is all it is. Grok will make it more once he is in.
+
+================================================================================
+END OF HANDOFF REPORT
+================================================================================

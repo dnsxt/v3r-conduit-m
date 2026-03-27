@@ -1,0 +1,469 @@
+================================================================================
+PROJECT GENESIS — ARCHITECTURAL AND CODING GAME PLAN
+Prepared By: Claude Sonnet (Documentation Agent, V3R Framework)
+Date: 03/26/26
+Classification: Internal — V3R Model Report
+================================================================================
+
+================================================================================
+PART 1 — ARCHITECTURE
+================================================================================
+
+SYSTEM NAME: GENESIS BRIDGE
+PURPOSE: Autonomous command-and-control channel between Grok (Android) and
+         David's full computing stack (Win10, VM, AWS, Phone)
+
+------------------------------------------------------------------------
+COMPONENT MAP
+------------------------------------------------------------------------
+
+  [ANDROID DEVICE]
+       |
+       | Grok generates 512x512 1-bit PNG payload
+       | PNG displayed in Grok conversation
+       |
+  [PHONE_TAP.PY] <-- running on Win10, watching screen via ADB
+       |
+       | Detects PNG response (color signature or file-change trigger)
+       | Taps download, waits, closes image
+       |
+  [DOWNLOAD WATCH FOLDER] <-- shared/accessible path on Win10
+       |
+  [RECEIVER.PY] <-- file system watcher
+       |
+  [DECODER.PY] <-- validates and extracts payload
+       |
+  [VALIDATOR.PY] <-- checks payload against spec
+       |
+  [EXECUTOR.PY] <-- routes to appropriate handler
+       |
+    [HANDLERS]
+       |-- shell.py       (OS shell commands)
+       |-- python_run.py  (Python script execution)
+       |-- file_ops.py    (read/write/list/delete files)
+       |-- status.py      (system state snapshot)
+       |-- halt.py        (suspend executor, idle)
+       |-- aws.py         (boto3 / V3R AWS ops)       [Part 2]
+       |-- app.py         (ADB app control)           [Part 2]
+       |-- vm.py          (VirtualBox guest control)  [Part 2]
+       |-- install.py     (self-install new handlers) [Part 2]
+       |-- v3r.py         (V3R Lambda mesh access)    [Part 2]
+       |
+  [RETURN_FORMATTER.PY] <-- structures output as return JSON
+       |
+  [LOGGER.PY] <-- append-only execution log (David-only)
+       |
+  [TRANSMITTER.PY] <-- ADB injects return JSON into Grok conversation
+       |
+  [ANDROID DEVICE]
+       |
+       Grok reads return, decides next action, generates next PNG
+
+------------------------------------------------------------------------
+DATA FLOW (SINGLE CYCLE)
+------------------------------------------------------------------------
+
+1. Grok generates PNG containing compressed JSON payload
+2. PNG appears in Grok conversation on Android
+3. phone_tap.py detects image (color/ADB trigger), initiates download
+4. PNG lands in watch folder
+5. receiver.py fires, passes PNG path to decoder.py
+6. decoder.py:
+   a. Opens PNG in strict 1-bit mode
+   b. Validates MAGIC bytes ("GENESIS")
+   c. Parses header (version, frame_id, total_frames, payload_len, encoding)
+   d. Extracts payload bytes
+   e. CRC check
+   f. Decompresses (ZLIB)
+   g. JSON parse
+   h. Returns structured payload object or typed error
+7. validator.py confirms payload object matches spec
+8. executor.py receives payload object:
+   a. Checks cmd field against registered handlers
+   b. Dispatches to handler with args
+   c. Handler executes, captures output
+   d. Returns result object
+9. logger.py appends full record
+10. return_formatter.py builds return JSON
+11. transmitter.py ADB-injects return JSON into Grok conversation
+12. Grok reads return, cycle complete
+
+------------------------------------------------------------------------
+PAYLOAD FORMAT (CANONICAL)
+------------------------------------------------------------------------
+
+OUTBOUND (Grok to System):
+  {
+    "v": 1,
+    "id": "<uuid4>",
+    "cmd": "<command_type>",
+    "args": { <command-specific> },
+    "flags": {
+      "timeout": <seconds, default 30>,
+      "confirm": <bool, default false>
+    }
+  }
+
+INBOUND (System to Grok):
+  {
+    "id": "<matching uuid4>",
+    "status": "OK | FAIL | CONFIRM_REQUIRED | TIMEOUT | HALTED",
+    "output": "<stdout/result string>",
+    "error": {
+      "type": "<error class>",
+      "message": "<human-readable>",
+      "recoverable": <bool>
+    },
+    "state": {
+      "host": "<hostname>",
+      "cwd": "<current working directory>",
+      "executor_status": "READY | BUSY | HALTED",
+      "last_cmd_id": "<uuid4>",
+      "timestamp": "<ISO8601>"
+    }
+  }
+
+------------------------------------------------------------------------
+COMMAND VOCABULARY (MVP — PART 1)
+------------------------------------------------------------------------
+
+SHELL
+  args: { "cmd": "<shell command string>" }
+  executes via subprocess, returns stdout + stderr
+  timeout enforced, process killed on breach
+
+PYTHON
+  args: { "script": "<python source string>" }
+  executes via subprocess with python interpreter
+  stdout/stderr captured and returned
+  no import restrictions in Phase 1 (full access design)
+
+FILE_READ
+  args: { "path": "<absolute or relative path>" }
+  returns file contents as string
+
+FILE_WRITE
+  args: { "path": "<path>", "content": "<string>", "mode": "w|a" }
+  writes content to file, returns success/fail
+
+FILE_LIST
+  args: { "path": "<directory path>" }
+  returns directory listing with file sizes and timestamps
+
+STATUS
+  args: {}
+  returns full system state snapshot:
+    hostname, OS, Python version, CWD, disk usage, memory,
+    executor status, handler list, last 3 log entries
+
+HALT
+  args: { "reason": "<optional string>" }
+  immediately suspends executor loop
+  clears pending queue
+  returns HALTED status with reason
+  system resumes only on manual restart or scheduled resume
+
+------------------------------------------------------------------------
+FILE STRUCTURE
+------------------------------------------------------------------------
+
+genesis/
+  pipeline.py          -- orchestrator (receiver > decoder > executor > tx)
+  receiver.py          -- file watcher, triggers pipeline on new PNG
+  phone_tap.py         -- Android UI automation via ADB
+  decoder.py           -- PNG to validated payload object
+  validator.py         -- payload spec enforcement
+  executor.py          -- command router
+  return_formatter.py  -- structures return JSON
+  transmitter.py       -- ADB injection of return to Grok
+  logger.py            -- append-only log
+  adb_interface.py     -- all ADB operations centralized
+  config.py            -- paths, timeouts, ADB device ID, watch folder
+  handlers/
+    __init__.py
+    shell.py
+    python_run.py
+    file_ops.py
+    status.py
+    halt.py
+  logs/
+    execution.log      -- append-only, David-only
+  tests/
+    test_decoder.py
+    test_executor.py
+    test_pipeline.py
+
+================================================================================
+PART 2 — CODING GAME PLAN
+================================================================================
+
+------------------------------------------------------------------------
+PHASE 1A — DECODER.PY
+------------------------------------------------------------------------
+
+PRIORITY: HIGHEST. Nothing works without this.
+
+RULES:
+  - NEVER use .convert('1') — open raw, check mode, reject if not '1'
+  - NEVER use int(bit_string, 2) for large payloads — streaming byte rebuild
+  - ALL validation failures return typed error objects, never raise uncaught
+
+PSEUDOCODE:
+
+def decode(png_path):
+    im = Image.open(png_path)
+    if im.mode != '1':
+        return Error("NOT_1BIT", non-recoverable)
+
+    pixels = np.array(im, dtype=np.uint8).flatten()
+    pixels = (pixels > 0).astype(np.uint8)
+
+    if len(pixels) != 262144:
+        return Error("WRONG_PIXEL_COUNT", non-recoverable)
+
+    byte_array = streaming_rebuild(pixels)     # 8 bits per byte, no int() overflow
+
+    magic = byte_array[0:8].decode('ascii', errors='replace')
+    if magic != 'GENESIS':
+        return Error("MAGIC_FAIL", non-recoverable)
+
+    header = parse_header(byte_array[8:40])    # 256 bits = 32 bytes
+    payload_bytes = byte_array[40 : 40 + header.payload_len]
+
+    crc_stored = read_crc_block(byte_array)
+    crc_computed = crc32(payload_bytes)
+    if crc_stored != crc_computed:
+        return Error("CRC_FAIL", non-recoverable)
+
+    if header.encoding == 1:
+        payload_bytes = zlib.decompress(payload_bytes)
+
+    payload_obj = json.loads(payload_bytes.decode('utf-8'))
+    return payload_obj
+
+------------------------------------------------------------------------
+PHASE 1B — EXECUTOR.PY
+------------------------------------------------------------------------
+
+DESIGN PRINCIPLE: Router only. No logic in executor core.
+All logic lives in handlers. Executor finds the handler, calls it, returns.
+
+PSEUDOCODE:
+
+HANDLER_REGISTRY = {
+    "SHELL":      handlers.shell.run,
+    "PYTHON":     handlers.python_run.run,
+    "FILE_READ":  handlers.file_ops.read,
+    "FILE_WRITE": handlers.file_ops.write,
+    "FILE_LIST":  handlers.file_ops.list_dir,
+    "STATUS":     handlers.status.run,
+    "HALT":       handlers.halt.run,
+}
+
+def execute(payload_obj):
+    cmd = payload_obj.get('cmd', '').upper()
+    if cmd not in HANDLER_REGISTRY:
+        return result(status="FAIL", error={"type": "UNKNOWN_CMD"})
+
+    handler = HANDLER_REGISTRY[cmd]
+    timeout = payload_obj.get('flags', {}).get('timeout', 30)
+    args = payload_obj.get('args', {})
+
+    try:
+        output = run_with_timeout(handler, args, timeout)
+        return result(status="OK", output=output)
+    except TimeoutError:
+        return result(status="TIMEOUT")
+    except Exception as e:
+        return result(status="FAIL", error={"type": type(e).__name__,
+                                             "message": str(e)})
+
+------------------------------------------------------------------------
+PHASE 1C — HANDLERS
+------------------------------------------------------------------------
+
+SHELL HANDLER:
+  import subprocess
+  def run(args):
+      result = subprocess.run(
+          args['cmd'], shell=True, capture_output=True,
+          text=True, timeout=args.get('timeout', 30)
+      )
+      return {"stdout": result.stdout, "stderr": result.stderr,
+              "returncode": result.returncode}
+
+PYTHON HANDLER:
+  def run(args):
+      script = args['script']
+      # Write to temp file, execute via subprocess
+      # Capture stdout/stderr
+      # Delete temp file
+      # Return output
+
+FILE OPS HANDLER:
+  read: open(path).read() with encoding handling
+  write: open(path, mode).write(content)
+  list: os.scandir(path) with stat info
+
+STATUS HANDLER:
+  Returns: platform.node(), sys.version, os.getcwd(),
+           shutil.disk_usage('/'), psutil.virtual_memory(),
+           executor status, registered handler list,
+           last 3 log entries
+
+HALT HANDLER:
+  Sets a global HALT flag in executor
+  Executor checks flag between cycles
+  Returns HALTED status immediately
+
+------------------------------------------------------------------------
+PHASE 1D — PHONE_TAP.PY
+------------------------------------------------------------------------
+
+PURPOSE: Automate the download sequence on Android when Grok responds with PNG.
+
+MECHANISM OPTIONS (in order of preference):
+  1. File system watcher on Android download folder via ADB (cleanest)
+     -- adb shell inotifywait on Downloads folder
+     -- when new .png file appears: pipeline triggers immediately
+     -- no screen interaction needed if Grok auto-downloads
+
+  2. Color detection on screen via ADB screencap + analysis
+     -- adb exec-out screencap -p > screen.png
+     -- scan for pixel signature of Grok PNG response card
+     -- issue adb shell input tap <x> <y> to trigger download
+     -- wait for file in Downloads via inotifywait
+
+  3. uiautomator dump (most robust against layout changes)
+     -- adb shell uiautomator dump /sdcard/ui.xml
+     -- parse XML for download button or image element
+     -- tap by element bounds, not hardcoded coordinates
+
+RECOMMENDED FOR PART 1: Option 2 (color detection) for speed, with Option 3
+as fallback. Option 1 only if Grok auto-downloads without tap required.
+
+KEY ADB COMMANDS USED:
+  adb exec-out screencap -p > screen.png
+  adb shell input tap <x> <y>
+  adb shell input swipe <x1> <y1> <x2> <y2> <ms>
+  adb pull /sdcard/Download/<filename> <local_path>
+  adb shell uiautomator dump /sdcard/ui.xml
+  adb pull /sdcard/ui.xml <local_path>
+
+------------------------------------------------------------------------
+PHASE 1E — TRANSMITTER.PY
+------------------------------------------------------------------------
+
+PURPOSE: Get return JSON back into Grok's conversation.
+
+MECHANISM:
+  1. Format return JSON as compact string
+  2. adb shell input text '<json_string>'
+     NOTE: Special characters must be escaped for ADB text input.
+     Single quotes, backslashes, spaces all need handling.
+  3. adb shell input keyevent 66   (ENTER / send)
+
+ALTERNATIVE if text injection is unreliable:
+  1. Write return to a .txt file
+  2. Use ADB to trigger a share/open action that pastes into Grok
+  3. Or: display as QR code and have Grok read it (complex, avoid)
+
+RECOMMENDED: Direct adb input text with proper escaping. If character limits
+are hit (ADB text injection has practical limits ~500 chars), split into
+multiple injections and prefix with [1/N], [2/N] for Grok to reassemble.
+
+------------------------------------------------------------------------
+PHASE 1F — PIPELINE.PY
+------------------------------------------------------------------------
+
+PSEUDOCODE (full orchestration loop):
+
+def main_loop():
+    watcher = FileWatcher(config.WATCH_FOLDER)
+    while True:
+        png_path = watcher.wait_for_new_png()
+        logger.log("PNG_RECEIVED", png_path)
+
+        payload = decoder.decode(png_path)
+        if isinstance(payload, Error):
+            transmitter.send(format_error_return(payload))
+            continue
+
+        validation = validator.validate(payload)
+        if not validation.ok:
+            transmitter.send(format_error_return(validation.error))
+            continue
+
+        result = executor.execute(payload)
+        logger.log("EXECUTED", payload['id'], result['status'])
+
+        return_json = return_formatter.format(result)
+        transmitter.send(return_json)
+
+        if executor.HALT_FLAG:
+            logger.log("HALTED")
+            break
+
+================================================================================
+PART 3 — BUILD ORDER AND DEPENDENCIES
+================================================================================
+
+Build in this exact order. Do not start a phase until prior phase passes tests.
+
+  1. decoder.py + test_decoder.py
+     GATE: byte-perfect round-trip on 10 payloads
+     
+  2. validator.py
+     GATE: rejects 5 malformed payloads, accepts 5 valid ones
+     
+  3. handlers/ (all MVP handlers)
+     GATE: each handler tested independently with mock args
+     
+  4. executor.py
+     GATE: routes correctly to all handlers, handles unknown cmd gracefully
+     
+  5. logger.py + return_formatter.py
+     GATE: log entries write correctly, return JSON parses cleanly
+     
+  6. transmitter.py
+     GATE: ADB injection delivers text into Grok conversation field
+     
+  7. phone_tap.py
+     GATE: detects test PNG on screen, downloads, file appears in watch folder
+     
+  8. receiver.py
+     GATE: file watcher fires on new PNG, calls pipeline
+     
+  9. pipeline.py
+     GATE: full automated cycle, no manual steps
+     
+  10. Integration test with live Grok
+      GATE: Grok issues STATUS, SHELL, FILE_LIST sequentially, all return correct
+
+================================================================================
+PART 4 — NOTES AND CONSTRAINTS
+================================================================================
+
+FORBIDDEN PATTERNS (V3R FRAMEWORK):
+  - No urllib.request — use http.client.HTTPSConnection
+  - No Windows paths in Lambda code
+  - No hardcoded Groq models without Knowledge Retrieval check
+  - No SentenceTransformer() direct instantiation
+  - No local_files_only=True
+  - No win_amd64 wheels
+
+PYTHON VERSION: 3.14.3 (host), 3.12 (Lambda)
+PLATFORM: Windows 10 Home / PowerShell 5.1
+ADB: Available and configured
+BUDGET: Zero. All free tier.
+
+SINGLE-LINE POWERSHELL ONLY. No line continuation (^ or ,).
+
+ALL FILE OUTPUT: .txt only, no .md
+
+PUSH ECONOMY: All handler changes must be assessed and batched before any
+build command. Single docker buildx command with full ECR URI.
+
+================================================================================
+END OF MODEL REPORT
+================================================================================
