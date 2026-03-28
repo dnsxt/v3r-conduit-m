@@ -1,0 +1,23 @@
+Conversation Image Thumbnail Element (This needs to be clicked to enter priview mode, where the download button is located):
+
+<img class="object-cover relative z-[200] w-full m-0 text-transparent sm:max-h-[500px]" alt="" src="https://assets.grok.com/users/421e58f6-f301-4e8d-9129-f84635fca44c/generated/8acd1230-0a3a-4b04-afb9-c3787f939358/image.png" style="aspect-ratio: auto;">
+
+Image Preview Popup Window Element (Below this image is where the download button is):
+
+<img alt="Image" class="rounded-xl max-w-[90vw] max-h-[80vh] object-contain" src="https://assets.grok.com/users/421e58f6-f301-4e8d-9129-f84635fca44c/generated/8acd1230-0a3a-4b04-afb9-c3787f939358/image.png">
+
+Popup Window Image Download Button Element (this is the download button element):
+
+<button class="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-100 [&amp;_svg]:shrink-0 select-none text-fg-primary hover:bg-button-ghost-hover disabled:hover:bg-transparent border border-transparent h-8 rounded-xl px-3 text-xs" type="button"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-[2] "><path d="M4.16667 13.3333C4.16667 13.9304 4.16693 14.3282 4.1919 14.6338C4.21604 14.9293 4.25893 15.0648 4.30257 15.1506C4.42242 15.3858 4.61425 15.5776 4.84945 15.6974C4.93524 15.7411 5.07075 15.784 5.36621 15.8081C5.6718 15.8331 6.06956 15.8333 6.66667 15.8333H13.3333C13.9304 15.8333 14.3282 15.8331 14.6338 15.8081C14.9293 15.784 15.0648 15.7411 15.1506 15.6974C15.3858 15.5776 15.5776 15.3858 15.6974 15.1506C15.7411 15.0648 15.784 14.9293 15.8081 14.6338C15.8331 14.3282 15.8333 13.9304 15.8333 13.3333V11.6667H17.5V13.3333C17.5 13.903 17.5009 14.3805 17.4691 14.7697C17.4365 15.1686 17.3652 15.5476 17.1818 15.9074C16.9022 16.4562 16.4562 16.9022 15.9074 17.1818C15.5476 17.3651 15.1686 17.4365 14.7697 17.4691C14.3805 17.5009 13.903 17.5 13.3333 17.5H6.66667C6.09703 17.5 5.61951 17.5009 5.23031 17.4691C4.83143 17.4365 4.45245 17.3651 4.09261 17.1818C3.54385 16.9022 3.09782 16.4562 2.8182 15.9074C2.63485 15.5476 2.56353 15.1686 2.53093 14.7697C2.49913 14.3805 2.5 13.903 2.5 13.3333V11.6667H4.16667V13.3333Z" fill="currentColor"></path><path d="M10.8333 10.2799L13.5775 7.53581L14.7559 8.71419L10 13.4701L5.24414 8.71419L6.42253 7.53581L9.16667 10.2799V2.5H10.8333V10.2799Z" fill="currentColor"></path></svg> Download</button>
+
+Popup Window Close Button Element (The X button is in the top right corner):
+
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-[2] size-5"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor"></path></svg>
+
+Ask anything Element (This is the the Cursor applications message output box. It has to be clicked before you can type):
+
+<p data-placeholder="Ask anything" class="is-empty is-editor-empty"><br class="ProseMirror-trailingBreak"></p>
+
+Send Button Element:
+
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-[2] relative"><path d="M6 11L12 5M12 5L18 11M12 5V19" stroke="currentColor" stroke-linecap="square"></path></svg>
