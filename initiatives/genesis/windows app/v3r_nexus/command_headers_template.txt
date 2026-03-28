@@ -1,0 +1,12 @@
+# V3R command header library
+# Format: \name  |  template_with_{data}_placeholder
+# Lines starting with # or = are ignored.
+
+\ps  |  {data}
+\cmd  |  {data}
+\wsl  |  {data}
+\pip_inst  |  pip install {data}
+
+# Elevated (UAC prompt); template is the inner PowerShell to run elevated.
+\admin_ps  |  {data}
+\admin_cmd  |  {data}
