@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""
+V3R Moderator Clone Bootstrap
+"""
+import argparse
+import json
+import os
+import sys
+import subprocess
+import time
+from pathlib import Path
+
+# --- Paths (adjust if root differs) ---
+ROOT = Path(os.environ.get("V3R_NEXUS_ROOT", "V:\\"))
+MODERATOR_DIR = ROOT / "moderator"
+FRAMEWORK_DIR = ROOT / "framework"
+CONDUIT_DIR = ROOT / "conduit"
+STORAGE_DIR = ROOT / "storage"
+TOOLS_WRAPPER_DIR = ROOT / "tools/tool_wrappers"
+NEXUS_LOGS = ROOT / "nexus/logs"
+
+def load_partitions():
+    framework_path = FRAMEWORK_DIR / "V3R_Framework_v3.11.txt"
+    briefing_path = FRAMEWORK_DIR / "V3R_Briefing_v1.32.txt"
+
+    if not framework_path.exists():
+        print(f"[ERROR] Framework file missing: {framework_path}")
+        sys.exit(1)
+    if not briefing_path.exists():
+        print(f"[ERROR] Briefing file missing: {briefing_path}")
+        sys.exit(1)
+
+    with open(framework_path, 'r', encoding='utf-8') as f:
+        framework = f.read()
+    with open(briefing_path, 'r', encoding='utf-8') as f:
+        briefing = f.read()
+
+    print(f"[INFO] Loaded Framework ({len(framework)} chars)")
+    print(f"[INFO] Loaded Briefing ({len(briefing)} chars)")
+    return framework, briefing
+
+def init_tools():
+    sys.path.insert(0, str(TOOLS_WRAPPER_DIR))
+    try:
+        import tool_registry
+        tool_registry.initialize()
+        print("[INFO] Tools initialised successfully")
+    except ImportError:
+        print("[WARN] No tool_registry found; tools will be unavailable.")
+    except Exception as e:
+        print(f"[ERROR] Tool initialisation failed: {e}")
+
+def start_orchestrator():
+    loop_script = MODERATOR_DIR / "agent_loop.ps1"
+    if not loop_script.exists():
+        print(f"[ERROR] Agent loop script missing: {loop_script}")
+        sys.exit(1)
+
+    # On Windows, PowerShell is powershell.exe (not pwsh)
+    try:
+        subprocess.run(["powershell.exe", "-File", str(loop_script)], check=True)
+    except FileNotFoundError:
+        print("[ERROR] PowerShell not found. Cannot start agent loop.")
+        sys.exit(1)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--load-partitions", action="store_true")
+    parser.add_argument("--init-tools", action="store_true")
+    parser.add_argument("--start-orchestrator", action="store_true")
+    args = parser.parse_args()
+
+    if args.load_partitions:
+        load_partitions()
+    if args.init_tools:
+        init_tools()
+    if args.start_orchestrator:
+        start_orchestrator()
+
+    if not (args.load_partitions or args.init_tools or args.start_orchestrator):
+        load_partitions()
+        init_tools()
+        start_orchestrator()
+
+if __name__ == "__main__":
+    main()
